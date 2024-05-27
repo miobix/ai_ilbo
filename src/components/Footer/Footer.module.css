@@ -1,0 +1,96 @@
+.root {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    background-color: darkgrey;
+
+  }
+  
+  .footerContent {
+    padding-top: 20px;
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+  }
+  
+  .companyInfo {
+    flex: 2; 
+    font-size: 1.2rem;
+  }
+  
+  .companyInfo p {
+    margin: 0.1rem 0;
+    padding: 0.1rem;
+    border-radius: 5px;
+  }
+
+  .companyInfo .description {
+    font-size: 1.5rem;
+  }
+  
+  .footerColumn {
+    flex: 1; /* Default flex for placeholder columns */
+    padding: 0 1rem;
+  }
+  
+  .footerColumn h4 {
+    margin-bottom: 0.5rem;
+    font-size: 1.0rem;
+    font-weight: bold;
+    font-family: var(--font-mono);
+  }
+  
+  .footerColumn p {
+    margin: 0.25rem 0;
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .infoWrapper{
+    margin-top: 20px;
+  }
+
+  .description {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    font-size: 1.5rem;
+    max-width: var(--max-width);
+    width: 100%;
+    z-index: 2;
+    font-family: var(--font-mono);
+  }
+  
+  .description a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .description p {
+    position: relative;
+    margin: 0;
+    padding: 1rem;
+    background-color: rgba(var(--callout-rgb), 0.5);
+    border: 1px solid rgba(var(--callout-border-rgb), 0.3);
+    border-radius: var(--border-radius);
+  }
+  
+  .ai {
+    font-weight: 700;
+    font-family: var(--font-mono);
+  }
+  
+  .sectionsContainer {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 0 0;
+    margin: 0;
+  }
+  

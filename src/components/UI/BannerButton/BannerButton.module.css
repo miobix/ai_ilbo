@@ -1,0 +1,7 @@
+.container {
+    padding: 5px 10px 0 10px;
+}
+
+.text {
+    font-family: var(--font-mono);
+}

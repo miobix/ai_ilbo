@@ -1,0 +1,57 @@
+.root {
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.divsContainer {
+  display: flex;
+  width: 80vw;
+  max-width: 1400px;
+  height: auto;
+  margin-top: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  padding-bottom: 20px;
+}
+
+.leftDiv,
+.rightDiv {
+  overflow: auto;
+}
+
+.leftDiv {
+  width: 50%;
+  padding: 0;
+  flex: 1.5;
+}
+
+.rightDiv {
+  width: 50%;
+  flex: 0.5;
+}
+
+.topNewsDiv {
+  display: flex;
+  flex-direction: column;
+}
+
+.newsArticle {
+  flex: 1;
+  padding: 0px;
+}
+
+.sectionWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.newsCategoryWrapper {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  padding: 0;
+}
