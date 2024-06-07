@@ -3,9 +3,9 @@ import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
+    <main className="main">
 
-      //-- Header --//
+
       <div className="Header">
         <div className="Header_inner">
           <ul className="H_left">
@@ -16,11 +16,11 @@ export default function Home() {
         </div>
       </div>
 
-      //-- Main news --//
+
       <div className="Main_cont">
         <div className="Main_cont_inner">
           <h2 className="M_title">AI NEWS</h2>
-          //-- Main_top_news --//
+ 
           <div className="M_top_news">
             <a href="#none">
               <p className="tit">경북도, 국힘에 TK특별법 제정과 저출산 극복 등 국가투자 요청</p>
@@ -28,7 +28,7 @@ export default function Home() {
               <p className="img"></p>
             </a>           
           </div>
-          //-- Main_list_news --//
+   
           <div className="M_list_news">
             <ul className="li_news">
               <li>
@@ -89,7 +89,7 @@ export default function Home() {
               </li>
             </ul>
           </div>
-          //-- Paging --//
+       
           <div className="Paging">
             <button>prev</button>
             <ul className="paging_list">
@@ -105,7 +105,6 @@ export default function Home() {
         </div>
       </div>
 
-      //-- Footer --//
       <div className="Footer">
         <div className="Fotter_inner">
           <p className="copyrights">영남일보 AI © 2024 YeongNamAI. All rights reserved.</p>
