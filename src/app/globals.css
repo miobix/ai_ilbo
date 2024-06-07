@@ -111,6 +111,7 @@ a { text-decoration:none; color:#000; }
 
 
 html { background-color:#f0f3f3; }
+body { font-family:Noto Sans KR; }
 li { list-style:none; }
 .main { margin:0 auto; position:relative; font-family:Noto Sans KR;  }
 
