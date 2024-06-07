@@ -184,9 +184,10 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 
 .M_list_news { margin-top:50px; border-top:1px solid #000; }
 .M_list_news .li_news { margin-top:50px; }
-.M_list_news .li_news li { position:relative; }
+.M_list_news .li_news li { position:relative; width:100%; height:225px; margin-bottom:50px;  }
 .M_list_news .li_news li a { display:block; width:100%; }
 .M_list_news .li_news li a .img { position:absolute; top:0px; left:0px;  }
-.M_list_news .li_news li a .tit { font-size:36px; font-weight:800;  }
-.M_list_news .li_news li a .sub_tit { font-size:17px; }
 .M_list_news .li_news li a .cnt { padding-left:420px; }
+.M_list_news .li_news li a .cnt .tit { font-size:36px; font-weight:800;  }
+.M_list_news .li_news li a .cnt .cont { font-size:18px; margin-top:20px; }
+
