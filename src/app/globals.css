@@ -190,4 +190,6 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 .M_list_news .li_news li a .cnt { padding-left:420px; }
 .M_list_news .li_news li a .cnt .tit { font-size:36px; font-weight:800;  }
 .M_list_news .li_news li a .cnt .cont { font-size:18px; margin-top:20px; }
+.M_list_news .li_news li a .cnt .date { font-size:15px; color:#828282; margin-top:20px; }
+
 
