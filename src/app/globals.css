@@ -124,7 +124,7 @@ li { list-style:none; }
 .Header_inner .H_left li.todate .date { font-size:14px; }
 .Header_inner a.logo { position:absolute; left:50%; top:43px; margin-left:-141px; display:block; width:282px; height:80px; text-align:center; background:url("/yn_logo.png") no-repeat center 0; text-indent:-99999px; }
 
-.Footer { height:80px; background-color:#000; }
+.Footer { height:80px; background-color:#000; margin-top:100px; }
 .Footer .Fotter_inner { max-width:1320px; margin:0 auto; color:#fff; text-align:center; }
 .Footer .Fotter_inner .copyrights { font-size:13px; line-height:80px; }
 
@@ -170,7 +170,7 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 .article .imgtxt { font-size:14px; color:#828282; margin-top:25px; line-height:24px; margin-bottom:20px; }
 .article .article_cnts { font-size:20px; overflow:hidden; }
 .article .article_cnts p { line-height:34px; margin-top:45px; }
-.article .name { font-size:15px; color:#828282; font-style:italic; margin-top:95px; }
+.article > .name { font-size:15px; color:#828282; font-style:italic; margin-top:95px; display:block; }
 .related { float:right; width:305px; border-top:1px solid #000; padding-top:25px; margin-top:48px; }
 .related h4.tit { font-size:20px; font-weight:bold; letter-spacing:-1px; position:relative; display:inline-block; }
 .related h4.tit::after { content:""; display:block; width:8px; height:8px; background-color:#c82424; border-radius:10px; position:absolute; bottom:5px; right:-10px; }
