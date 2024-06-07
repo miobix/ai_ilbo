@@ -108,7 +108,7 @@ a {
 
 
 
-
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700;800;900&display=swap');
 
 html { background-color:#f0f3f3; }
 li { list-style:none; }
@@ -116,8 +116,10 @@ li { list-style:none; }
 
 .Header { height:175px; width:100%; }
 .Header_inner { position:relative; }
-.Header_inner .H_left { display:flex; justify-content:left; }
+.Header_inner .H_left { display:flex; justify-content:left; position:absolute; top:70px; left:0px; }
 .Header_inner .H_left li { }
+.Header_inner a.logo { position:absolute; left:50%; top:70px; margin-left:-141px; display:block; width:282px; height:80px; text-align:center;  }
 
-
+.Main_cont { max-width:1320px; margin:0 auto; background-color:#fff; }
+.Main_cont_inner { position:relative; padding:60px; border-radius:6px; }
 
