@@ -175,7 +175,7 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 .related h4.tit { font-size:20px; font-weight:bold; letter-spacing:-1px; position:relative; display:inline-block; }
 .related h4.tit::after { content:""; display:block; width:8px; height:8px; background-color:#c82424; border-radius:10px; position:absolute; bottom:5px; right:-10px; }
 .related .related_list { border-top:1px solid #000; padding-top:25px; margin-top:25px; }
-.related .related_list li { position:relative; height:115px; margin-bottom:18px; border-bottom:1px solid #ebebeb; }
+.related .related_list li { position:relative; margin-bottom:18px; border-bottom:1px solid #ebebeb; }
 .related .related_list li a { display:block; }
 .related .related_list li a .img { width:126px; height:84px; position:absolute; top:0px; left:0px; }
 .related .related_list li a .img img { width:100%; height:100%; object-fit:cover; }
