@@ -163,6 +163,12 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 .article h3.category { font-size:20px; font-weight:bold; letter-spacing:-1px; position:relative; display:inline-block; }
 .article h3.category::after { content:""; display:block; width:8px; height:8px; background-color:#c82424; border-radius:10px; position:absolute; bottom:5px; right:-10px; }
 .article .tit { font-size:42px; font-weight:bold; margin-top:20px; padding-top:20px; border-top:1px solid #000; }
+.article .datelist { margin:25px 0; display:flex; justify-content:left; }
+.article .datelist li { font-size:15px; color:#828282; margin-right:8px;  }
+.article .img { width:830px; height:516px; }
+.article .img img { width:100%; height:100%; object-fit:cover; }
+.article .imgtxt { font-size:14px; color:#828282; margin-top:25px; }
+.article .article_cnts { font-size:20px; }
 .related { float:right; width:305px;  }
 
 
