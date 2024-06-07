@@ -112,10 +112,10 @@ a { text-decoration:none; color:#000; }
 
 html { background-color:#f0f3f3; }
 li { list-style:none; }
-.main { max-width:1320px; margin:0 auto; position:relative; font-family:Noto Sans KR;  }
+.main { margin:0 auto; position:relative; font-family:Noto Sans KR;  }
 
 .Header { height:175px; width:100%; }
-.Header_inner { position:relative; }
+.Header_inner { position:relative; max-width:1320px; margin:0 auto; }
 .Header_inner .H_left { display:flex; justify-content:left; position:absolute; top:70px; left:0px; }
 .Header_inner .H_left li { }
 .Header_inner a.logo { position:absolute; left:50%; top:43px; margin-left:-141px; display:block; width:282px; height:80px; text-align:center; background:url("/yn_logo.png") no-repeat center 0; text-indent:-99999px; }
@@ -148,4 +148,5 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 .Paging .paging_list { display:flex; justify-content:center; }
 .Paging .paging_list li { margin:0 20px; }
 
-.Footer { height:50px; background-color:#000; }
+.Footer { height:80px; background-color:#000; }
+.Footer .Fotter_inner { max-width:1320px; margin:0 auto; color:#fff; text-align:center; }
