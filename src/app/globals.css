@@ -145,4 +145,4 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 .Paging .paging_list { display:flex; justify-content:center; }
 .Paging .paging_list li { margin:0 20px; }
 
-
+.Footer { height:50px; background-color:#000; }
