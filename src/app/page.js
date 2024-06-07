@@ -3,9 +3,9 @@ import styles from "./page.module.css";
 
 export default function Home() {
   return (
-    <main>
+    <main className={styles.main}>
 
-     
+      //-- Header --//
       <div className="Header">
         <div className="Header_inner">
           <ul className="H_left">
@@ -16,7 +16,7 @@ export default function Home() {
         </div>
       </div>
 
-     
+      //-- Main news --//
       <div className="Main_cont">
         <div className="Main_cont_inner">
           <h2 className="M_title">AI NEWS</h2>
