@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 export default function Home() {
   return (
     <main className="main">      
+    <div className="main_inner">
         {/*Header*/}
         <div className="Header">
           <div className="Header_inner">
@@ -15,7 +16,7 @@ export default function Home() {
           </div>
         </div>
     
-        <div className="main_inner">
+        
           {/*Main News*/}
           <div className="Main_cont">
             <div className="Main_cont_inner">
@@ -119,14 +120,15 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
+       
   
         {/*Footer*/}
         <div className="Footer">
           <div className="Fotter_inner">
             <p className="copyrights">영남일보 AI © 2024 YeongNamAI. All rights reserved.</p>
           </div>
-        </div>      
+        </div>  
+           </div>
     </main>
   );
 }
