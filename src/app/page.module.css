@@ -1,9 +1,1 @@
 
-html { background-color:#f0f3f3; }
-li { list-style:none; }
-.main { max-width:1320px; margin:0 auto; position:relative; }
-
-.Header { height:175px; width:100%; }
-.Header_inner { position:relative; }
-.Header_inner .H_left { display:flex; justify-content:left; }
-.Header_inner .H_left li { }
