@@ -180,5 +180,13 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 .M_top_news a .sub_tit { font-size:20px; max-width:800px; margin:25px auto; line-height:32px; }
 .M_top_news a .img { width:666px; height:330px; }
 .M_top_news a .img img { width:100%; height:100%; }
+.M_top_news a .date { font-size:15px; color:#828282; font-style:italic; text-align:right; width:666px; display:block; margin:10px auto 0;  }
 
+.M_list_news { margin-top:50px; border-top:1px solid #000; }
+.M_list_news .li_news { margin-top:50px; }
+.M_list_news .li_news li { position:relative; }
+.M_list_news .li_news li a { display:block; width:100%; }
+.M_list_news .li_news li a .img { position:absolute; top:0px; left:0px;  }
+.M_list_news .li_news li a .tit { font-size:36px; font-weight:800;  }
+.M_list_news .li_news li a .sub_tit { font-size:17px; }
 
