@@ -188,7 +188,7 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 .paging_news > div h5.tit::after { content:""; display:block; width:8px; height:8px; background-color:#c82424; border-radius:10px; position:absolute; bottom:5px; right:-10px; }
 .paging_news .prev { float:left; }
 .paging_news .next { float:right; }
-.paging_news .next h5.tit { display:block; text-aling:right; padding-right:15px; }
+.paging_news .next h5.tit { display:block; text-align:right; padding-right:15px; }
 .paging_news .next h5.tit::after { right:3px; }
 .paging_news > div .pnews { border-top:1px solid #000; border-bottom:1px solid #000; padding:40px 0; position:relative; margin-top:22px;  }
 .paging_news > div .pnews .img { width:160px; height:103px;  position:absolute; top:36px; left:0px; }
