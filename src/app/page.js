@@ -82,7 +82,7 @@ export default function Home() {
               <li>
                 <a href="#none">
                   <p className="img"></p>
-                  <p className="tit">번아웃' 셀프 충전법(2) 표정·호흡·말 '마인드 훈련'…뇌과학 기반한 케어</p>
+                  <p className="tit">번아웃\' 셀프 충전법(2) 표정·호흡·말 '마인드 훈련\'…뇌과학 기반한 케어</p>
                   <p className="cont">자기경영헬스케어는 의학, 뇌과학, 양자물리학을 기반으로 한다. 건강한 심신을 위한 인문과학 융합콘텐츠라고 할 수 있다. 현대인들은 평소 자신이 하는 생각과 그리고 표정과 행동 등이 감정과 할 수 있다.</p>
                   <p className="date">2024-06-05 06:45</p>
                 </a>
