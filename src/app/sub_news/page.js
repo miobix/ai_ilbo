@@ -108,7 +108,7 @@ export default function Home() {
             </div>
             {/*next*/}
             <div className="next">
-              <h5 className="tit">이전뉴스</h5>
+              <h5 className="tit">다음뉴스</h5>
               <div className="pnews">
                 <p className="img"><img src="/sample_11.png" /></p>
                 <div className="cnt">
