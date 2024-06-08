@@ -1,6 +1,8 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import Header from "@/components/Header/Header";
+import Footer from "@/components/Footer/Footer";
+
 
 export default function Home() {
   return (
@@ -113,12 +115,7 @@ export default function Home() {
           </div>
         </div>
   
-        {/*Footer*/}
-        <div className={styles.Footer}>
-          <div className={styles.Fotter_inner}>
-            <p className={styles.copyrights}>영남일보 AI © 2024 YeongNamAI. All rights reserved.</p>
-          </div>
-        </div>  
+        <Footer />
           
     </main>
   );
