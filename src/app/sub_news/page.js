@@ -1,5 +1,4 @@
 import Image from "next/image";
-import styles from "./page.module.css";
 import Header from "@/components/Header/Header";
 import Header from "@/components/Header/Footer";
 import styles from "../../sub_news/[sub_news]/page.module.css";
