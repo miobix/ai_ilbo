@@ -1,9 +1,10 @@
 import Image from "next/image";
+import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
-import Header from "@/components/Header/Footer";
-import styles from "./page.module.css";
+import styles from "../../sub_news/[sub_news]/page.module.css";
 
-export default function Home() {
+
+export default function CategoryPage({ params }) {
   return (
     <main className={styles.main}>
          <Header />
