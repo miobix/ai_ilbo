@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import styles from "./page.module.css";
 import Header from "@/app/components/Header/Header";
@@ -5,16 +6,32 @@ import SubArticles from "@/app/components/NewsGroups/SubArticles/SubArticles";
 import SubRelated from "@/app/components/NewsGroups/SubRelated/SubRelated";
 import SubPaging from "@/app/components/NewsGroups/SubPaging/SubPaging";
 import Footer from "@/app/components/Footer/Footer";
-
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function ArticlePage({ params }) {
-  function getNewsInfo(id) {
-    
-  }
+  const [articleInfo, setArticleInfo] = useState(null);
 
-  const articleInfo = getNewsInfo(params.articleId)
-  console.log(params.articleId)
+  useEffect(() => {
+    const fetchArticleInfo = async () => {
+      try {
+        const response = await fetch(`/api/fetchArticleData/${params.articleId}`);
+        if (response.ok) {
+          const data = await response.json();
+      
+          setArticleInfo(data);
+        } else {
+          console.error('Failed to fetch article information:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching article information:', error);
+      }
+    };
 
+    if (params.articleId) {
+      fetchArticleInfo();
+    }
+  }, []);
 
   return (
     <main className={styles.main}>
@@ -24,11 +41,11 @@ export default function ArticlePage({ params }) {
         <div className={styles.sub_cont}>
             <div className={styles.sub_inner}>
               <div className={styles.article_section}>
-                <SubArticles />
+                <SubArticles news={articleInfo}/>
                 {/* <SubRelated /> */}
               </div>
-               <SubPaging />
-               <a href="#none" className={styles.ListBtn}>목록</a>
+               {/* <SubPaging /> */}
+               <Link href={`/`}><div className={styles.ListBtn}>목록</div></Link>
             </div>
         </div>
     

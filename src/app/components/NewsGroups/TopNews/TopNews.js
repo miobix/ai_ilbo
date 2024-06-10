@@ -3,7 +3,7 @@ import styles from "./TopNews.module.css";
 import Link from "next/link";
 
 export default function TopNews({ news }) {
-  console.log(news);
+
   function parseDescription(articleBody) {
     // Split the article body into sections based on the "##" separator
     const sections = articleBody.split("##");
@@ -30,7 +30,6 @@ export default function TopNews({ news }) {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 
-
   return (
     <div className={styles.M_top_news}>
       <h2 className={styles.M_title}>AI NEWS</h2>
@@ -40,7 +39,7 @@ export default function TopNews({ news }) {
           {parseDescription(news.summary.article_body)}
         </p>
         <p className={styles.img}>
-          <img src={news.generated_img_url.original} alt="News Image" />
+          <img src={news.generated_img_url?.original} alt="News Image" />
         </p>
         <p className={styles.date}>{parseDateTime(news.read_date)}</p>
        </Link>

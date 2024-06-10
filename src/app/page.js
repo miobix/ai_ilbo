@@ -26,26 +26,32 @@ export default function Home() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const handleGetAllData = async () => {
-    try {
-      const response = await fetch("/api/fetchHomepageNews", {
-        method: "GET",
-      });
+  // const handleGetAllData = async () => {
+  //   try {
+  //     const response = await fetch("/api/fetchHomepageNews", {
+  //       method: "GET",
+  //     });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        if (data.length > 0) {
-          setAllNews(data);
-        }
-      } else {
-        console.log("Something went wrong!");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      alert("Error fetching data. Please try again later.");
-    }
-  };
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log(data);
+  //       if (data.length > 0) {
+  //         setAllNews(data);
+  //       }
+  //     } else {
+  //       console.log("Something went wrong!");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //     alert("Error fetching data. Please try again later.");
+  //   }
+  // };
+
+  if (!allNews) {
+    // If news data is not available yet, return a loading indicator or null
+    return <div>Loading...</div>;
+  }
+
 
   return (
     <main className={styles.main}>
@@ -56,9 +62,9 @@ export default function Home() {
           <div className={styles.Main_cont_inner}>
             {allNews.length > 0 && <TopNews news={allNews[0]} />}
 
-            {allNews.length > 1 && <NewsList news={allNews.slice(1)} />}
+            {allNews.length > 1 && <NewsList newsList={allNews.slice(1)} />}
             {/*Paging*/}
-            <div className={styles.Paging}>
+            {/* <div className={styles.Paging}>
               <button>prev</button>
               <ul className={styles.paging_list}>
                 <li>
@@ -81,7 +87,7 @@ export default function Home() {
                 </li>
               </ul>
               <button>next</button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
