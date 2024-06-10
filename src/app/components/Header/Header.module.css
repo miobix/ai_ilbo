@@ -16,7 +16,7 @@
   .Header_inner a.logo { background-size:170px; width:176px; height:50px; margin-left:-88px; top:66px; }
 }
 
-@media screen (min-width: 340px) and (max-width: 860px) {
+@media screen and (min-width: 340px) and (max-width: 860px) {
   .Header { height:132px; }
   .Header_inner .H_left li.todate .date { font-size:13px; }
   .Header_inner .H_left li.todate { margin-left:20px; }
