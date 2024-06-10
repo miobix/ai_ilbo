@@ -21,6 +21,7 @@
   .paging_news > div .pnews .cnt .tit { font-size:18px; -webkit-line-clamp:3; font-weight:500; }
 }
 @media screen and (max-width: 860px) {
+  .paging_news > div h5.tit::after { width:6px; height:6px; bottom:4px; }
   .paging_news { margin-top:40px; }
   .paging_news > div { width:100%; float:unset; }
   .paging_news > div .pnews { padding:16px 0px; }
