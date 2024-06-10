@@ -16,7 +16,7 @@ h2.M_title::after { content:""; display:block; width:8px; height:8px; background
 }
 @media screen and (max-width: 860px) {
   h2.M_title { font-size:19px; }
-  .M_top_news a .tit { font-size:18px; text-overflow: ellipsis; overflow: hidden; word-break: break-word; display: -webkit-box; -webkit-line-clamp:5; -webkit-box-orient: vertical; white-space:unset; }
+  .M_top_news a .tit { font-size:20px; text-overflow: ellipsis; overflow: hidden; word-break: break-word; display: -webkit-box; -webkit-line-clamp:5; -webkit-box-orient: vertical; white-space:unset; }
   .M_top_news a .sub_tit { font-size:14px; line-height:23px; -webkit-line-clamp:3; }
   .M_top_news a .img { width:100%; height:unset; }
   .M_top_news a .date { font-size:13px; width:100%; }
