@@ -2,8 +2,6 @@ import Image from "next/image";
 import styles from "./SubArticles.module.css";
 
 export default function SubArticles({news}) {
-  console.log(news)
-
   function parseDateTime(dateString) {
     const year = dateString.substring(0, 4);
     const month = dateString.substring(4, 6);
@@ -34,7 +32,7 @@ export default function SubArticles({news}) {
     return <div>Loading...</div>;
   }
 
-  
+
   return (
 
     <div className={styles.article}>

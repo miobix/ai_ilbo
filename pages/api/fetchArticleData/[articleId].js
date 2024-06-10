@@ -2,9 +2,7 @@
 import { MongoClient, ObjectId } from "mongodb";
 
 export default async function articleId(req, res) {
-  console.log(req.query)
   const articleId = req.query.articleId;
-  console.log(articleId)
   if (req.method === "GET") {
     const client = new MongoClient(process.env.NEXT_PUBLIC_MONGODB_URI, {
       useNewUrlParser: true,

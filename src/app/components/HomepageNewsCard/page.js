@@ -2,8 +2,6 @@ import styles from './page.module.css'
 import Link from "next/link";
 
 export default function HomepageNewsCard({ news }) {
-  console.log(news)
-
   function parseDescription(articleBody) {
     // Split the article body into sections based on the "##" separator
     const sections = articleBody.split("##");
