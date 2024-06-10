@@ -11,6 +11,19 @@
 .article .article_cnts p { line-height:34px; margin-top:45px; }
 .article > .name { font-size:15px; color:#828282; font-style:italic; margin-top:95px; display:block; }
 
+.keyTakeaways {
+  margin-top: 20px;
+}
+
+.keyTakeaway {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-left: 4px solid #c82424; /* Match the color with the category tag */
+}
+
 
 @media screen and (max-width: 1350px) {
   .article { float:unset; width:100%; }
@@ -31,4 +44,9 @@
   .article .imgtxt { font-size:13px; margin-top:10px; line-height:20px; }
   .article .article_cnts { font-size:15px; }
   .article .article_cnts p { line-height:27px; margin-top:15px; }
+
+  .keyTakeaway {
+    font-size: 16px;
+  }
 }
+
