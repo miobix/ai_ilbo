@@ -9,3 +9,8 @@
 .related .related_list li a .cnt { padding-left:140px; }
 .related .related_list li a .cnt .tit { font-size:20px; font-weight:bold;  letter-spacing:-1px; text-overflow: ellipsis; overflow: hidden; word-break: break-word; display: -webkit-box; -webkit-line-clamp:3; -webkit-box-orient: vertical; }
 .related .related_list li a .cnt .date { font-size:13px; color:#828282; font-style:italic; margin-top:8px; text-align:right; }
+
+
+@media screen and (max-width: 1350px) {
+  .related { float:unset; width:100%; }
+}
