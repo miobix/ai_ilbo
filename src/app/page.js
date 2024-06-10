@@ -1,9 +1,10 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
-import TopNews from "@/components/NewsGroups/TopNews/TopNews";
-import NewsList from "@/components/NewsGroups/NewsList/NewsList";
+import Footer from "./components/Footer/Footer";
+import Header from "./components/Header/Header";
+
+import TopNews from "./components/NewsGroups/TopNews/TopNews";
+import NewsList from "./components/NewsGroups/NewsList/NewsList";
 
 export default function Home() {
   return (
