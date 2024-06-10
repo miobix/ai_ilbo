@@ -10,7 +10,7 @@
 
 @media screen and (max-width: 1350px) {
     .Main_cont_inner { padding:40px 20px; }
-    .Main_cont { padding:0px 20px; }
+    .Main_cont { padding:0px 12px; }
 }
 
 @media screen and (max-width: 860px) {
