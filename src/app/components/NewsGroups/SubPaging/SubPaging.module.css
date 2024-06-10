@@ -21,5 +21,10 @@
   .paging_news > div .pnews .cnt .tit { font-size:18px; -webkit-line-clamp:3; }
 }
 @media screen and (max-width: 860px) {
+  .paging_news { margin-top:40px; }
   .paging_news > div { width:100%; float:unset; }
+  .paging_news > div .pnews { padding:16px 0px; }
+  .paging_news > div .pnews .img { display:none; }
+  .paging_news > div .pnews .cnt { padding-left:0px; }
+  .paging_news .next { margin-top:20px; }
 }
