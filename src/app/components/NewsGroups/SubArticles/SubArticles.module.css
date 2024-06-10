@@ -15,7 +15,7 @@
 @media screen and (max-width: 1350px) {
   .article { float:unset; width:100%; }
   .article h3.category { font-size:18px; }
-  .article .tit { font-size:22px; text-align:center; }
+  .article .tit { font-size:35px; text-align:center; }
   .article .img { margin:0 auto; }
   .article .datelist { justify-content:center; }
   .article .datelist li { font-size:13px; }
