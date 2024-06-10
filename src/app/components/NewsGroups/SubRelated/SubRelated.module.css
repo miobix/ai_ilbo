@@ -13,4 +13,10 @@
 
 @media screen and (max-width: 1350px) {
   .related { float:unset; width:100%; }
+  .related h4.tit { font-size:18px; }
+  .related .related_list li a { height:105px; }
+  .related .related_list li a .cnt .tit { -webkit-line-clamp:2;  }
+}
+@media screen and (max-width: 860px) {
+  .related .related_list li a .cnt .tit { font-size:17px; -webkit-line-clamp:3;  }
 }
