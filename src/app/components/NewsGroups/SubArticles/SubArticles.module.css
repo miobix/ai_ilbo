@@ -15,12 +15,18 @@
 @media screen and (max-width: 1350px) {
   .article { float:unset; width:100%; }
   .article h3.category { font-size:18px; }
-  .article .tit { font-size:22px; }
+  .article .tit { font-size:22px; text-align:center; }
+  .article .img { margin:0 auto; }
+  .article .datelist { justify-content:center; }
   .article .datelist li { font-size:13px; }
   .article .article_cnts { font-size:17px; }
 }
 @media screen and (max-width: 860px) {
   .article .img { width:100%; height:unset; }
+  .article .tit { font-size:17px; text-align:left; }
+  .article .datelist { display:block; }
+  .article .datelist li { margin-bottom:2px; }
+  .article .imgtxt { font-size:13px; margin-top:10px; }
   .article .article_cnts { font-size:15px; }
   .article .article_cnts p { line-height:27px; margin-top:15px; }
 }
