@@ -1,18 +1,49 @@
 import Image from "next/image";
 import styles from "./TopNews.module.css";
+import Link from "next/link";
 
-export default function TopNews() {
+export default function TopNews({ news }) {
+  console.log(news);
+  function parseDescription(articleBody) {
+    // Split the article body into sections based on the "##" separator
+    const sections = articleBody.split("##");
+
+    // Remove the section titles and truncate the descriptions to 50 characters
+    const sanitizedDescription = sections
+      .map((section) => section.trim()) // Remove leading/trailing whitespace
+      .filter((section) => section !== "") // Remove empty sections
+      .map((section) =>
+        section.length > 50 ? section.substring(0, 50) + "..." : section
+      ) // Truncate descriptions
+      .join(" "); // Join the sections back into a single string
+
+    return sanitizedDescription;
+  }
+
+  function parseDateTime(dateString) {
+    const year = dateString.substring(0, 4);
+    const month = dateString.substring(4, 6);
+    const day = dateString.substring(6, 8);
+    const hours = dateString.substring(8, 10);
+    const minutes = dateString.substring(10, 12);
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  }
+
+
   return (
-
     <div className={styles.M_top_news}>
       <h2 className={styles.M_title}>AI NEWS</h2>
-      <a href="#none">
-        <p className={styles.tit}>경북도, 국힘에 TK특별법 제정과 저출산 극복 등 국가투자 요청</p>
-        <p className={styles.sub_tit}>경북도가 22대 국회 개원 후 처음으로 5일 서울 켄싱턴호텔에서 열린 국민의 힘과의 예산정책협의회에서 대구경북통합특별법과 저출산 극복등에 대한 국가투자 지원을 요청했다.</p>
-        <p className={styles.img}><img src="/sample_01.png" /></p>
-        <p className={styles.date}>2024-06-05 12:20</p>
-      </a>           
+      <Link href={`/article/${news._id}`}>
+        <p className={styles.tit}>{news.summary.title}</p>
+        <p className={styles.sub_tit}>
+          {parseDescription(news.summary.article_body)}
+        </p>
+        <p className={styles.img}>
+          <img src={news.generated_img_url.original} alt="News Image" />
+        </p>
+        <p className={styles.date}>{parseDateTime(news.read_date)}</p>
+       </Link>
     </div>
-
   );
 }

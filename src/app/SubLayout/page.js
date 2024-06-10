@@ -6,7 +6,22 @@ import SubArticles from "../components/NewsGroups/SubArticles/SubArticles";
 import SubRelated from "../components/NewsGroups/SubRelated/SubRelated";
 import SubPaging from "../components/NewsGroups/SubPaging/SubPaging";
 
-export default function Home() {
+export default function ArticlePage({ params }) {
+  function getNewsInfo(id) {
+    let article = newsData.find((article) => article.id === id);
+    if (article) {
+      return article;
+    } else {
+      article = newsData.find((article) => article.id === "B1");
+      return article
+    }
+  }
+
+  const articleInfo = getNewsInfo(params.articleId)
+  const relatedArticleA = getNewsInfo(articleInfo.seeAlso[0].newsId)
+  const relatedArticleB = getNewsInfo(articleInfo.seeAlso[1].newsId)
+
+
   return (
     <main className={styles.main}>
          <Header />
