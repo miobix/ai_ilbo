@@ -24,6 +24,10 @@
   border-left: 4px solid #c82424; /* Match the color with the category tag */
 }
 
+.keyTakeawaysTitle{
+  margin-bottom: 20px;
+}
+
 
 @media screen and (max-width: 1350px) {
   .article { float:unset; width:100%; }
