@@ -24,7 +24,7 @@
   .paging_news > div h5.tit::after { width:6px; height:6px; bottom:4px; }
   .paging_news { margin-top:40px; }
   .paging_news > div { width:100%; float:unset; }
-  .paging_news > div .pnews { padding:16px 0px; margin-top:12px; border-bottom:1px solid #c9c9c9; }
+  .paging_news > div .pnews { padding:16px 0px; margin-top:12px; border-bottom:1px solid #e5e5e5; }
   .paging_news > div .pnews .img { display:none; }
   .paging_news > div .pnews .cnt { padding-left:0px; }
   .paging_news .next { margin-top:20px; }
