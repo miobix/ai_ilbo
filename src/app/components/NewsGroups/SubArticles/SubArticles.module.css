@@ -10,3 +10,11 @@
 .article .article_cnts { font-size:20px; overflow:hidden; }
 .article .article_cnts p { line-height:34px; margin-top:45px; }
 .article > .name { font-size:15px; color:#828282; font-style:italic; margin-top:95px; display:block; }
+
+
+@media screen and (max-width: 1350px) {
+  .article h3.category { font-size:18px; }
+  .article .tit { font-size:22px; }
+  .article .datelist li { font-size:13px; }
+  .article .article_cnts { font-size:17px; }
+}
