@@ -2,9 +2,9 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
-import Footer from "../components/NewsGroups/SubArticles/SubArticles";
-import Footer from "../components/NewsGroups/SubRelated/SubRelated";
-import Footer from "../components/NewsGroups/SubPaging/SubPaging";
+import SubArticles from "../components/NewsGroups/SubArticles/SubArticles";
+import SubRelated from "../components/NewsGroups/SubRelated/SubRelated";
+import SubPaging from "../components/NewsGroups/SubPaging/SubPaging";
 
 export default function Home() {
   return (
