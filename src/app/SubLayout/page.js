@@ -19,7 +19,7 @@ export default function Home() {
                 <SubRelated />
               </div>
                <SubPaging />
-               <a href="#none" className="ListBtn">목록</a>
+               <a href="#none" className={styles.ListBtn}>목록</a>
             </div>
         </div>
     
