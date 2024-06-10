@@ -12,13 +12,15 @@ export default function Home() {
          <Header />
     
         {/*SUB article*/}
-        <div className={styles.sub_inner}>
-          <div className={styles.article_section}>
-            <SubArticles />
-            <SubRelated />
-          </div>
-           <SubPaging />
-           <button className="ListBtn">목록</button>
+        <div className={styles.sub_cont}>
+            <div className={styles.sub_inner}>
+              <div className={styles.article_section}>
+                <SubArticles />
+                <SubRelated />
+              </div>
+               <SubPaging />
+               <button className="ListBtn">목록</button>
+            </div>
         </div>
     
         <Footer />
