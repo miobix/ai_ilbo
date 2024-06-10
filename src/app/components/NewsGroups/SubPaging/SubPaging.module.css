@@ -16,7 +16,7 @@
 
 
 @media screen and (max-width: 1350px) {
-  .paging_news > div h5.tit { font-size:18px; }
+  .paging_news > div h5.tit { font-size:16px; color:#353535; }
   .paging_news > div { width:48%; }
   .paging_news > div .pnews .cnt .tit { font-size:18px; -webkit-line-clamp:3; }
 }
