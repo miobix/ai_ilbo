@@ -18,7 +18,7 @@
 @media screen and (max-width: 860px) {
   .M_list_news { margin-top:25px; }
   .M_list_news .li_news { margin-top:30px }
-  .M_list_news .li_news li { height:unset; margin-bottom:28px; }
+  .M_list_news .li_news li { height:unset; margin-bottom:40px; }
   .M_list_news .li_news li a .img { position:unset; }
   .M_list_news .li_news li a .cnt { padding-left:0px; }
   .M_list_news .li_news li a .cnt .tit { font-size:18px; -webkit-line-clamp:4; margin-top:10px; }
