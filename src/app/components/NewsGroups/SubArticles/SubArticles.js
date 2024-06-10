@@ -14,10 +14,7 @@ export default function SubArticles({news}) {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 
-  if (!news) {
-    // If news data is not available yet, return a loading indicator or null
-    return <div>Loading...</div>;
-  }
+
 
   function parseArticleBody(articleBodyString) {
     // Split the article body into sections based on the "##" separator
@@ -31,6 +28,13 @@ export default function SubArticles({news}) {
     return parsedSections;
   }
 
+
+  if (!news) {
+    // If news data is not available yet, return a loading indicator or null
+    return <div>Loading...</div>;
+  }
+
+  
   return (
 
     <div className={styles.article}>

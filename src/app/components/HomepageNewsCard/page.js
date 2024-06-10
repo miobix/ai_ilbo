@@ -29,7 +29,10 @@ export default function HomepageNewsCard({ news }) {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 
-
+  if (!news) {
+    // If news data is not available yet, return a loading indicator or null
+    return <div>Loading...</div>;
+  }
   return (
     <Link href={`/article/${news._id}`}>
           <p className={styles.img}><img src={news.generated_img_url?.original} alt="News Image" /></p>
