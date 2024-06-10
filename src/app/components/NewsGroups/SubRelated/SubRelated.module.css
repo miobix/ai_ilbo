@@ -18,6 +18,8 @@
   .related .related_list li a .cnt .tit { -webkit-line-clamp:2;  }
 }
 @media screen and (max-width: 860px) {
+  .related { padding-top:20px; }
+  .related .related_list { margin-top:20px; }
   .related h4.tit::after { width:6px; height:6px; bottom:4px; }
   .related .related_list li a .cnt .tit { font-size:17px; -webkit-line-clamp:3; font-weight:500;  }
 }
