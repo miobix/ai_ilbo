@@ -13,7 +13,7 @@
 @media screen and (max-width: 1350px) {
   .Header { height:150px; padding:0px 20px; }
   .Header_inner .H_left { top:15px; }
-  .Header_inner a.logo { background-size:170px; width:176px; height:50px; margin-left:-88px; top:66px; }
+  .Header_inner a.logo { background-size:170px; width:176px; height:50px; margin-left:-88px; top:60px; }
 }
 
 @media screen and (max-width: 860px) {
@@ -21,5 +21,5 @@
   .Header_inner .H_left li.todate .bold { font-size:14px; margin-right:6px; }
   .Header_inner .H_left li.todate .date { font-size:13px; }
   .Header_inner .H_left li.todate { margin-left:20px; }
-  .Header_inner a.logo { background-size:145px; width:146px; height:43px; margin-left:-73px; top:70px; }
+  .Header_inner a.logo { background-size:145px; width:146px; height:43px; margin-left:-73px; }
 }
