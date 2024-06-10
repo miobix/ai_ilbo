@@ -2,10 +2,15 @@
 .main { margin:0 auto; position:relative; font-family:Noto Sans KR;  }
 .sub_inner { max-width:1320px; margin:0 auto; background-color:#fff; position:relative; padding:60px; border-radius:6px; position:relative; font-family:Noto Sans KR; }
 .article_section { overflow:hidden; }
+
 .ListBtn { margin: 75px auto 0; display:block; padding:15px 65px; border:0px; background-color:#000; color:#fff; border-radius:2px; font-family:'Noto Sans KR'; }
 
 
 @media screen and (max-width: 1350px) {
-  .sub_cont { padding:0px 12px;}
+  .sub_cont { padding:0px 12px; }
+  .sub_inner { padding:40px 20px; }
+}
+@media screen and (max-width: 860px) {
+  .sub_inner { padding:25px 20px; }
 }
 
