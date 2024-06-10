@@ -3,6 +3,19 @@ import styles from "./Header.module.css";
 import Link from "next/link";
 
 export default function Header() {
+  function formatDate() {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Adding 1 because January is 0
+    const day = String(currentDate.getDate()).padStart(2, "0");
+
+    // Array of Korean day names
+    const koreanDays = ["일", "월", "화", "수", "목", "금", "토"];
+    const dayOfWeek = koreanDays[currentDate.getDay()]; // Get day of the week and map to Korean day name
+
+    return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
+  }
+  const currentDate = formatDate();
   return (
 
       //-- Header --//
@@ -10,7 +23,7 @@ export default function Header() {
         <div className={styles.Header_inner}>
           <ul className={styles.H_left}>
           <Link href="/"><li className={styles.ynlink}>영남일보</li></Link>
-            <li className={styles.todate}><span className={styles.bold}>Today</span><sapn className={styles.date}>2024년 5월 25일 금요일</sapn></li>
+            <li className={styles.todate}><span className={styles.bold}>Today</span><span className={styles.date}>{currentDate} </span></li>
           </ul>
           <Link href="/"><div className={styles.logo}>영남일보AI</div></Link>
         </div>
