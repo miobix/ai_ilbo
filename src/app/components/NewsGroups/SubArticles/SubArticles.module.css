@@ -23,8 +23,8 @@
 }
 @media screen and (max-width: 860px) {
   .article .img { width:100%; height:unset; }
-  .article .tit { font-size:17px; text-align:left; }
-  .article .datelist { display:block; }
+  .article .tit { font-size:17px; text-align:left; margin-top:15px; padding-top:15px; }
+  .article .datelist { display:flex; justify-content:left; margin:13px 0;  }
   .article .datelist li { margin-bottom:2px; }
   .article .datelist li:nth-child(2),.article .datelist li:nth-child(3) { display:none; }
   .article .imgtxt { font-size:13px; margin-top:10px; }
