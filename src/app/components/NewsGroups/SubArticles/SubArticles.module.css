@@ -28,7 +28,7 @@
   .article .datelist { display:flex; justify-content:left; margin:13px 0;  }
   .article .datelist li { margin-bottom:2px; }
   .article .datelist li:nth-child(2),.article .datelist li:nth-child(3) { display:none; }
-  .article .imgtxt { font-size:13px; margin-top:10px; }
+  .article .imgtxt { font-size:13px; margin-top:10px; line-height:20px; }
   .article .article_cnts { font-size:15px; }
   .article .article_cnts p { line-height:27px; margin-top:15px; }
 }
