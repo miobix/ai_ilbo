@@ -18,6 +18,7 @@
 
 @media screen and (max-width: 860px) {
   .Header { height:132px; }
+  .Header_inner .H_left li.todate .bold { font-size:14px; margin-right:6px; }
   .Header_inner .H_left li.todate .date { font-size:13px; }
   .Header_inner .H_left li.todate { margin-left:20px; }
   .Header_inner a.logo { background-size:145px; width:146px; height:43px; margin-left:-73px; top:70px; }
