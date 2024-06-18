@@ -34,7 +34,7 @@ export default function Header() {
         </Link>
         <div className={styles.headerButtonsContainer}>
         <Link href="/category/1a"><button className={styles.headerButton}>{`증권`}</button></Link>
-        <Link href="/category/pressrelease"><button className={styles.headerButton}>{`보고자료`}</button></Link>
+        <Link href="/category/pressrelease"><button className={styles.headerButton}>{`보도자료`}</button></Link>
         </div>
       </div>
 

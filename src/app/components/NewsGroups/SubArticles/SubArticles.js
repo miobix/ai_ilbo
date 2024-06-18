@@ -26,7 +26,7 @@ export default function SubArticles({ news }) {
     return (
       <div className={styles.article}>
         <h3 className={styles.category}>
-          {news && news.category ? news.category : "보고자료"}
+          {news && news.category ? news.category : "보도자료"}
         </h3>
         <p className={styles.tit}>{news && news.summary.title}</p>
         <ul className={styles.datelist}>
