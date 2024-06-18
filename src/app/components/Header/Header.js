@@ -17,19 +17,28 @@ export default function Header() {
   }
   const currentDate = formatDate();
   return (
-
-      //-- Header --//
-      <div className={styles.Header}>
-        <div className={styles.Header_inner}>
-          <ul className={styles.H_left}>
-          <Link href="/"><li className={styles.ynlink}>영남일보</li></Link>
-            <li className={styles.todate}><span className={styles.bold}>Today</span><span className={styles.date}>{currentDate} </span></li>
-          </ul>
-          <Link href="/"><div className={styles.logo}>영남일보AI</div></Link>
+    //-- Header --//
+    <div className={styles.Header}>
+      <div className={styles.Header_inner}>
+        <ul className={styles.H_left}>
+          <Link href="/">
+            <li className={styles.ynlink}>영남일보</li>
+          </Link>
+          <li className={styles.todate}>
+            <span className={styles.bold}>Today</span>
+            <span className={styles.date}>{currentDate} </span>
+          </li>
+        </ul>
+        <Link href="/">
+          <div className={styles.logo}>영남일보AI</div>
+        </Link>
+        <div className={styles.headerButtonsContainer}>
+        <Link href="/category/1a"><button className={styles.headerButton}>{`증권`}</button></Link>
+        <Link href="/category/pressrelease"><button className={styles.headerButton}>{`보고자료`}</button></Link>
         </div>
       </div>
 
+      
+    </div>
   );
 }
-
-

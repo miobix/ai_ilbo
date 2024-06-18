@@ -8,18 +8,66 @@
 .Header_inner .H_left li.todate .date { font-size:14px; }
 .Header_inner div.logo { position:absolute; left:50%; top:43px; margin-left:-141px; display:block; width:282px; height:80px; text-align:center; background:url("/yn_logo.png") no-repeat center 0; text-indent:-99999px; }
 
+/* New styles for buttons */
+.Header_inner .headerButtonsContainer {
 
+  position: absolute;
+  top:100px; 
+  left:45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 0;
+  margin: 30px auto;
+}
+
+.Header_inner .headerButtonsContainer .headerButton {
+  font-family: Montserrat;
+  font-weight: 400;
+  font-size: 16px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  margin: 0 20px;
+}
+
+.Header_inner .headerButtonsContainer .headerButton:hover {
+  /*text-decoration: underline;*/
+  font-weight: 900;
+}
 
 @media screen and (max-width: 1350px) {
-  .Header { height:150px; padding:0px 20px; }
+  .Header { height:160px; padding:0px 20px; }
   .Header_inner .H_left { top:15px; }
   .Header_inner div.logo { background-size:170px; width:176px; height:50px; margin-left:-88px; top:60px; }
+  .Header_inner .headerButtonsContainer {
+    position: absolute;
+    top:80px; 
+    left:42%;
+    padding: 15px 0;
+    margin: 30px auto;
+  }
+  .Header_inner .headerButtonsContainer .headerButton {
+    font-weight: 700;
+    font-size: 14px;
+  }
 }
 
 @media screen and (max-width: 860px) {
-  .Header { height:132px; }
+  .Header { height:140px; }
   .Header_inner .H_left li.todate .bold { font-size:14px; margin-right:6px; }
   .Header_inner .H_left li.todate .date { font-size:13px; }
   .Header_inner .H_left li.todate { margin-left:20px; }
   .Header_inner div.logo { background-size:145px; width:146px; height:43px; margin-left:-73px; }
+  .Header_inner .headerButtonsContainer {
+    position: absolute;
+    top:65px; 
+    left:38%;
+    padding: 15px 0;
+    margin: 30px auto;
+  }
+  .Header_inner .headerButtonsContainer .headerButton {
+    font-weight: 700;
+    font-size: 12px;
+  }
 }

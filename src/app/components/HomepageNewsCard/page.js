@@ -1,7 +1,8 @@
-import styles from './page.module.css'
+import styles from "./page.module.css";
 import Link from "next/link";
-
+import { parseDateTime } from "../../utils/common.js";
 export default function HomepageNewsCard({ news }) {
+  const imageSrc = news.img_src ? `/${news.img_src}.jpg` : "/image_press_1.jpg";
   function parseDescription(articleBody) {
     // Split the article body into sections based on the "##" separator
     const sections = articleBody.split("##");
@@ -17,15 +18,6 @@ export default function HomepageNewsCard({ news }) {
 
     return sanitizedDescription;
   }
-  function parseDateTime(dateString) {
-    const year = dateString.substring(0, 4);
-    const month = dateString.substring(4, 6);
-    const day = dateString.substring(6, 8);
-    const hours = dateString.substring(8, 10);
-    const minutes = dateString.substring(10, 12);
-
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
-  }
 
   if (!news) {
     // If news data is not available yet, return a loading indicator or null
@@ -33,12 +25,23 @@ export default function HomepageNewsCard({ news }) {
   }
   return (
     <Link href={`/article/${news._id}`}>
-          <p className={styles.img}><img src={news.generated_img_url?.original} alt="News Image" /></p>
-          <div className={styles.cnt}>
-              <p className={styles.tit}>{news.summary.title}</p>
-              <p className={styles.cont}>{parseDescription(news.summary.article_body)}</p>
-              <p className={styles.date}>{parseDateTime(news.read_date)}</p>
-          </div>
-     </Link>
-  )
+      <p className={styles.img}>
+        <img
+          src={
+            news.generated_img_url ? news.generated_img_url?.original : imageSrc
+          }
+          alt="News Image"
+        />
+      </p>
+      <div className={styles.cnt}>
+        <p className={styles.tit}>{news?.summary?.title}</p>
+        <p className={styles.cont}>
+          {parseDescription(news.summary?.article_body)}
+        </p>
+        <p className={styles.date}>
+          {parseDateTime(news.read_date ? news.read_date : news.timestamp)}
+        </p>
+      </div>
+    </Link>
+  );
 }

@@ -1,8 +1,8 @@
 //retrieves data from db
 import { MongoClient, ObjectId } from "mongodb";
 
-export default async function articleId(req, res) {
-  const articleId = req.query.articleId;
+export default async function categoryName(req, res) {
+  const articleId = req.query.categoryName;
   if (req.method === "GET") {
     const client = new MongoClient(process.env.NEXT_PUBLIC_MONGODB_URI, {
       useNewUrlParser: true,
@@ -13,13 +13,7 @@ export default async function articleId(req, res) {
       await client.connect();
       const database = client.db("yeongnam-ai");
       const collection = database.collection("selected_raw_items");
-      let data = await collection.findOne({ _id: new ObjectId(articleId) });
-
-      if (!data) {
-        // If article is not found in "selected_raw_items", search in "report_docs" collection
-        const reportDocsCollection = database.collection("report_docs");
-        data = await reportDocsCollection.findOne({ _id: new ObjectId(articleId) });
-      }
+      const data = await collection.findOne({ _id: new ObjectId(articleId) });
 
       if (data) {
         const summaryId = data.summary_id;

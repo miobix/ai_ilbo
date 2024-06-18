@@ -1,0 +1,26 @@
+
+.main { margin:0 auto; position:relative; font-family:Noto Sans KR;  }
+.Main_cont { max-width:1320px; margin:0 auto; }
+.Main_cont_inner { position:relative; padding:60px; border-radius:6px; background-color:#fff; }
+.Paging { margin:120px auto 80px; width:100%; text-align:center; display:flex; justify-content:center;  }
+.Paging button { border:0px; background:none; }
+.Paging .paging_list { display:flex; justify-content:center; }
+.Paging .paging_list li { margin:0 20px; }
+
+
+@media screen and (max-width: 1350px) {
+    .Main_cont_inner { padding:40px 20px; }
+    .Main_cont { padding:0px 12px; }
+}
+
+@media screen and (max-width: 860px) {
+    .Main_cont_inner { padding:25px 20px; }
+}
+
+
+
+
+
+
+
+

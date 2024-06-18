@@ -12,14 +12,8 @@ export default async function articleId(req, res) {
     try {
       await client.connect();
       const database = client.db("yeongnam-ai");
-      const collection = database.collection("selected_raw_items");
-      let data = await collection.findOne({ _id: new ObjectId(articleId) });
-
-      if (!data) {
-        // If article is not found in "selected_raw_items", search in "report_docs" collection
-        const reportDocsCollection = database.collection("report_docs");
-        data = await reportDocsCollection.findOne({ _id: new ObjectId(articleId) });
-      }
+      const collection = database.collection("report_docs");
+      const data = await collection.findOne({ _id: new ObjectId(articleId) });
 
       if (data) {
         const summaryId = data.summary_id;
