@@ -4,7 +4,7 @@ import Link from "next/link";
 import { parseDateTime } from '../../../utils/common.js' 
 
 export default function TopNews({ news }) {
-  const imageSrc = news.img_src ? `/${news.img_src}.jpg` : "/image_press_1.jpg";
+  
   function parseDescription(articleBody) {
     // Split the article body into sections based on the "##" separator
     const sections = articleBody.split("##");
@@ -20,6 +20,9 @@ export default function TopNews({ news }) {
 
     return sanitizedDescription;
   }
+
+
+  const imageSrc = news?.img_src ? `/${news.img_src}.jpg` : "/image_press_1.jpg";
 
   return (
     <div className={styles.M_top_news}>

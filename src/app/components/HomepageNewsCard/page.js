@@ -1,8 +1,9 @@
 import styles from "./page.module.css";
 import Link from "next/link";
 import { parseDateTime } from "../../utils/common.js";
+
 export default function HomepageNewsCard({ news }) {
-  const imageSrc = news.img_src ? `/${news.img_src}.jpg` : "/image_press_1.jpg";
+  
   function parseDescription(articleBody) {
     // Split the article body into sections based on the "##" separator
     const sections = articleBody.split("##");
@@ -23,6 +24,9 @@ export default function HomepageNewsCard({ news }) {
     // If news data is not available yet, return a loading indicator or null
     return <div>Loading...</div>;
   }
+
+  const imageSrc = news?.img_src ? `/${news.img_src}.jpg` : "/image_press_1.jpg";
+
   return (
     <Link href={`/article/${news._id}`}>
       <p className={styles.img}>
