@@ -38,7 +38,7 @@ export default function HomepageNewsCard({ news }) {
         />
       </p>
       <div className={styles.cnt}>
-        <p className={styles.tit}>{news?.summary?.title}</p>
+        <p className={styles.tit}>{news && news.category ? (news.category == "SNS" ? `[${news.sns_profile}] ` : "") : ""}{news?.summary?.title}</p>
         <p className={styles.cont}>
           {parseDescription(news.summary?.article_body)}
         </p>

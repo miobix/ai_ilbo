@@ -28,7 +28,7 @@ export default function TopNews({ news }) {
     <div className={styles.M_top_news}>
       <h2 className={styles.M_title}>AI NEWS</h2>
       <Link href={`/article/${news._id}`}>
-        <p className={styles.tit}>{news.summary.title}</p>
+        <p className={styles.tit}>{news && news.category ? (news.category == "SNS" ? `[${news.sns_profile}] ` : "") : ""}{news.summary.title}</p>
         <p className={styles.sub_tit}>
           {parseDescription(news.summary.article_body)}
         </p>
