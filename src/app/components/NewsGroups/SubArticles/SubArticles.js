@@ -28,7 +28,8 @@ export default function SubArticles({ news }) {
         <h3 className={styles.category}>
           {news && news.category ? news.category : "보도자료"}
         </h3>
-        <p className={styles.tit}>{news && news.summary.title}</p>
+        <p className={styles.tit}>{news && news.category ? (news.category == "SNS" ? `[${news.sns_profile}]` : "") : ""}
+        {news && news.summary.title}</p>
         <ul className={styles.datelist}>
           <li className={styles.date}>
             {news &&
