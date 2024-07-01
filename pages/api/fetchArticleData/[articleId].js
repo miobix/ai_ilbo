@@ -19,6 +19,12 @@ export default async function articleId(req, res) {
         // If article is not found in "selected_raw_items", search in "report_docs" collection
         const reportDocsCollection = database.collection("report_docs");
         data = await reportDocsCollection.findOne({ _id: new ObjectId(articleId) });
+
+        if (!data) {
+          // If article is not found in "selected_raw_items", search in "report_docs" collection
+          const reportDocsCollection = database.collection("sns");
+          data = await reportDocsCollection.findOne({ _id: new ObjectId(articleId) });
+        }
       }
 
       if (data) {

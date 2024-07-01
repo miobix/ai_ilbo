@@ -14,15 +14,17 @@ export default async function fetchHomepageNews(req, res) {
       await client.connect();
       const database = client.db('yeongnam-ai'); 
       const collection = database.collection('selected_raw_items');
-      const data = await collection.find({}).toArray();
-      const reversedData = data.reverse();
+      // const data = await collection.find({}).toArray();
+      const data = await collection.find({ summary_id: { $exists: true } }).sort({ read_date: -1 }).limit(20).toArray();
 
-       const summaryIds = reversedData.map(item => item.summary_id);
+      //const reversedData = data.reverse();
+
+       const summaryIds = data.map(item => item.summary_id);
 
       const summariesCollection = database.collection('summaries');
       const summaries = await summariesCollection.find({ _id: { $in: summaryIds } }).toArray();
 
-      const mergedData = reversedData.map(item => {
+      const mergedData = data.map(item => {
         const summary = summaries.find(summary => summary._id.equals(item.summary_id));
         return { ...item, summary };
       });

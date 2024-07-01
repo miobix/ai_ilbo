@@ -46,8 +46,7 @@ export default function PressRelease({ news }) {
       {/* <span className={styles.name}>정지윤 기자</span> */}
 
       <div className={styles.iframeContainer}>
-        
-      <h3 className={`${styles.category} ${styles.centerHeader}`}>
+        <h3 className={`${styles.category} ${styles.centerHeader}`}>
           {"원본"}
         </h3>
         <p className={styles.divLine}> </p>
