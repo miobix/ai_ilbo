@@ -5,10 +5,7 @@ import { MongoClient } from 'mongodb';
 export default async function fetchHomepageNews(req, res) {
    
   if (req.method === 'GET') {
-    const client = new MongoClient(process.env.NEXT_PUBLIC_MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const client = new MongoClient(process.env.NEXT_PUBLIC_MONGODB_URI);
 
     try {
       await client.connect();

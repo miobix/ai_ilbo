@@ -1,10 +1,9 @@
 import Image from "next/image";
 import styles from "./SubArticles.module.css";
 import PressRelease from "../PressRelease/PressRelease";
-import { parseDateTime, parseArticleBody } from '../../../utils/common.js' 
+import { parseDateTime, parseArticleBody } from "../../../utils/common.js";
 
 export default function SubArticles({ news }) {
-
   function isPressRelease(news) {
     return news && news.iframe_src !== undefined;
   }
@@ -22,14 +21,26 @@ export default function SubArticles({ news }) {
     return <div>Loading...</div>;
   }
 
+  const imageSrc = news?.img_src
+    ? `/${news.img_src}.jpg`
+    : news?.category == "SNS"
+    ? `/sns_profile_pictures/${news.sns_profile}.png`
+    : "/image_press_1.jpg";
+
   function renderNonPressRelease(news) {
     return (
       <div className={styles.article}>
         <h3 className={styles.category}>
           {news && news.category ? news.category : "보도자료"}
         </h3>
-        <p className={styles.tit}>{news && news.category ? (news.category == "SNS" ? `[${news.sns_profile}]` : "") : ""}
-        {news && news.summary.title}</p>
+        <p className={styles.tit}>
+          {news && news.category
+            ? news.category == "SNS"
+              ? `[${news.sns_profile}]`
+              : ""
+            : ""}
+          {news && news.summary.title}
+        </p>
         <ul className={styles.datelist}>
           <li className={styles.date}>
             {news &&
@@ -37,7 +48,15 @@ export default function SubArticles({ news }) {
           </li>
         </ul>
         <p className={styles.img}>
-          <img src={news.generated_img_url?.original} alt="Generated Image" />
+          <img
+            src={
+              news.generated_img_url
+                ? news.generated_img_url?.original
+                : imageSrc
+            }
+            alt="News Image"
+            style={{objectFit: news.category === 'SNS' ? 'contain' : 'cover'}}
+          />
         </p>
         {news.summary.key_takeaways && (
           <div className={styles.keyTakeaways}>
@@ -58,11 +77,10 @@ export default function SubArticles({ news }) {
     );
   }
 
-
   if (!isPressRelease(news)) {
     return renderNonPressRelease(news);
   } else {
     // Render something else for press releases if needed
-    return <PressRelease news={news}/>
+    return <PressRelease news={news} />;
   }
 }

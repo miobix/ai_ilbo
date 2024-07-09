@@ -16,7 +16,7 @@ export default function Home() {
   const baseString =
     environment === "dev"
       ? "http://localhost:3000/"
-      : "https://www.yeongnamilbo.ai/";
+      : "https://www.yeongnam.ai/";
 
   useEffect(() => {
     // Fetch data from API or wherever you get it from
@@ -64,7 +64,7 @@ export default function Home() {
 
             {allNews.length > 1 && <NewsList newsList={allNews.slice(1)} />}
             {/*Paging*/}
-            {/* <div className={styles.Paging}>
+            <div className={styles.Paging}>
               <button>prev</button>
               <ul className={styles.paging_list}>
                 <li>
@@ -87,7 +87,7 @@ export default function Home() {
                 </li>
               </ul>
               <button>next</button>
-            </div> */}
+            </div>
           </div>
         </div>
       </div>

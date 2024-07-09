@@ -25,7 +25,7 @@ export default function HomepageNewsCard({ news }) {
     return <div>Loading...</div>;
   }
 
-  const imageSrc = news?.img_src ? `/${news.img_src}.jpg` : "/image_press_1.jpg";
+  const imageSrc = news?.img_src ? `/${news.img_src}.jpg` : (news?.category == "SNS" ? `/sns_profile_pictures/${news.sns_profile}.png` : "/image_press_1.jpg");
 
   return (
     <Link href={`/article/${news._id}`}>

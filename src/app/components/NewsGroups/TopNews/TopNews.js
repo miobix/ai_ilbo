@@ -22,7 +22,7 @@ export default function TopNews({ news }) {
   }
 
 
-  const imageSrc = news?.img_src ? `/${news.img_src}.jpg` : "/image_press_1.jpg";
+  const imageSrc = news?.img_src ? `/${news.img_src}.jpg` : (news?.category == "SNS" ? `/sns_profile_pictures/${news.sns_profile}.png` : "/image_press_1.jpg");
 
   return (
     <div className={styles.M_top_news}>
