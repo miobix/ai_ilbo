@@ -25,8 +25,13 @@ export default function HomepageNewsCard({ news }) {
     return <div>Loading...</div>;
   }
 
-  const imageSrc = news?.img_src ? `/${news.img_src}.jpg` : (news?.category == "SNS" ? `/sns_profile_pictures/${news.sns_profile}.png` : "/image_press_1.jpg");
-
+  const imageSrc = news?.img_src
+  ? `/${news.img_src}.jpg`
+  : news?.category === "SNS"
+    ? (news.post_images && news.post_images.length > 0
+        ? `${news.post_images[0]}`
+        : `/sns_profile_pictures/${news.sns_profile}.png`)
+    : "/image_press_1.jpg";
   return (
     <Link href={`/article/${news._id}`}>
       <p className={styles.img}>

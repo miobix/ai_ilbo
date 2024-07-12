@@ -21,9 +21,13 @@ export default function TopNews({ news }) {
     return sanitizedDescription;
   }
 
-
-  const imageSrc = news?.img_src ? `/${news.img_src}.jpg` : (news?.category == "SNS" ? `/sns_profile_pictures/${news.sns_profile}.png` : "/image_press_1.jpg");
-
+  const imageSrc = news?.img_src
+  ? `/${news.img_src}.jpg`
+  : news?.category === "SNS"
+    ? (news.post_images && news.post_images.length > 0
+        ? `${news.post_images[0]}`
+        : `/sns_profile_pictures/${news.sns_profile}.png`)
+    : "/image_press_1.jpg";
   return (
     <div className={styles.M_top_news}>
       <h2 className={styles.M_title}>AI NEWS</h2>

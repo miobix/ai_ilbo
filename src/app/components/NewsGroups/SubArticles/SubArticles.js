@@ -4,6 +4,7 @@ import PressRelease from "../PressRelease/PressRelease";
 import { parseDateTime, parseArticleBody } from "../../../utils/common.js";
 
 export default function SubArticles({ news }) {
+  console.log(news)
   function isPressRelease(news) {
     return news && news.iframe_src !== undefined;
   }
@@ -22,9 +23,11 @@ export default function SubArticles({ news }) {
   }
 
   const imageSrc = news?.img_src
-    ? `/${news.img_src}.jpg`
-    : news?.category == "SNS"
-    ? `/sns_profile_pictures/${news.sns_profile}.png`
+  ? `/${news.img_src}.jpg`
+  : news?.category === "SNS"
+    ? (news.post_images && news.post_images.length > 0
+        ? `${news.post_images[0]}`
+        : `/sns_profile_pictures/${news.sns_profile}.png`)
     : "/image_press_1.jpg";
 
   function renderNonPressRelease(news) {
