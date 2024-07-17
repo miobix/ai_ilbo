@@ -50,6 +50,7 @@ export default function PressRelease({ news }) {
           {"원본"}
         </h3>
         <p className={styles.divLine}> </p>
+        { news?.iframe_src ?
         <iframe
           src={news.iframe_src}
           allowFullScreen
@@ -59,6 +60,11 @@ export default function PressRelease({ news }) {
           height="100%"
           width="100%"
         ></iframe>
+        :
+     
+          <p class={styles.hyperlink}><a href={news?.link}>원본을 바로가기</a></p>
+      
+        }
       </div>
     </div>
   );
