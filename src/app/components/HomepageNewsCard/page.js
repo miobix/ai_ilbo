@@ -5,8 +5,11 @@ import { parseDateTime } from "../../utils/common.js";
 export default function HomepageNewsCard({ news }) {
   
   function parseDescription(articleBody) {
+    // Replace all single quotes with double quotes
+    const formattedString = articleBody.replace(/'/g, '"');
+
     // Split the article body into sections based on the "##" separator
-    const sections = articleBody.split("##");
+    const sections = formattedString.split("##");
 
     // Remove the section titles and truncate the descriptions to 50 characters
     const sanitizedDescription = sections
