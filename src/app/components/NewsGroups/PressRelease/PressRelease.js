@@ -3,7 +3,7 @@ import { parseDateTime, parseArticleBody } from "../../../utils/common.js";
 import { useEffect } from "react";
 
 export default function PressRelease({ news }) {
-  const imageSrc = news.img_src ? `/${news.img_src}.jpg` : "/image_press_1.jpg";
+  const imageSrc = news.original ? news.original : "/image_press_1.jpg";
   return (
     <div className={styles.article}>
       <h3 className={styles.category}>

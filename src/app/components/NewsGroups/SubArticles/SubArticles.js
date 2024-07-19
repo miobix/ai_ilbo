@@ -4,7 +4,6 @@ import PressRelease from "../PressRelease/PressRelease";
 import { parseDateTime, parseArticleBody } from "../../../utils/common.js";
 
 export default function SubArticles({ news }) {
-  console.log(news)
   function isPressRelease(news) {
     return news && news.iframe_src !== undefined;
   }

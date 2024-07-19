@@ -39,8 +39,9 @@ export default function HomepageNewsCard({ news }) {
     <Link href={`/article/${news._id}`}>
       <p className={styles.img}>
         <img
+        
           src={
-            news.generated_img_url ? news.generated_img_url?.original : imageSrc
+            news.generated_img_url ? news.generated_img_url?.original : news.original ? news.original : imageSrc
           }
           alt="News Image"
         />

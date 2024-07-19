@@ -41,7 +41,7 @@ export default function TopNews({ news }) {
         </p>
         <p className={styles.img}>
           <img src={
-            news.generated_img_url ? news.generated_img_url?.original : imageSrc
+            news.generated_img_url ? news.generated_img_url?.original : news.original ? news.original : imageSrc
           } alt="News Image" />
         </p>
         <p className={styles.date}>{parseDateTime(news.read_date ? news.read_date : news.timestamp)}</p>
