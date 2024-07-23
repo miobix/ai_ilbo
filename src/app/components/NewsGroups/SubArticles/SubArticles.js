@@ -59,7 +59,10 @@ export default function SubArticles({ news }) {
             alt="News Image"
             style={{objectFit: news.category === 'SNS' ? 'contain' : 'cover'}}
           />
+         <p className={styles.sourceLabel}>부제</p>
         </p>
+      
+         
         {news.summary.key_takeaways && (
           <div className={styles.keyTakeaways}>
             <h4 className={styles.keyTakeawaysTitle}>Key Takeaways:</h4>
