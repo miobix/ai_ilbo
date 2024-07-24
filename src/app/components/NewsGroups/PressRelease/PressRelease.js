@@ -26,7 +26,7 @@ export default function PressRelease({ news }) {
             news.generated_img_url ? news.generated_img_url?.original : imageSrc
           }
         />
-          <p className={styles.sourceLabel}>부제</p>
+          <p className={styles.sourceLabel}></p>
       </p>
       {news.summary.key_takeaways && (
         <div className={styles.keyTakeaways}>

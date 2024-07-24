@@ -38,7 +38,7 @@ export default function SubArticles({ news }) {
         <p className={styles.tit}>
           {news && news.category
             ? news.category == "SNS"
-              ? `[${news.sns_profile}]`
+              ? ``
               : ""
             : ""}
           {news && news.summary.title}
@@ -59,7 +59,7 @@ export default function SubArticles({ news }) {
             alt="News Image"
             style={{objectFit: news.category === 'SNS' ? 'contain' : 'cover'}}
           />
-         <p className={styles.sourceLabel}>부제</p>
+         <p className={styles.sourceLabel}>{news.category === 'SNS' ? "SNS 캡처" : ""}</p>
         </p>
       
          
