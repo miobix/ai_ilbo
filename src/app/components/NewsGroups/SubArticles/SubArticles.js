@@ -78,6 +78,8 @@ export default function SubArticles({ news }) {
             <p key={index}>{section}</p>
           ))}
         </div>
+        <br /><br />
+        <p className={styles.footerNote}>{news.category === 'SNS' ? "※ ‘SNS 뉴스’는 AI의 도움을 받아 SNS에서 활발히 활동하는 정치인들의 소식을 실시간으로 작성한 기사입니다. 이 코너에서 소개하는 정치인들은 유동적으로 변경될 수 있습니다." : ""}</p>
       </div>
     );
   }

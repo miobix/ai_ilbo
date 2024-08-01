@@ -20,6 +20,14 @@
   color: rgba(0,0,0,0.7);
   font-size: 14px;
 }
+
+.footerNote{
+  text-align: left;
+  margin: 0px auto 10px;
+  color: rgba(0,0,0,0.7);
+  font-size: 13px;
+}
+
 .keyTakeaway {
   font-size: 18px;
   line-height: 1.5;
