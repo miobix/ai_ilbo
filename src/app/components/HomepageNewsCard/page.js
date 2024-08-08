@@ -3,7 +3,7 @@ import Link from "next/link";
 import { parseDateTime } from "../../utils/common.js";
 
 export default function HomepageNewsCard({ news }) {
-  
+
   function parseDescription(articleBody) {
     // Replace all single quotes with double quotes
     const formattedString = articleBody.replace(/'/g, '"');
@@ -22,7 +22,21 @@ export default function HomepageNewsCard({ news }) {
 
     return sanitizedDescription;
   }
-
+  function isTimestampBefore(dateStr) {
+    const comparisonDateStr = "2024-08-08 09:39:00";
+    if (!dateStr) {
+      console.log("Timestamp does not exist.");
+      return;
+    }
+  
+    // Parse the date strings into Date objects
+    const date = new Date(dateStr.replace(" ", "T"));
+    const comparisonDate = new Date(comparisonDateStr.replace(" ", "T"));
+  
+    // Compare the dates
+    const isBefore = date < comparisonDate;
+    return isBefore
+  }
   if (!news) {
     // If news data is not available yet, return a loading indicator or null
     return <div>Loading...</div>;
@@ -49,7 +63,7 @@ export default function HomepageNewsCard({ news }) {
       <div className={styles.cnt}>
         <p className={styles.tit}>{news && news.category ? (news.category == "SNS" ? `` : "") : ""}{news?.summary?.title}</p>
         <p className={styles.cont}>
-          {parseDescription(news.summary?.article_body)}
+        {news.timestamp && isTimestampBefore(news.timestamp) ? parseDescription(news.summary.article_body) : news.summary.article_body}
         </p>
         <p className={styles.date}>
           {parseDateTime(news.read_date ? news.read_date : news.timestamp)}

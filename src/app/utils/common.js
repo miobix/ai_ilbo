@@ -30,10 +30,25 @@ export function parseDateTime(dateString) {
 
  export function parseArticleBody(articleBodyString) {
     // Replace all single quotes with double quotes
+    //const formattedString = articleBodyString.replace(/'/g, '"');
+    // Split the article body into sections based on the "##" separator
+
+    const sections = articleBodyString.split("##");
+
+    // Remove the empty sections and trim whitespace from each section
+    const parsedSections = sections
+      .filter((section) => section.trim() !== "")
+      .map((section) => section.trim());
+
+    return parsedSections;
+  }
+
+  export function parseFullArticleBody(articleBodyString) {
+    // Replace all single quotes with double quotes
     const formattedString = articleBodyString.replace(/'/g, '"');
     // Split the article body into sections based on the "##" separator
 
-    const sections = formattedString.split("##");
+    const sections = articleBodyString.split("##");
 
     // Remove the empty sections and trim whitespace from each section
     const parsedSections = sections

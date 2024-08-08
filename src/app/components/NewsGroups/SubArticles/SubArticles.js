@@ -1,7 +1,11 @@
 import Image from "next/image";
 import styles from "./SubArticles.module.css";
 import PressRelease from "../PressRelease/PressRelease";
-import { parseDateTime, parseArticleBody } from "../../../utils/common.js";
+import {
+  parseDateTime,
+  parseArticleBody,
+  parseFullArticleBody,
+} from "../../../utils/common.js";
 
 export default function SubArticles({ news }) {
   function isPressRelease(news) {
@@ -15,18 +19,32 @@ export default function SubArticles({ news }) {
       </p>
     ));
   }
-
+  function isTimestampBefore(dateStr) {
+    const comparisonDateStr = "2024-08-08 09:39:00";
+    if (!dateStr) {
+      console.log("Timestamp does not exist.");
+      return;
+    }
+  
+    // Parse the date strings into Date objects
+    const date = new Date(dateStr.replace(" ", "T"));
+    const comparisonDate = new Date(comparisonDateStr.replace(" ", "T"));
+  
+    // Compare the dates
+    const isBefore = date < comparisonDate;
+    return isBefore
+  }
   if (!news) {
     // If news data is not available yet, return a loading indicator or null
     return <div>Loading...</div>;
   }
 
   const imageSrc = news?.img_src
-  ? `/${news.img_src}.jpg`
-  : news?.category === "SNS"
-    ? (news.post_images && news.post_images.length > 0
-        ? `${news.post_images[0]}`
-        : `/sns_profile_pictures/${news.sns_profile}.png`)
+    ? `/${news.img_src}.jpg`
+    : news?.category === "SNS"
+    ? news.post_images && news.post_images.length > 0
+      ? `${news.post_images[0]}`
+      : `/sns_profile_pictures/${news.sns_profile}.png`
     : "/image_press_1.jpg";
 
   function renderNonPressRelease(news) {
@@ -36,11 +54,7 @@ export default function SubArticles({ news }) {
           {news && news.category ? news.category : "보도자료"}
         </h3>
         <p className={styles.tit}>
-          {news && news.category
-            ? news.category == "SNS"
-              ? ``
-              : ""
-            : ""}
+          {news && news.category ? (news.category == "SNS" ? `` : "") : ""}
           {news && news.summary.title}
         </p>
         <ul className={styles.datelist}>
@@ -57,12 +71,13 @@ export default function SubArticles({ news }) {
                 : imageSrc
             }
             alt="News Image"
-            style={{objectFit: news.category === 'SNS' ? 'contain' : 'cover'}}
+            style={{ objectFit: news.category === "SNS" ? "contain" : "cover" }}
           />
-         <p className={styles.sourceLabel}>{news.category === 'SNS' ? "SNS 캡처" : ""}</p>
+          <p className={styles.sourceLabel}>
+            {news.category === "SNS" ? "SNS 캡처" : ""}
+          </p>
         </p>
-      
-         
+
         {news.summary.key_takeaways && (
           <div className={styles.keyTakeaways}>
             <h4 className={styles.keyTakeawaysTitle}>Key Takeaways:</h4>
@@ -74,12 +89,21 @@ export default function SubArticles({ news }) {
           </div>
         )}
         <div className={styles.article_cnts}>
-          {parseArticleBody(news.summary.article_body).map((section, index) => (
-            <p key={index}>{section}</p>
-          ))}
+          {news && news.timestamp && isTimestampBefore(news.timestamp)
+            ? parseFullArticleBody(news.summary.article_body).map(
+                (section, index) => <p key={index}>{section}</p>
+              )
+            : parseArticleBody(news.summary.article_body).map(
+                (section, index) => <p key={index}>{section}</p>
+              )}
         </div>
-        <br /><br />
-        <p className={styles.footerNote}>{news.category === 'SNS' ? "※ ‘SNS 뉴스’는 AI의 도움을 받아 SNS에서 활발히 활동하는 정치인들의 소식을 실시간으로 작성한 기사입니다. 이 코너에서 소개하는 정치인들은 유동적으로 변경될 수 있습니다." : ""}</p>
+        <br />
+        <br />
+        <p className={styles.footerNote}>
+          {news.category === "SNS"
+            ? "※ ‘SNS 뉴스’는 AI의 도움을 받아 SNS에서 활발히 활동하는 정치인들의 소식을 실시간으로 작성한 기사입니다. 이 코너에서 소개하는 정치인들은 유동적으로 변경될 수 있습니다."
+            : ""}
+        </p>
       </div>
     );
   }

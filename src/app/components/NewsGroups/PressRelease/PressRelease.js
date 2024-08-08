@@ -1,9 +1,25 @@
 import styles from "./PressRelease.module.css";
-import { parseDateTime, parseArticleBody } from "../../../utils/common.js";
+import { parseDateTime, parseArticleBody, parseFullArticleBody } from "../../../utils/common.js";
 import { useEffect } from "react";
 
 export default function PressRelease({ news }) {
   const imageSrc = news.original ? news.original : "/image_press_1.jpg";
+  function isTimestampBefore(dateStr) {
+    const comparisonDateStr = "2024-08-08 09:39:00";
+    if (!dateStr) {
+      console.log("Timestamp does not exist.");
+      return;
+    }
+  
+    // Parse the date strings into Date objects
+    const date = new Date(dateStr.replace(" ", "T"));
+    const comparisonDate = new Date(comparisonDateStr.replace(" ", "T"));
+  
+    // Compare the dates
+    const isBefore = date < comparisonDate;
+    return isBefore
+  }
+  
   return (
     <div className={styles.article}>
       <h3 className={styles.category}>
@@ -40,9 +56,13 @@ export default function PressRelease({ news }) {
       )}
       {/* <p className={styles.imgtxt}>경북 포항 영일만 일대에 최대 140억배럴 규모의 석유·가스가 매장돼 있을 가능성이 있다고 분석한 미국 액트지오(Act-Geo)의 비토르 아브레우대표가 7일 오전 정부세종청사 산업통상자원부 기자실에서 동해 심해 가스전 개발과 관련한 브리핑을 하고 있다. 연합뉴스</p> */}
       <div className={styles.article_cnts}>
-        {parseArticleBody(news.summary.article_body).map((section, index) => (
-          <p key={index}>{section}</p>
-        ))}
+      {news && news.timestamp && isTimestampBefore(news.timestamp)
+            ? parseFullArticleBody(news.summary.article_body).map(
+                (section, index) => <p key={index}>{section}</p>
+              )
+            : parseArticleBody(news.summary.article_body).map(
+                (section, index) => <p key={index}>{section}</p>
+              )}
       </div>
       {/* <span className={styles.name}>정지윤 기자</span> */}
 
