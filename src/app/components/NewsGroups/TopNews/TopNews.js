@@ -51,12 +51,12 @@ export default function TopNews({ news }) {
     } else {
       imageSrc = `/sns_profile_pictures/${news.sns_profile}.png`;
     }
-  } else if (news?.zone === "Daegu") {
+  } else if (news?.zone) {
     imageSrc = news.img_src
   } else {
     imageSrc = "/image_press_1.jpg";
   }
-  
+
   return (
     <div className={styles.M_top_news}>
       <h2 className={styles.M_title}>AI NEWS</h2>

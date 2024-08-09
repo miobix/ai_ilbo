@@ -51,7 +51,7 @@ export default function SubArticles({ news }) {
     } else {
       imageSrc = `/sns_profile_pictures/${news.sns_profile}.png`;
     }
-  } else if (news?.zone === "Daegu") {
+  } else if (news?.zone) {
     imageSrc = news.img_src
   } else {
     imageSrc = "/image_press_1.jpg";
