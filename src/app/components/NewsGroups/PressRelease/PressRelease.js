@@ -3,7 +3,7 @@ import { parseDateTime, parseArticleBody, parseFullArticleBody } from "../../../
 import { useEffect } from "react";
 
 export default function PressRelease({ news }) {
-  const imageSrc = news.original ? news.original : "/image_press_1.jpg";
+  const imageSrc = news?.img_src ? news.img_src : "/image_press_1.jpg";
   function isTimestampBefore(dateStr) {
     const comparisonDateStr = "2024-08-08 09:39:00";
     if (!dateStr) {

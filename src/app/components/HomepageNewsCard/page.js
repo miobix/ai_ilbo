@@ -42,13 +42,25 @@ export default function HomepageNewsCard({ news }) {
     return <div>Loading...</div>;
   }
 
-  const imageSrc = news?.img_src
-  ? `/${news.img_src}.jpg`
-  : news?.category === "SNS"
-    ? (news.post_images && news.post_images.length > 0
-        ? `${news.post_images[0]}`
-        : `/sns_profile_pictures/${news.sns_profile}.png`)
-    : "/image_press_1.jpg";
+  let imageSrc;
+
+  if (news?.category == "경제") {
+    if (news?.img_src){
+      imageSrc = `/${news.img_src}.jpg`;
+    }
+  } else if (news?.category === "SNS") {
+    if (news.post_images && news.post_images.length > 0) {
+      imageSrc = `${news.post_images[0]}`;
+    } else {
+      imageSrc = `/sns_profile_pictures/${news.sns_profile}.png`;
+    }
+  } else if (news?.zone === "Daegu") {
+    imageSrc = news.img_src
+  } else {
+    imageSrc = "/image_press_1.jpg";
+  }
+
+
   return (
     <Link href={`/article/${news._id}`}>
       <p className={styles.img}>
