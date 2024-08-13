@@ -5,6 +5,14 @@ import { useEffect } from "react";
 export default function PressRelease({ news }) {
   let imageSrc;
 
+  function hangulizeGeographicZone(zone){
+    const zoneMapping = {
+      "Daegu": "[대구]",
+      "GyeongBuk": "[경북]",
+    };
+    return zoneMapping[zone] || "";
+  }
+
   if (news?.category == "경제") {
     if (news?.img_src){
       imageSrc = `/${news.img_src}.jpg`;
@@ -46,7 +54,7 @@ export default function PressRelease({ news }) {
         {news && news.category ? news.category : "보도자료"}
       </h3>
 
-      <p className={styles.tit}>{news && news.summary.title}</p>
+      <p className={styles.tit}>{news && news.zone ? (news.zone == "Daegu" || news.zone == "GyeongBuk" ? `${hangulizeGeographicZone(news.zone)} ` : "") : ""}{news && news.summary.title}</p>
       <ul className={styles.datelist}>
         {/* <li className={styles.name}>정지윤</li> */}
         <li className={styles.date}>
