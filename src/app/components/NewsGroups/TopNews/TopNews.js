@@ -4,7 +4,7 @@ import Link from "next/link";
 import { parseDateTime } from "../../../utils/common.js";
 
 export default function TopNews({ news }) {
-  console.log(news)
+
   function parseDescription(articleBody) {
     // Replace all single quotes with double quotes
     const formattedString = articleBody.replace(/'/g, '"');
