@@ -3,6 +3,7 @@ import Link from "next/link";
 import { parseDateTime } from "../../utils/common.js";
 
 export default function HomepageNewsCard({ news }) {
+  //the individual card of news displayed on the list on each category
 
   function parseDescription(articleBody) {
     // Replace all single quotes with double quotes
@@ -15,31 +16,25 @@ export default function HomepageNewsCard({ news }) {
     const sanitizedDescription = sections
       .map((section) => section.trim()) // Remove leading/trailing whitespace
       .filter((section) => section !== "") // Remove empty sections
-      .map((section) =>
-        section.length > 50 ? section.substring(0, 50) + "..." : section
-      ) // Truncate descriptions
+      // .map((section) =>
+      //   section.length > 50 ? section.substring(0, 50) + "..." : section
+      // ) // Truncate descriptions
       .join(" "); // Join the sections back into a single string
 
-    return sanitizedDescription;
+    return sanitizedDescription.substring(0, 120) + "...";
   }
-  function isTimestampBefore(dateStr) {
-    const comparisonDateStr = "2024-08-08 09:39:00";
-    if (!dateStr) {
-      console.log("Timestamp does not exist.");
-      return;
-    }
-  
-    // Parse the date strings into Date objects
-    const date = new Date(dateStr.replace(" ", "T"));
-    const comparisonDate = new Date(comparisonDateStr.replace(" ", "T"));
-  
-    // Compare the dates
-    const isBefore = date < comparisonDate;
-    return isBefore
-  }
+
   if (!news) {
     // If news data is not available yet, return a loading indicator or null
     return <div>Loading...</div>;
+  }
+
+  function hangulizeGeographicZone(zone){
+    const zoneMapping = {
+      "Daegu": "[대구]",
+      "GyeongBuk": "[경북]",
+    };
+    return zoneMapping[zone] || "";
   }
 
   let imageSrc;
@@ -73,9 +68,9 @@ export default function HomepageNewsCard({ news }) {
         />
       </p>
       <div className={styles.cnt}>
-        <p className={styles.tit}>{news && news.category ? (news.category == "SNS" ? `` : "") : ""}{news?.summary?.title}</p>
+        <p className={styles.tit}>{news && news.zone ? (news.zone == "Daegu" || news.zone == "GyeongBuk" ? `${hangulizeGeographicZone(news.zone)} ` : "") : ""}{news?.summary?.title}</p>
         <p className={styles.cont}>
-        {news.timestamp && isTimestampBefore(news.timestamp) ? parseDescription(news.summary.article_body) : news.summary.article_body}
+        {news.timestamp && parseDescription(news.summary.article_body)}
         </p>
         <p className={styles.date}>
           {parseDateTime(news.read_date ? news.read_date : news.timestamp)}
