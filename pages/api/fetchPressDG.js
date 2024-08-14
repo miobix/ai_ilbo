@@ -18,7 +18,6 @@ export default async function fetchPressDG(req, res) {
         })
         .toArray();
       const reversedData = data.reverse();
-      console.log(reversedData)
       const summaryIds = reversedData.map((item) => item.summary_id);
 
       const summariesCollection = database.collection("summaries");
