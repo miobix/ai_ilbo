@@ -2,7 +2,7 @@
 
 import { MongoClient } from "mongodb";
 
-export default async function fetchPressDocs(req, res) {
+export default async function fetchPressDG(req, res) {
   if (req.method === "GET") {
     const client = new MongoClient(process.env.NEXT_PUBLIC_MONGODB_URI);
 
@@ -13,12 +13,12 @@ export default async function fetchPressDocs(req, res) {
       const data = await collection
         .find({
           summary_id: { $exists: true },
-          zone: { $in: ["Gov"] },
+          zone: { $in: ["Daegu", "GyeongBuk"] },
           engine: { $in: ["gpt-4-turbo", "gpt-4o"] },
         })
         .toArray();
       const reversedData = data.reverse();
-
+      console.log(reversedData)
       const summaryIds = reversedData.map((item) => item.summary_id);
 
       const summariesCollection = database.collection("summaries");
