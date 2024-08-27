@@ -33,7 +33,7 @@ export default function Header() {
           <div className={styles.logo}>영남일보AI</div>
         </Link>
         <div className={styles.headerButtonsContainer}>
-        <Link href="/category/1a"><button className={styles.headerButton}>{`증권`}</button></Link>
+        {/* <Link href="/category/1a"><button className={styles.headerButton}>{`증권`}</button></Link> */}
         <Link href="/category/pressrelease"><button className={styles.headerButton}>{`보도자료`}</button></Link>
         <Link href="/category/dgpressrelease"><button className={styles.headerButton}>{`대구/경북`}</button></Link>
         <Link href="/category/sns"><button className={styles.headerButton}>{`SNS`}</button></Link>
