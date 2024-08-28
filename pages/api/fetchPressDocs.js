@@ -16,6 +16,7 @@ export default async function fetchPressDocs(req, res) {
           zone: { $in: ["Gov"] },
           engine: { $in: ["gpt-4-turbo", "gpt-4o"] },
         })
+        .limit(50)
         .toArray();
       const reversedData = data.reverse();
 

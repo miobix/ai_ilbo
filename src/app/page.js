@@ -20,35 +20,13 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch data from API or wherever you get it from
-    fetch("/api/fetchHomepageNews")
+    fetch("/api/fetchPressDocs")
       .then((response) => response.json())
       .then((data) => setAllNews(data))
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  // const handleGetAllData = async () => {
-  //   try {
-  //     const response = await fetch("/api/fetchHomepageNews", {
-  //       method: "GET",
-  //     });
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       console.log(data);
-  //       if (data.length > 0) {
-  //         setAllNews(data);
-  //       }
-  //     } else {
-  //       console.log("Something went wrong!");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //     alert("Error fetching data. Please try again later.");
-  //   }
-  // };
-
   if (!allNews) {
-    // If news data is not available yet, return a loading indicator or null
     return <div>Loading...</div>;
   }
 
