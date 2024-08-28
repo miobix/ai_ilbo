@@ -16,18 +16,19 @@ export default async function fetchPressDocs(req, res) {
           zone: { $in: ["Gov"] },
           engine: { $in: ["gpt-4-turbo", "gpt-4o"] },
         })
+        .sort({ _id: -1 })
         .limit(50)
         .toArray();
-      const reversedData = data.reverse();
+      // const reversedData = data.reverse();
 
-      const summaryIds = reversedData.map((item) => item.summary_id);
+      const summaryIds = data.map((item) => item.summary_id);
 
       const summariesCollection = database.collection("summaries");
       const summaries = await summariesCollection
         .find({ _id: { $in: summaryIds } })
         .toArray();
 
-      const mergedData = reversedData.map((item) => {
+      const mergedData = data.map((item) => {
         const summary = summaries.find((summary) =>
           summary._id.equals(item.summary_id)
         );
