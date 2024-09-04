@@ -7,8 +7,8 @@ export default function PressRelease({ news }) {
 
   function hangulizeGeographicZone(zone){
     const zoneMapping = {
-      "Daegu": "[대구]",
-      "GyeongBuk": "[경북]",
+      "대구": "[대구]",
+      "경북": "[경북]",
     };
     return zoneMapping[zone] || "";
   }
@@ -24,7 +24,7 @@ export default function PressRelease({ news }) {
       imageSrc = `/sns_profile_pictures/${news.sns_profile}.png`;
     }
   } else if (news?.zone) {
-    imageSrc = news.img_src
+    imageSrc = news?.img_src ? news.img_src : "/press_release_defaults/now_2.jpg"
   } else {
     imageSrc = "/image_press_1.jpg";
   }
@@ -54,7 +54,8 @@ export default function PressRelease({ news }) {
         {news && news.category ? news.category : "보도자료"}
       </h3>
 
-      <p className={styles.tit}>{news && news.zone ? (news.zone == "Daegu" || news.zone == "GyeongBuk" ? `${hangulizeGeographicZone(news.zone)} ` : "") : ""}{news && news.summary.title}</p>
+        {/* <p className={styles.tit}>{news && news.zone ? (news.zone == "Daegu" || news.zone == "GyeongBuk" ? `${hangulizeGeographicZone(news.zone)} ` : "") : ""}{news?.summary?.title}</p> */}
+        <p className={styles.tit}>{news && news.zone ? (news.zone == "대구" || news.zone == "경북" ? `${hangulizeGeographicZone(news.zone)} ` : "") : ""}{news?.summary?.title}</p>
       <ul className={styles.datelist}>
         {/* <li className={styles.name}>정지윤</li> */}
         <li className={styles.date}>
@@ -98,7 +99,8 @@ export default function PressRelease({ news }) {
       </div>
       {/* <span className={styles.name}>정지윤 기자</span> */}
 
-      <div className={styles.iframeContainer}>
+      { 
+        (news?.iframe_src || news?.link) && <div className={styles.iframeContainer}>
         <h3 className={`${styles.category} ${styles.centerHeader}`}>
           {"원본"}
         </h3>
@@ -119,6 +121,9 @@ export default function PressRelease({ news }) {
       
         }
       </div>
+
+      }
+      
     </div>
   );
 }

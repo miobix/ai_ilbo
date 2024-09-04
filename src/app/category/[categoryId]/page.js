@@ -15,7 +15,7 @@ export default function CategoryPage({ params }) {
   const validRoutes = {
     "1a": "/api/fetchHomepageNews",
     pressrelease: "/api/fetchPressDocs",
-    dgpressrelease: "/api/fetchPressDG",
+    dgpressrelease: "/api/fetchEmailPress",
     sns: "/api/fetchSns",
   };
   // fetch all news from db

@@ -6,20 +6,15 @@ export default function HomepageNewsCard({ news }) {
   //the individual card of news displayed on the list on each category
 
   function parseDescription(articleBody) {
-    // Replace all single quotes with double quotes
-    const formattedString = articleBody.replace(/'/g, '"');
+    const sections = articleBody.split("##");
 
-    // Split the article body into sections based on the "##" separator
-    const sections = formattedString.split("##");
-
-    // Remove the section titles and truncate the descriptions to 50 characters
     const sanitizedDescription = sections
-      .map((section) => section.trim()) // Remove leading/trailing whitespace
-      .filter((section) => section !== "") // Remove empty sections
+      .map((section) => section.trim()) 
+      .filter((section) => section !== "") 
       // .map((section) =>
       //   section.length > 50 ? section.substring(0, 50) + "..." : section
       // ) // Truncate descriptions
-      .join(" "); // Join the sections back into a single string
+      .join(" ");
 
     return sanitizedDescription.substring(0, 120) + "...";
   }
@@ -31,8 +26,8 @@ export default function HomepageNewsCard({ news }) {
 
   function hangulizeGeographicZone(zone){
     const zoneMapping = {
-      "Daegu": "[대구]",
-      "GyeongBuk": "[경북]",
+      "대구": "[대구]",
+      "경북": "[경북]",
     };
     return zoneMapping[zone] || "";
   }
@@ -50,7 +45,7 @@ export default function HomepageNewsCard({ news }) {
       imageSrc = `/sns_profile_pictures/${news.sns_profile}.png`;
     }
   } else if (news?.zone) {
-    imageSrc = news.img_src
+    imageSrc = news?.img_src ? news.img_src : "/press_release_defaults/now_2.jpg"
   } else {
     imageSrc = "/image_press_1.jpg";
   }
@@ -68,7 +63,8 @@ export default function HomepageNewsCard({ news }) {
         />
       </p>
       <div className={styles.cnt}>
-        <p className={styles.tit}>{news && news.zone ? (news.zone == "Daegu" || news.zone == "GyeongBuk" ? `${hangulizeGeographicZone(news.zone)} ` : "") : ""}{news?.summary?.title}</p>
+        {/* <p className={styles.tit}>{news && news.zone ? (news.zone == "Daegu" || news.zone == "GyeongBuk" ? `${hangulizeGeographicZone(news.zone)} ` : "") : ""}{news?.summary?.title}</p> */}
+      <p className={styles.tit}>{news && news.zone ? (news.zone == "대구" || news.zone == "경북" ? `${hangulizeGeographicZone(news.zone)} ` : "") : ""}{news?.summary?.title}</p>
         <p className={styles.cont}>
         {news.timestamp && parseDescription(news.summary.article_body)}
         </p>

@@ -9,7 +9,7 @@ export default async function articleId(req, res) {
     try {
       await client.connect();
       const database = client.db("yeongnam-ai");
-      const collection = database.collection("selected_raw_items");
+      const collection = database.collection("email_press_docs");
       let data = await collection.findOne({ _id: new ObjectId(articleId) });
 
       if (!data) {
