@@ -26,8 +26,8 @@ export default function HomepageNewsCard({ news }) {
 
   function hangulizeGeographicZone(zone){
     const zoneMapping = {
-      "대구": "[대구]",
-      "경북": "[경북]",
+      "대구": "[속보]",
+      "경북": "[속보]",
     };
     return zoneMapping[zone] || "";
   }
