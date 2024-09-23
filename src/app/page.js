@@ -19,8 +19,7 @@ export default function Home() {
       : "https://www.yeongnam.ai/";
 
   useEffect(() => {
-    // Fetch data from API or wherever you get it from
-    fetch("/api/fetchPressDocs")
+    fetch("/api/fetchEmailPress")
       .then((response) => response.json())
       .then((data) => setAllNews(data))
       .catch((error) => console.error("Error fetching data:", error));
