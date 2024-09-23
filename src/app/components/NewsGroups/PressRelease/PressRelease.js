@@ -7,8 +7,8 @@ export default function PressRelease({ news }) {
 
   function hangulizeGeographicZone(zone){
     const zoneMapping = {
-      "대구": "[속보]",
-      "경북": "[속보]",
+      "대구": "",
+      "경북": "",
     };
     return zoneMapping[zone] || "";
   }
