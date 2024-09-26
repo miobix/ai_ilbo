@@ -13,7 +13,7 @@ export default async function fetchPressDG(req, res) {
       const data = await collection
         .find({
           summary_id: { $exists: true },
-          zone: { $in: ["대구", "경북"] },
+          zone: { $in: ["의원실"] },
           // engine: { $in: ["gpt-4-turbo", "gpt-4o"] },
         })
         .toArray();

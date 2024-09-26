@@ -13,7 +13,7 @@
 
   position: absolute;
   top:100px; 
-  left:40%;
+  left:37%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,7 +43,7 @@
   .Header_inner .headerButtonsContainer {
     position: absolute;
     top:80px; 
-    left:39%;
+    left:37%;
     padding: 15px 0;
     margin: 30px auto;
   }
@@ -62,7 +62,7 @@
   .Header_inner .headerButtonsContainer {
     position: absolute;
     top:65px; 
-    left:25%;
+    left:20%;
     padding: 15px 0;
     margin: 30px auto;
   }

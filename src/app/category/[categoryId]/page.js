@@ -13,7 +13,7 @@ export default function CategoryPage({ params }) {
   const [allNews, setAllNews] = useState([]);
 
   const validRoutes = {
-    "1a": "/api/fetchHomepageNews",
+    representatives: "/api/fetchCongressPress",
     pressrelease: "/api/fetchPressDocs",
     dgpressrelease: "/api/fetchEmailPress",
     sns: "/api/fetchSns",
