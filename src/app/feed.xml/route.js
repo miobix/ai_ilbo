@@ -1,6 +1,6 @@
 import RSS from "rss"
 
-export async function GET(req) {
+export async function GET() {
 
     const feed = new RSS({
         title: 'YeongnamAI',
@@ -14,7 +14,7 @@ export async function GET(req) {
         pubDate: new Date().toUTCString(),
         ttl: 60,
     });
-
+    // ${req.nextUrl.origin}
     try {
       const response = await fetch(`https://yeongnam.ai/api/fetchAllPress`);
 
@@ -26,11 +26,6 @@ export async function GET(req) {
       const allNews = await response.json();
 
       allNews.forEach(item => {
-        // console.log(item.summary.title)
-        // console.log(item.summary.article_body)
-        // console.log(`https://yeongnam.ai/article/${item._id}`)
-        // console.log(item.timestamp)
-
           feed.item({
               title: item.summary.title || 'Default Title',
               description: item.summary.article_body || 'No description provided', 
@@ -49,6 +44,6 @@ export async function GET(req) {
 
   } catch (error) {
       console.error("Error in GET handler:", error);
-      return new Response('Server error', { status: 500 });
+      return new Response('Server error .', { status: 500 });
   }
 }

@@ -43,9 +43,8 @@ export default async function fetchAllPress(req, res) {
           (item.summary.key_takeaways === undefined || Array.isArray(item.summary.key_takeaways))
       ))
 
-
       // Sort by timestamp and limit to last 30 entries
-      const sortedData = validatedData.sort((a, b) => b.timestamp - a.timestamp).slice(0, 30);
+      const sortedData = validatedData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 30);
 
       res.status(200).json(sortedData);
     } catch (error) {
