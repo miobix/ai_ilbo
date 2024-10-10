@@ -22,7 +22,7 @@ export default async function fetchAllPress(req, res) {
       ]);
 
       // Combine the data
-      const allData = [...emailPressData, ...reportDocsData, ...snsData];
+      const allData = [...emailPressData, ...congressPressData, ...reportDocsData, ...snsData];
 
       // Fetch summaries
       const summaryIds = allData.map((item) => item.summary_id);
