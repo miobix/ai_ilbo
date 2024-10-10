@@ -14,10 +14,11 @@ export default async function fetchAllPress(req, res) {
       const snsCollection = database.collection("sns");
 
       // Fetch from each collection
-      const [emailPressData, reportDocsData, snsData] = await Promise.all([
-        emailPressCollection.find({ summary_id: { $exists: true }, zone: { $in: ["대구", "경북"] } }).sort({ timestamp: -1 }).limit(30).toArray(),
-        reportDocsCollection.find({ summary_id: { $exists: true }, zone: { $in: ["Gov"] }, engine: { $in: ["gpt-4-turbo", "gpt-4o"] } }).sort({ timestamp: -1 }).limit(30).toArray(),
-        snsCollection.find({ summary_id: { $exists: true } }).sort({ timestamp: -1 }).limit(30).toArray()
+      const [emailPressData, congressPressData, reportDocsData, snsData] = await Promise.all([
+        emailPressCollection.find({ summary_id: { $exists: true }, zone: { $in: ["대구", "경북"] } }).sort({ _id: -1 }).limit(30).toArray(),
+        emailPressCollection.find({ summary_id: { $exists: true }, zone: { $in: ["의원실"] } }).sort({ _id: -1 }).limit(30).toArray(),
+        reportDocsCollection.find({ summary_id: { $exists: true }, zone: { $in: ["Gov"] }, engine: { $in: ["gpt-4-turbo", "gpt-4o"] } }).sort({ _id: -1 }).limit(30).toArray(),
+        snsCollection.find({ summary_id: { $exists: true } }).sort({ _id: -1 }).limit(30).toArray()
       ]);
 
       // Combine the data
