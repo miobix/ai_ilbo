@@ -26,12 +26,18 @@ export async function GET(req) {
       const allNews = await response.json();
 
       allNews.forEach(item => {
+        // console.log(item.summary.title)
+        // console.log(item.summary.article_body)
+        // console.log(`https://yeongnam.ai/article/${item._id}`)
+        // console.log(item.timestamp)
+
           feed.item({
-              title: item.title || 'Default Title',
+              title: item.summary.title || 'Default Title',
               description: item.summary.article_body || 'No description provided', 
               url: `https://yeongnam.ai/article/${item._id}` || 'Error on retrieving link', 
               date: item.timestamp || new Date().toUTCString(), 
           });
+          
       });
 
       const xml = feed.xml({ indent: true });
