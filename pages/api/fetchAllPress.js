@@ -44,14 +44,15 @@ export default async function fetchAllPress(req, res) {
       // Validate items to send back
       const validatedData = mergedData.filter(
         (item) => 
-          item.summary_id && 
-          item.summary && 
-          !Array.isArray(item.summary.article_body &&
-          (item.summary.key_takeaways === undefined || Array.isArray(item.summary.key_takeaways))
+            item.summary && 
+            item.summary_id && 
+            !Array.isArray(item.summary.article_body &&
+            (item.summary.key_takeaways === undefined || Array.isArray(item.summary.key_takeaways))
       ))
 
       // Sort by timestamp and limit to last 30 entries
-      const sortedData = validatedData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 30);
+      const sortedData = validatedData.sort((a, b) => b.timestamp - a.timestamp).slice(0, 30);
+      
 
       res.status(200).json(sortedData);
     } catch (error) {
