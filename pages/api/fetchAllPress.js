@@ -46,8 +46,7 @@ export default async function fetchAllPress(req, res) {
         (item) => 
             item.summary && 
             item.summary_id && 
-            !Array.isArray(item.summary.article_body) &&
-            (item.summary.key_takeaways === undefined || Array.isArray(item.summary.key_takeaways))
+            !Array.isArray(item.summary.article_body)
       )
 
       // Sort by timestamp and limit to last 30 entries
