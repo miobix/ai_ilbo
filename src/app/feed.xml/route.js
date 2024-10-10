@@ -19,7 +19,7 @@ export async function GET() {
     });
     // ${req.nextUrl.origin}
     try {
-      const response = await fetch(`https://yeongnam.ai/api/fetchAllPress`);
+      const response = await fetch(`https://yeongnam.ai/api/fetchCongressPress`);
       // const response = await fetch(`http://localhost:3000/api/fetchAllPress`);
       if (!response.ok) {
           console.error("Failed to fetch from fetchAllPress:", response.statusText);
