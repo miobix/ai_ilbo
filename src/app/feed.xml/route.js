@@ -1,4 +1,4 @@
-import RSS from 'rss';
+import RSS from "rss"
 
 export async function GET(req) {
 
@@ -6,8 +6,8 @@ export async function GET(req) {
         title: 'YeongnamAI',
         description: 'AI news from YeongnamIlbo',
         generator: 'RSS for Node and Next.js',
-        feed_url: `${req.nextUrl.origin}/feed.xml`, // Use req.nextUrl.origin for dynamic URLs
-        site_url: req.nextUrl.origin,
+        feed_url: `https://yeongnam.ai/feed.xml`, // Use req.nextUrl.origin for dynamic URLs
+        site_url: 'https://yeongnam.ai',
         managingEditor: 'naturei.dev@gmail.com (NatureI)',
         webMaster: 'naturei.dev@gmail.com (NatureI)',
         language: 'ko-KR',
@@ -16,7 +16,7 @@ export async function GET(req) {
     });
 
     try {
-      const response = await fetch(`${req.nextUrl.origin}/api/fetchAllPress`);
+      const response = await fetch(`https://yeongnam.ai/api/fetchAllPress`);
 
       if (!response.ok) {
           console.error("Failed to fetch from fetchAllPress:", response.statusText);
