@@ -15,14 +15,20 @@ export default async function fetchAllPress(req, res) {
 
       // Fetch from each collection
       const [emailPressData, congressPressData, reportDocsData, snsData] = await Promise.all([
-        emailPressCollection.find({ summary_id: { $exists: true }, zone: { $in: ["대구", "경북"] } }).sort({ _id: -1 }).limit(30).toArray(),
-        emailPressCollection.find({ summary_id: { $exists: true }, zone: { $in: ["의원실"] } }).sort({ _id: -1 }).limit(30).toArray(),
-        reportDocsCollection.find({ summary_id: { $exists: true }, zone: { $in: ["Gov"] }, engine: { $in: ["gpt-4-turbo", "gpt-4o"] } }).sort({ _id: -1 }).limit(30).toArray(),
-        snsCollection.find({ summary_id: { $exists: true } }).sort({ _id: -1 }).limit(30).toArray()
+        emailPressCollection.find({ summary_id: { $exists: true }, zone: { $in: ["대구", "경북"] } }).toArray(),
+        emailPressCollection.find({ summary_id: { $exists: true }, zone: { $in: ["의원실"] } }).toArray(),
+        reportDocsCollection.find({ summary_id: { $exists: true }, zone: { $in: ["Gov"] }, engine: { $in: ["gpt-4-turbo", "gpt-4o"] } }).toArray(),
+        snsCollection.find({ summary_id: { $exists: true } }).toArray()
       ]);
-
-      // Combine the data
-      const allData = [...emailPressData, ...congressPressData, ...reportDocsData, ...snsData];
+      
+      // Reverse and slice each array individually
+      const latestEmailPressData = emailPressData.reverse().slice(0, 30);
+      const latestCongressPressData = congressPressData.reverse().slice(0, 30);
+      const latestReportDocsData = reportDocsData.reverse().slice(0, 30);
+      const latestSNSData = snsData.reverse().slice(0, 30);
+      
+      // Combine the latest data from each category
+      const allData = [...latestEmailPressData, ...latestCongressPressData, ...latestReportDocsData, ...latestSNSData];
 
       // Fetch summaries
       const summaryIds = allData.map((item) => item.summary_id);
