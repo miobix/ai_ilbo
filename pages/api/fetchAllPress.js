@@ -17,25 +17,25 @@ export default async function fetchAllPress(req, res) {
       const emailPressData = await emailPressCollection
         .find({ summary_id: { $exists: true }, zone: { $in: ["대구", "경북"] } })
         .sort({ _id: -1 }) // Sort by latest
-        .limit(30)
+        .limit(40)
         .toArray();
       
       const congressPressData = await emailPressCollection
         .find({ summary_id: { $exists: true }, zone: { $in: ["의원실"] } })
         .sort({ _id: -1 })
-        .limit(30)
+        .limit(40)
         .toArray();
       
       const reportDocsData = await reportDocsCollection
         .find({ summary_id: { $exists: true }, zone: { $in: ["Gov"] }, engine: { $in: ["gpt-4-turbo", "gpt-4o"] } })
         .sort({ _id: -1 })
-        .limit(30)
+        .limit(40)
         .toArray();
       
       const snsData = await snsCollection
         .find({ summary_id: { $exists: true } })
         .sort({ _id: -1 })
-        .limit(30)
+        .limit(40)
         .toArray();
 
       // Combine the latest data from each category
@@ -61,7 +61,7 @@ export default async function fetchAllPress(req, res) {
       );
 
       // Sort by timestamp again and limit to last 30 entries
-      const sortedData = validatedData.sort((a, b) => b.timestamp - a.timestamp);
+      const sortedData = validatedData.sort((a, b) => a.timestamp - b.timestamp);
 
       res.status(200).json(sortedData);
     } catch (error) {

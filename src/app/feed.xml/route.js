@@ -25,9 +25,7 @@ export async function GET() {
 
       const allNews = await response.json();
 
-      const limitedNews = allNews.slice(0, 20);
-
-        limitedNews.forEach(item => {
+      allNews.forEach(item => {
           feed.item({
               title: item.summary.title || 'Default Title',
               description: item.summary.article_body || 'No description provided', 
