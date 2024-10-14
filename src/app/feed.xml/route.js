@@ -12,7 +12,7 @@ export async function GET() {
         webMaster: 'naturei.dev@gmail.com (NatureI)',
         language: 'ko-KR',
         pubDate: new Date().toUTCString(),
-        ttl: 30,
+        ttl: 2,
     });
     // ${req.nextUrl.origin}
     try {
