@@ -17,30 +17,30 @@ export default async function fetchAllPress(req, res) {
       const emailPressData = await emailPressCollection
         .find({ summary_id: { $exists: true }, zone: { $in: ["대구", "경북"] } })
         .sort({ _id: -1 }) // Sort by latest
-        .limit(40)
+        .limit(30)
         .toArray();
       
       const congressPressData = await emailPressCollection
         .find({ summary_id: { $exists: true }, zone: { $in: ["의원실"] } })
         .sort({ _id: -1 })
-        .limit(40)
+        .limit(30)
         .toArray();
       
       const reportDocsData = await reportDocsCollection
         .find({ summary_id: { $exists: true }, zone: { $in: ["Gov"] }, engine: { $in: ["gpt-4-turbo", "gpt-4o"] } })
         .sort({ _id: -1 })
-        .limit(40)
+        .limit(30)
         .toArray();
       
       const snsData = await snsCollection
         .find({ summary_id: { $exists: true } })
         .sort({ _id: -1 })
-        .limit(40)
+        .limit(30)
         .toArray();
 
       // Combine the latest data from each category
       const allData = [...emailPressData, ...congressPressData, ...reportDocsData, ...snsData];
-      //const allData = [ ...emailPressData]
+
       // Fetch summaries
       const summaryIds = allData.map((item) => item.summary_id);
       const summariesCollection = database.collection("summaries");
@@ -55,15 +55,16 @@ export default async function fetchAllPress(req, res) {
       // Validate items to send back
       const validatedData = mergedData.filter(
         (item) => 
+            item.timestamp &&
             item.summary && 
             item.summary_id && 
             !Array.isArray(item.summary.article_body)
       );
 
       // Sort by timestamp again and limit to last 30 entries
-      //const sortedData = validatedData.sort((a, b) => b.timestamp - a.timestamp);
+      const sortedData = validatedData.sort((a, b) => new Date(b.timestamp.replace(" ", "T")) - new Date(a.timestamp.replace(" ", "T")));
 
-      res.status(200).json(validatedData);
+      res.status(200).json(sortedData);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Something went wrong" });

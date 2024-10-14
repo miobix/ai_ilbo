@@ -16,8 +16,8 @@ export async function GET() {
     });
     // ${req.nextUrl.origin}
     try {
-      const response = await fetch(`https://yeongnam.ai/api/fetchAllPress`);
-      //const response = await fetch(`http://localhost:3000/api/fetchAllPress`);
+      //const response = await fetch(`https://yeongnam.ai/api/fetchAllPress`);
+      const response = await fetch(`http://localhost:3000/api/fetchAllPress`);
       if (!response.ok) {
           console.error("Failed to fetch from fetchAllPress:", response.statusText);
           return new Response('Error fetching news', { status: 500 });
@@ -25,12 +25,14 @@ export async function GET() {
 
       const allNews = await response.json();
 
+
       allNews.forEach(item => {
+        const formattedDate = new Date(item.timestamp.replace(" ", "T")).toUTCString();
           feed.item({
               title: item.summary.title || 'Default Title',
               description: item.summary.article_body || 'No description provided', 
               url: `https://yeongnam.ai/article/${item._id}` || 'Error on retrieving link', 
-              date: item.timestamp || new Date().toUTCString(), 
+              date: formattedDate || new Date().toUTCString(), 
           });
           
       });
