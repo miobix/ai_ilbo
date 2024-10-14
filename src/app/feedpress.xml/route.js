@@ -6,7 +6,7 @@ export async function GET() {
         title: 'YeongnamAI',
         description: 'AI news from YeongnamIlbo',
         generator: 'RSS for Node and Next.js',
-        feed_url: 'https://yeongnam.ai/feedrep.xml', 
+        feed_url: 'https://yeongnam.ai/feedpress.xml', 
         site_url: 'https://yeongnam.ai',
         managingEditor: 'naturei.dev@gmail.com (NatureI)',
         webMaster: 'naturei.dev@gmail.com (NatureI)',
@@ -16,7 +16,7 @@ export async function GET() {
     });
 
     try {
-      const response = await fetch(`https://yeongnam.ai/api/fetchCongressPress`);
+      const response = await fetch(`https://yeongnam.ai/api/fetchEmailPress`);
       if (!response.ok) {
           console.error("Failed to fetch from this category:", response.statusText);
           return new Response('Error fetching news', { status: 500 });
