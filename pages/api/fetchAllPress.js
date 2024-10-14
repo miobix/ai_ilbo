@@ -8,27 +8,38 @@ export default async function fetchAllPress(req, res) {
       await client.connect();
       const database = client.db("yeongnam-ai");
       
-      // Fetch data from all categories
+      // Fetch latest data from each collection individually
       const emailPressCollection = database.collection("email_press_docs");
       const reportDocsCollection = database.collection("report_docs");
       const snsCollection = database.collection("sns");
+      
+      // Fetch and sort by timestamp, limiting results to 30
+      const emailPressData = await emailPressCollection
+        .find({ summary_id: { $exists: true }, zone: { $in: ["대구", "경북"] } })
+        .sort({ timestamp: -1 }) // Sort by latest
+        .limit(30)
+        .toArray();
+      
+      const congressPressData = await emailPressCollection
+        .find({ summary_id: { $exists: true }, zone: { $in: ["의원실"] } })
+        .sort({ timestamp: -1 })
+        .limit(30)
+        .toArray();
+      
+      const reportDocsData = await reportDocsCollection
+        .find({ summary_id: { $exists: true }, zone: { $in: ["Gov"] }, engine: { $in: ["gpt-4-turbo", "gpt-4o"] } })
+        .sort({ timestamp: -1 })
+        .limit(30)
+        .toArray();
+      
+      const snsData = await snsCollection
+        .find({ summary_id: { $exists: true } })
+        .sort({ timestamp: -1 })
+        .limit(30)
+        .toArray();
 
-      // Fetch from each collection
-      const [emailPressData, congressPressData, reportDocsData, snsData] = await Promise.all([
-        emailPressCollection.find({ summary_id: { $exists: true }, zone: { $in: ["대구", "경북"] } }).toArray(),
-        emailPressCollection.find({ summary_id: { $exists: true }, zone: { $in: ["의원실"] } }).toArray(),
-        reportDocsCollection.find({ summary_id: { $exists: true }, zone: { $in: ["Gov"] }, engine: { $in: ["gpt-4-turbo", "gpt-4o"] } }).toArray(),
-        snsCollection.find({ summary_id: { $exists: true } }).toArray()
-      ]);
-      
-      // Reverse and slice each array individually
-      const latestEmailPressData = emailPressData.reverse().slice(0, 30);
-      const latestCongressPressData = congressPressData.reverse().slice(0, 30);
-      const latestReportDocsData = reportDocsData.reverse().slice(0, 30);
-      const latestSNSData = snsData.reverse().slice(0, 30);
-      
       // Combine the latest data from each category
-      const allData = [...latestEmailPressData, ...latestCongressPressData, ...latestReportDocsData, ...latestSNSData];
+      const allData = [...emailPressData, ...congressPressData, ...reportDocsData, ...snsData];
 
       // Fetch summaries
       const summaryIds = allData.map((item) => item.summary_id);
@@ -47,15 +58,14 @@ export default async function fetchAllPress(req, res) {
             item.summary && 
             item.summary_id && 
             !Array.isArray(item.summary.article_body)
-      )
+      );
 
-      // Sort by timestamp and limit to last 30 entries
+      // Sort by timestamp again and limit to last 30 entries
       const sortedData = validatedData.sort((a, b) => b.timestamp - a.timestamp).slice(0, 30);
-      
 
       res.status(200).json(sortedData);
     } catch (error) {
-      console.error(error); 
+      console.error(error);
       res.status(500).json({ message: "Something went wrong" });
     } finally {
       await client.close();
