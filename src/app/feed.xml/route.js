@@ -1,10 +1,11 @@
 import RSS from "rss"
+import {getImageSrcUrl} from  '../utils/common'
 
 export async function GET() {
 
     const feed = new RSS({
-        title: 'YeongnamAI',
-        description: 'AI news from YeongnamIlbo',
+        title: '영남일보 - 전체기사',
+        description: '영남일보 전체기사 RSS',
         generator: 'RSS for Node and Next.js',
         feed_url: 'https://yeongnam.ai/feed.xml', 
         site_url: 'https://yeongnam.ai',
@@ -13,6 +14,14 @@ export async function GET() {
         language: 'ko-KR',
         pubDate: new Date().toUTCString(),
         ttl: 20,
+        custom_namespaces: {
+            atom: 'http://www.w3.org/2005/Atom',
+            media: 'http://search.yahoo.com/mrss/',
+            mi: 'http://schemas.ingestion.microsoft.com/common/',
+            dc: 'http://purl.org/dc/elements/1.1/',
+            content: 'http://purl.org/rss/1.0/modules/content/',
+            dcterms: 'http://purl.org/dc/terms/'
+        }
     });
     // ${req.nextUrl.origin}
     try {
@@ -33,6 +42,18 @@ export async function GET() {
               description: item.summary.article_body || 'No description provided', 
               url: `https://yeongnam.ai/article/${item._id}` || 'Error on retrieving link', 
               date: formattedDate || new Date().toUTCString(), 
+              custom_elements: [
+                {
+                    'media:content': {
+                        _attr: {
+                            url: getImageSrcUrl(item),
+                            type: 'image/jpeg',
+                            //width: '800',
+                            //height: '600'
+                        }
+                    }
+                }
+            ]
           });
           
       });
