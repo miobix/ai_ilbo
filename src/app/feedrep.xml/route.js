@@ -1,4 +1,5 @@
 import RSS from "rss"
+import {getImageSrcUrl} from  '../utils/common'
 
 export async function GET() {
 
@@ -13,6 +14,14 @@ export async function GET() {
         language: 'ko-KR',
         pubDate: new Date().toUTCString(),
         ttl: 20,
+        custom_namespaces: {
+            atom: 'http://www.w3.org/2005/Atom',
+            media: 'http://search.yahoo.com/mrss/',
+            mi: 'http://schemas.ingestion.microsoft.com/common/',
+            dc: 'http://purl.org/dc/elements/1.1/',
+            content: 'http://purl.org/rss/1.0/modules/content/',
+            dcterms: 'http://purl.org/dc/terms/'
+        }
     });
 
     try {
@@ -27,12 +36,26 @@ export async function GET() {
       const limitedNews = allNews.slice(0, 20);
 
         limitedNews.forEach(item => {
-          feed.item({
-              title: item.summary.title || 'Default Title',
-              description: item.summary.article_body || 'No description provided', 
-              url: `https://yeongnam.ai/article/${item._id}` || 'Error on retrieving link', 
-              date: item.timestamp || new Date().toUTCString(), 
-          });
+            let imageSource = getImageSrcUrl(item)
+            feed.item({
+                title: item.summary.title || 'Default Title',
+                description: item.summary.article_body || 'No description provided', 
+                url: `https://yeongnam.ai/article/${item._id}` || 'Error on retrieving link', 
+                date: item.timestamp || new Date().toUTCString(), 
+                custom_elements: [
+                    {
+                        'media:content': {
+                            _attr: {
+                                url: imageSource,
+                                type: 'image/jpeg',
+                                medium: "image"
+                                //width: '800',
+                                //height: '600'
+                            }
+                        }
+                    }
+                ]
+            });
           
       });
 

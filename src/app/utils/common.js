@@ -65,18 +65,23 @@ export function parseFullArticleBody(articleBodyString) {
 export function getImageSrcUrl(newsItem){
   if (newsItem?.category == "경제") {
     if (newsItem?.img_src){
-      imageSrc = `/${newsItem.img_src}.jpg`;
+      return `/${newsItem.img_src}.jpg`;
     }
   } else if (newsItem?.category === "SNS") {
     if (newsItem.post_images && newsItem.post_images.length > 0) {
-      imageSrc = `${news.post_images[0]}`;
+      return `${newsItem.post_images[0]}`;
     } else {
-      imageSrc = `/sns_profile_pictures/${newsItem.sns_profile}.png`;
+      return `https://yeongnam.ai/sns_profile_pictures/${newsItem.sns_profile}.png`;
     }
   } else if (newsItem?.zone) {
-    imageSrc = newsItem.img_src
+    if(newsItem.zone == '의원실' && newsItem.img_src){
+      return newsItem.img_src
+    }
+    else{
+      return "https://yeongnam.ai/press_release_defaults/now_2.jpg";
+    }
   } else {
-    imageSrc = "/press_release_defaults/now_2.jpg";
+    return "https://yeongnam.ai/press_release_defaults/now_2.jpg";
   }
 }
 
