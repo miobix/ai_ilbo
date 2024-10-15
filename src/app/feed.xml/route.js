@@ -41,7 +41,7 @@ export async function GET() {
         let imageSource = getImageSrcUrl(item)
         feed.item({
             title: item.summary.title || 'Default Title',
-            description: item.summary.article_body.replace('##','<br>') || 'No description provided', 
+            description: item.summary.article_body.replaceAll('##','<br>') || 'No description provided', 
             url: `https://yeongnam.ai/article/${item._id}` || 'Error on retrieving link', 
             date: formattedDate || new Date().toUTCString(), 
             custom_elements: [
