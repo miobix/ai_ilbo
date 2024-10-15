@@ -57,7 +57,7 @@ export default function HomepageNewsCard({ news }) {
         <img
         
           src={
-            news.generated_img_url ? news.generated_img_url?.original : news.original ? news.original : imageSrc
+            news.generated_img_url ? "/press_release_defaults/now_2.jpg" : news.original ? "/press_release_defaults/now_2.jpg" : imageSrc
           }
           alt="News Image"
         />

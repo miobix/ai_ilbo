@@ -77,7 +77,7 @@ export default function SubArticles({ news }) {
           <img
             src={
               news.generated_img_url
-                ? news.generated_img_url?.original
+                ? "/press_release_defaults/now_2.jpg"
                 : imageSrc
             }
             alt="News Image"

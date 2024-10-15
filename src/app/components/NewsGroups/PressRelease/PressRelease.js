@@ -30,7 +30,7 @@ export default function PressRelease({ news }) {
   }
 
   if(news?.zone == "Gov") {
-
+    imageSrc = "/press_release_defaults/now_2.jpg"
   }
   function isTimestampBefore(dateStr) {
     const comparisonDateStr = "2024-08-08 09:39:00";
@@ -69,9 +69,9 @@ export default function PressRelease({ news }) {
         <img
           src={
             news.generated_img_url
-            ? news.generated_img_url?.original
+            ? "/press_release_defaults/now_2.jpg"
             : news.original
-            ? news.original
+            ? "/press_release_defaults/now_2.jpg"
             : imageSrc
           }
         />
