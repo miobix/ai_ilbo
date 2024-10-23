@@ -39,10 +39,10 @@ export default function TopNews({ news }) {
     } else {
       imageSrc = `/sns_profile_pictures/${news.sns_profile}.png`;
     }
-  } else if (news?.zone) {
+  } else if (news?.zone == '대구' || news?.zone == '경북') {
     imageSrc = news?.img_src ? news.img_src : "/press_release_defaults/now_2.jpg"
   } else {
-    imageSrc = "/image_press_1.jpg";
+    imageSrc = "/press_release_defaults/now_2.jpg";
   }
 
   return (
