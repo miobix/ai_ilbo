@@ -1,23 +1,13 @@
 import Image from "next/image";
 import styles from "./Header.module.css";
 import Link from "next/link";
+import * as utils from "../../utils/common.js";
 
 export default function Header() {
-  function formatDate() {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Adding 1 because January is 0
-    const day = String(currentDate.getDate()).padStart(2, "0");
 
-    // Array of Korean day names
-    const koreanDays = ["일", "월", "화", "수", "목", "금", "토"];
-    const dayOfWeek = koreanDays[currentDate.getDay()]; // Get day of the week and map to Korean day name
+  const currentDate = utils.formatTodayDate();
 
-    return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
-  }
-  const currentDate = formatDate();
   return (
-    //-- Header --//
     <div className={styles.Header}>
       <div className={styles.Header_inner}>
         <ul className={styles.H_left}>
@@ -26,7 +16,7 @@ export default function Header() {
           </Link>
           <li className={styles.todate}>
             <span className={styles.bold}>Today</span>
-            <span className={styles.date}>{currentDate} </span>
+            <span className={styles.date}>{currentDate}</span>
           </li>
         </ul>
         <Link href="/">

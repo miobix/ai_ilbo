@@ -1,6 +1,6 @@
 import Image from "next/image";
 import styles from "./NewsList.module.css";
-import HomepageNewsCard from "../../HomepageNewsCard/page";
+import ListItemArticle from "../../ListItemArticle/page";
 
 export default function NewsList({ newsList }) {
 
@@ -9,7 +9,7 @@ export default function NewsList({ newsList }) {
       <ul className={styles.li_news}>
         {newsList.map((newsItem, index) => (
           <li key={index}>
-            <HomepageNewsCard news={newsItem} />
+            <ListItemArticle news={newsItem} />
           </li>
         ))}
       </ul>

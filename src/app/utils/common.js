@@ -32,37 +32,83 @@ export function parseDateTime(dateString) {
 }
 
 export function parseArticleBody(articleBodyString) {
-  // Replace all single quotes with double quotes
-  //const formattedString = articleBodyString.replace(/'/g, '"');
-  // Split the article body into sections based on the "##" separator
-
   const sections = articleBodyString.split("##");
-
-  // Remove the empty sections and trim whitespace from each section
   const parsedSections = sections
     .filter((section) => section.trim() !== "")
     .map((section) => section.trim());
-
-  return parsedSections;
-}
-
-export function parseFullArticleBody(articleBodyString) {
-  // Replace all single quotes with double quotes
-  const formattedString = articleBodyString.replace(/'/g, '"');
-  // Split the article body into sections based on the "##" separator
-
-  const sections = articleBodyString.split("##");
-
-  // Remove the empty sections and trim whitespace from each section
-  const parsedSections = sections
-    .filter((section) => section.trim() !== "")
-    .map((section) => section.trim());
-
   return parsedSections;
 }
 
 
-export function getImageSrcUrl(newsItem){
+export function generateShortArticleDescription(articleBody){
+  const sections = articleBody.split("##");
+  const sanitizedDescription = sections
+    .map((section) => section.trim())
+    .filter((section) => section !== "") 
+    .join(" ");
+  return sanitizedDescription.substring(0, 120) + "...";
+}
+
+
+export function hangulizeGeographicZone(zone){
+  const zoneMapping = {
+    "대구": "",
+    "경북": "",
+  };
+  return zoneMapping[zone] || "";
+}
+
+export function isPressRelease(news) {
+  return news && news.zone !== undefined;
+}
+
+export function formatTodayDate() {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+
+  // Array of Korean day names
+  const koreanDays = ["일", "월", "화", "수", "목", "금", "토"];
+  const dayOfWeek = koreanDays[currentDate.getDay()];
+
+  return `${year}년 ${month}월 ${day}일 ${dayOfWeek}요일`;
+}
+
+
+export function getInternalImageSource(newsData) {
+  // for nextjs website handling
+  let imageSrc;
+  if (newsData?.zone == "Gov" || newsData?.generated_img_url || newsData?.original) {
+    imageSrc = "/press_release_defaults/now_2.jpg";
+  } 
+  else {
+    if (newsData?.category === "경제") {
+      if (newsData?.img_src) {
+        imageSrc = `/${newsData.img_src}.jpg`;
+      }
+    } 
+    else if (newsData?.category === "SNS") {
+      if (newsData.post_images && newsData.post_images.length > 0) {
+        imageSrc = `${newsData.post_images[0]}`;
+      } else {
+        imageSrc = `/sns_profile_pictures/${newsData.sns_profile}.png`;
+      }
+    } 
+    else if (newsData?.zone === '대구' || newsData?.zone === '경북') {
+      imageSrc = newsData?.img_src ? newsData.img_src : "/press_release_defaults/now_2.jpg";
+    } 
+    else {
+      imageSrc = "/press_release_defaults/now_2.jpg";
+    }
+  }
+
+  return imageSrc;
+}
+
+
+export function getExternalImageSource(newsItem){
+  // for the rss feed
   if (newsItem?.category == "경제") {
     if (newsItem?.img_src){
       return `/${newsItem.img_src}.jpg`;

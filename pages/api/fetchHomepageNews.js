@@ -33,7 +33,7 @@ export default async function fetchHomepageNews(req, res) {
         item.generated_img_url.original
       );
 
-      res.status(200).json(validatedData);
+      res.status(200).json(validatedData.slice(0, 20));
     } catch (error) {
       res.status(500).json({ message: 'Something went wrong' });
     } finally {

@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 import Footer from "./components/Footer/Footer";
 import Header from "./components/Header/Header";
-import TopNews from "./components/NewsGroups/TopNews/TopNews";
+import TopNews from "./components/NewsGroups/ListHeaderArticle/ListHeaderArticle";
 import NewsList from "./components/NewsGroups/NewsList/NewsList";
 import React, { useState, useEffect } from "react";
 

@@ -1,5 +1,5 @@
 import RSS from "rss"
-import {getImageSrcUrl} from  '../utils/common'
+import {getExternalImageSource} from  '../utils/common'
 
 export async function GET() {
 
@@ -38,7 +38,7 @@ export async function GET() {
 
       limitedNews.forEach(item => {
         const formattedDate = new Date(item.timestamp.replace(" ", "T")).toUTCString();
-        let imageSource = getImageSrcUrl(item)
+        let imageSource = getExternalImageSource(item)
         feed.item({
             title: item.summary.title || 'Default Title',
             description: item.summary.article_body.replaceAll('##','<br>') || 'No description provided', 
