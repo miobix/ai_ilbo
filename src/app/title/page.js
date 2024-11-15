@@ -8,6 +8,7 @@ import React, { useState, useEffect } from "react";
 
 export default function Title() {
   const [text, setText] = useState(""); // State for textarea input
+  const [previousText, setPreviousText] = useState(""); // State to track previous text input
   const [charLimit, setCharLimit] = useState(20); // State for character limit input
   const [error, setError] = useState(false); // State for error handling
   const [response, setResponse] = useState(""); // State for API response or generated title
@@ -33,19 +34,25 @@ export default function Title() {
   };
 
   const handleGenerateClick = () => {
-    if (response !== "") return;
-
+    if (loading) return; // Prevent clicking while loading
+  
+    // Allow the button to be clicked even if the response is not empty
+    if (text === previousText) {
+      return; // Button is locked if the current text is the same as the previous text
+    }
+  
     if (!text) {
       setError(true);
       return;
     }
-
+  
     setLoading(true);
     setResponse(""); 
+    setPreviousText(text); // Update previous text to current text
     setTimeout(() => {
       setLoading(false);
       setResponse("Generated Response Placeholder");
-    }, 1000);
+    }, 3000);
   };
 
   const handleResetClick = () => {
@@ -85,12 +92,13 @@ export default function Title() {
               <button
                 className={styles.generateButton}
                 onClick={handleGenerateClick}
-              >
+                disabled={loading || text === previousText}              >
                 제목생성
               </button>
               <button
                 onClick={handleResetClick}
                 className={styles.resetButton}
+                disabled={loading}
               >
                 초기화
               </button>
