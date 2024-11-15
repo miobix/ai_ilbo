@@ -1,6 +1,7 @@
 import Image from "next/image";
 import styles from "./NewsList.module.css";
-import ListItemArticle from "../../ListItemArticle/page";
+import ListItemArticle from "../ListItemArticle/ListItemArticle";
+
 
 export default function NewsList({ newsList }) {
 

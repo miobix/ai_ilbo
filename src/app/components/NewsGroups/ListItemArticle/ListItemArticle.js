@@ -1,6 +1,6 @@
-import styles from "./page.module.css";
+import styles from "./ListItemArticle.module.css";
 import Link from "next/link";
-import * as utils from "../../utils/common.js";
+import * as utils from "../../../utils/common.js";
 
 export default function ListItemArticle({ news }) {
 
