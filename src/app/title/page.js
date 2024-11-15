@@ -20,13 +20,11 @@ export default function Title() {
 
   const handleCharLimitChange = (e) => {
     const value = e.target.value;
-    // Allow empty input or any number during typing
     if (value === "" || /^[0-9\b]+$/.test(value)) {
       setCharLimit(value);
     }
   };
 
-  // Handle blur event to enforce min/max limits
   const handleCharLimitBlur = () => {
     let value = parseInt(charLimit, 10);
     if (isNaN(value) || value < 1) value = 1;
@@ -36,7 +34,7 @@ export default function Title() {
 
   const handleGenerateClick = () => {
     if (response !== "") return;
-    
+
     if (!text) {
       setError(true);
       return;
