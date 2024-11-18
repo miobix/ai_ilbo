@@ -204,7 +204,7 @@ AP·로이터 통신 등에 따르면 이날 74% 이상 개표가 진행된 상�
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.OPEN_AI_API}`, 
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPEN_AI_API}`, 
           },
           body: JSON.stringify({
             model: "gpt-4o",
