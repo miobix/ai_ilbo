@@ -33,26 +33,65 @@ export default function Title() {
     setCharLimit(value);
   };
 
-  const handleGenerateClick = () => {
-    if (loading) return; // Prevent clicking while loading
-  
-    // Allow the button to be clicked even if the response is not empty
+  const handleGenerateClick = async () => {
+    if (loading) return;
+
+
     if (text === previousText) {
-      return; // Button is locked if the current text is the same as the previous text
+      return;
     }
-  
+
     if (!text) {
       setError(true);
       return;
     }
-  
+
     setLoading(true);
-    setResponse(""); 
-    setPreviousText(text); // Update previous text to current text
-    setTimeout(() => {
+    setResponse("");
+    setPreviousText(text);
+
+    // Make the API call to OpenAI
+    try {
+      const openAIResponse = await fetch("/api/openai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userInput: text,
+          characterLimit: charLimit,
+        }),
+      });
+
+      const result = await openAIResponse.json();
+      console.log(result.choices);
+      console.log(result.usage);
       setLoading(false);
-      setResponse("Generated Response Placeholder");
-    }, 3000);
+      if (result.choices && result.choices.length > 0) {
+        const responseText = result.choices[0].message.content;
+        let parts = responseText.split("##").map((part) => part.trim());
+
+        if (parts.length > 12) {
+          parts = parts.slice(0, 12);
+        }
+
+    // Group the parts into recommendations (title and key takeaways)
+      const recommendations = [];
+      for (let i = 0; i < parts.length; i += 4) {
+        const title = parts[i];
+        const takeaways = parts.slice(i + 1, i + 4);
+        recommendations.push({ title, takeaways });
+      }
+
+        setResponse(recommendations);
+      } else {
+        setResponse("No response generated.");
+      }
+    } catch (error) {
+      console.error("Error calling OpenAI API", error);
+      setLoading(false);
+      setResponse("An error occurred while generating the title.");
+    }
   };
 
   const handleResetClick = () => {
@@ -72,8 +111,10 @@ export default function Title() {
             <h1 className={styles.title}>영남ai 기사 제목 생겅</h1>
             <p className={styles.paragraph}></p>
             <textarea
-                className={`${styles.textarea} ${error ? styles.errorTextarea : ""}`}
-                value={text}
+              className={`${styles.textarea} ${
+                error ? styles.errorTextarea : ""
+              }`}
+              value={text}
               onChange={handleChange}
               placeholder="기사 텍스트 붙여넣으세요..."
             />
@@ -92,7 +133,8 @@ export default function Title() {
               <button
                 className={styles.generateButton}
                 onClick={handleGenerateClick}
-                disabled={loading || text === previousText}              >
+                disabled={loading || text === previousText}
+              >
                 제목생성
               </button>
               <button
@@ -102,52 +144,35 @@ export default function Title() {
               >
                 초기화
               </button>
-
-        
             </div>
 
-                    {/* Response Section */}
-                    {loading && response === "" ? (
+            {/* Response Section */}
+            {loading && response === "" ? (
               <div className={styles.responseSection}>
                 <p>Loading...</p>
               </div>
-            ) : (response && (
-              <div className={styles.responseSection}>
-                <h2 className={styles.responseTitle}>추천 제목</h2>
+            ) : (
+              response && (
+                <div className={styles.responseSection}>
+                  <h2 className={styles.responseTitle}>추천 제목</h2>
 
-                {/* Title 1 */}
-                <div className={styles.recommendation}>
-                  <h3 className={styles.recommendationTitle}>제목 1</h3>
-                  <ul className={styles.keyTakeaways}>
-                    <li>키 테이크어웨이 1</li>
-                    <li>키 테이크어웨이 2</li>
-                    <li>키 테이크어웨이 3</li>
-                  </ul>
+                  {response && response.length > 0 ? (
+                    response.map((item, index) => (
+                      <div key={index} className={styles.recommendation}>
+                        <h3 className={styles.recommendationTitle}>{item.title}</h3>
+                        <ul className={styles.keyTakeaways}>
+                          {item.takeaways.map((takeaway, idx) => (
+                            <li key={idx}>{takeaway}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))
+                  ) : (
+                    <p>No recommendations available.</p>
+                  )}
                 </div>
-
-                {/* Title 2 */}
-                <div className={styles.recommendation}>
-                  <h3 className={styles.recommendationTitle}>제목 2</h3>
-                  <ul className={styles.keyTakeaways}>
-                    <li>키 테이크어웨이 1</li>
-                    <li>키 테이크어웨이 2</li>
-                    <li>키 테이크어웨이 3</li>
-                  </ul>
-                </div>
-
-                {/* Title 3 */}
-                <div className={styles.recommendation}>
-                  <h3 className={styles.recommendationTitle}>제목 3</h3>
-                  <ul className={styles.keyTakeaways}>
-                    <li>키 테이크어웨이 1</li>
-                    <li>키 테이크어웨이 2</li>
-                    <li>키 테이크어웨이 3</li>
-                  </ul>
-                </div>
-              </div>
-            )
-          )}
-
+              )
+            )}
           </div>
         </div>
       </div>
