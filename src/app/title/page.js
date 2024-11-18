@@ -108,7 +108,7 @@ export default function Title() {
       <div className={styles.main_inner}>
         <div className={styles.Main_cont}>
           <div className={styles.Main_cont_inner}>
-            <h1 className={styles.title}>영남ai 기사 제목 생겅</h1>
+            <h1 className={styles.title}>제목 생성</h1>
             <p className={styles.paragraph}></p>
             <textarea
               className={`${styles.textarea} ${
