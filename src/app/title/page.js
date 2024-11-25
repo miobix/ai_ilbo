@@ -142,13 +142,13 @@ export default function Title() {
               >
                 제목생성
               </button>
-              <button
+              {/* <button
                 onClick={handleResetClick}
                 className={styles.resetButton}
                 disabled={loading}
               >
                 초기화
-              </button>
+              </button> */}
             </div>
 
             {/* Response Section */}
