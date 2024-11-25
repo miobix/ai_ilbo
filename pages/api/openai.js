@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     const { userInput, characterLimit, subheaderLimit } = req.body;
 
-    let articlesLimit = 50
+    let articlesLimit = 30
 
     let examples = newsData
     .sort((a, b) => new Date(b.newsdate) - new Date(a.newsdate))  // Sort by newsdate, most recent first
