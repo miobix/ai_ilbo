@@ -9,10 +9,12 @@ import React, { useState, useEffect } from "react";
 export default function Title() {
   const [text, setText] = useState(""); // State for textarea input
   const [previousText, setPreviousText] = useState(""); // State to track previous text input
-  const [charLimit, setCharLimit] = useState(20); // State for character limit input
+  const [charLimit, setCharLimit] = useState(35); // State for character limit input
   const [error, setError] = useState(false); // State for error handling
   const [response, setResponse] = useState(""); // State for API response or generated title
   const [loading, setLoading] = useState(false);
+
+  const subheaderLimit = 80
 
   const handleChange = (e) => {
     setText(e.target.value);
@@ -60,6 +62,7 @@ export default function Title() {
         body: JSON.stringify({
           userInput: text,
           characterLimit: charLimit,
+          subheaderLimit: subheaderLimit
         }),
       });
 
@@ -69,21 +72,23 @@ export default function Title() {
       setLoading(false);
       if (result.choices && result.choices.length > 0) {
         const responseText = result.choices[0].message.content;
-        let parts = responseText.split("##").map((part) => part.trim());
 
-        if (parts.length > 12) {
-          parts = parts.slice(0, 12);
+        // Split the response by the '&&' separator
+        let parts = responseText.split("&&").map((part) => part.trim());
+
+        if (parts.length === 2) {
+          const titles = parts[0].split("##").map((title) => title.trim());
+          const subtitles = parts[1].split("##").map((subtitle) => subtitle.trim());
+          const recommendations = {
+            titles: titles,
+            subtitles: subtitles
+          }
+
+          setResponse(recommendations);
+
+        } else {
+          setResponse("Error: Response format is incorrect.");
         }
-
-    // Group the parts into recommendations (title and key takeaways)
-      const recommendations = [];
-      for (let i = 0; i < parts.length; i += 4) {
-        const title = parts[i];
-        const takeaways = parts.slice(i + 1, i + 4);
-        recommendations.push({ title, takeaways });
-      }
-
-        setResponse(recommendations);
       } else {
         setResponse("No response generated.");
       }
@@ -155,23 +160,33 @@ export default function Title() {
               response && (
                 <div className={styles.responseSection}>
                   <h2 className={styles.responseTitle}>추천 제목</h2>
-
-                  {response && response.length > 0 ? (
-                    response.map((item, index) => (
-                      <div key={index} className={styles.recommendation}>
-                        <h3 className={styles.recommendationTitle}>{item.title}</h3>
-                        <ul className={styles.keyTakeaways}>
-                          {item.takeaways.map((takeaway, idx) => (
-                            <li key={idx}>{takeaway}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))
+              
+                  {/* Render Titles */}
+                  {response.titles && response.titles.length > 0 ? (
+                    <ul>
+                      {response.titles.map((title, index) => (
+                        <li key={index} className={styles.recommendationTitle}>{title}</li>
+                      ))}
+                    </ul>
                   ) : (
-                    <p>No recommendations available.</p>
+                    <p>No titles available.</p>
+                  )}
+              <br/>
+              <h2 className={styles.responseTitle}>추천 소제목</h2>
+                  {/* Render Subtitles */}
+            
+                  {response.subtitles && response.subtitles.length > 0 ? (
+                    <ul>
+                      {response.subtitles.map((subtitle, index) => (
+                        <li key={index} className={styles.recommendationSubtitle}>{subtitle}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No subtitles available.</p>
                   )}
                 </div>
               )
+              
             )}
           </div>
         </div>
