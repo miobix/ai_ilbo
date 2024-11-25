@@ -87,15 +87,15 @@ export default function Title() {
           setResponse(recommendations);
 
         } else {
-          setResponse("Error: Response format is incorrect.");
+          console.log("Error: Response format is incorrect.");
         }
       } else {
-        setResponse("No response generated.");
+        console.log("No response generated.");
       }
     } catch (error) {
       console.error("Error calling OpenAI API", error);
       setLoading(false);
-      setResponse("An error occurred while generating the title.");
+      console.log("An error occurred while generating the title.");
     }
   };
 
