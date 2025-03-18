@@ -14,7 +14,7 @@ export default function Title() {
   const [response, setResponse] = useState(""); // State for API response or generated title
   const [loading, setLoading] = useState(false);
 
-  const subheaderLimit = 80
+  const subheaderLimit = 80;
 
   const handleChange = (e) => {
     setText(e.target.value);
@@ -37,7 +37,6 @@ export default function Title() {
 
   const handleGenerateClick = async () => {
     if (loading) return;
-
 
     if (text === previousText) {
       return;
@@ -62,7 +61,7 @@ export default function Title() {
         body: JSON.stringify({
           userInput: text,
           characterLimit: charLimit,
-          subheaderLimit: subheaderLimit
+          subheaderLimit: subheaderLimit,
         }),
       });
 
@@ -74,21 +73,26 @@ export default function Title() {
         const responseText = result.choices[0].message.content;
 
         // Split the response by the '&&' separator
-        let parts = responseText.split("&&").map((part) => part.trim());
+        let groups = responseText.split("##").map((group) => group.trim());
 
-        if (parts.length === 2) {
-          const titles = parts[0].split("##").map((title) => title.trim());
-          const subtitles = parts[1].split("##").map((subtitle) => subtitle.trim());
-          const recommendations = {
-            titles: titles,
-            subtitles: subtitles
+        let titles = [];
+        let subtitles = [];
+
+        groups.forEach((group) => {
+          const parts = group.split("&&").map((part) => part.trim());
+      
+          if (parts.length === 3) {
+            titles.push(parts[0]);
+            subtitles.push([parts[1], parts[2]]); // Store subtitles as an array [line1, line2]
           }
+        });
 
-          setResponse(recommendations);
+        const recommendations = {
+          titles: titles,
+          subtitles: subtitles,
+        };
 
-        } else {
-          console.log("Error: Response format is incorrect.");
-        }
+        setResponse(recommendations);
       } else {
         console.log("No response generated.");
       }
@@ -126,7 +130,7 @@ export default function Title() {
 
             {/* Input section for character limit */}
             <div className={styles.charLimitSection}>
-              <label className={styles.charLimitLabel}>글자 수 제한:</label>
+              {/* <label className={styles.charLimitLabel}>글자 수 제한:</label>
               <input
                 type="text"
                 className={styles.charLimitInput}
@@ -134,7 +138,7 @@ export default function Title() {
                 onChange={handleCharLimitChange}
                 onBlur={handleCharLimitBlur}
                 placeholder="20"
-              />
+              /> */}
               <button
                 className={styles.generateButton}
                 onClick={handleGenerateClick}
@@ -160,33 +164,38 @@ export default function Title() {
               response && (
                 <div className={styles.responseSection}>
                   <h2 className={styles.responseTitle}>추천 제목</h2>
-              
+
                   {/* Render Titles */}
                   {response.titles && response.titles.length > 0 ? (
                     <ul>
                       {response.titles.map((title, index) => (
-                        <li key={index} className={styles.recommendationTitle}>{title}</li>
+                        <li key={index} className={styles.recommendationTitle}>
+                          {title}
+                        </li>
                       ))}
                     </ul>
                   ) : (
                     <p>No titles available.</p>
                   )}
-              <br/>
-              <h2 className={styles.responseTitle}>추천 소제목</h2>
+                  <br />
+                  <h2 className={styles.responseTitle}>추천 소제목</h2>
                   {/* Render Subtitles */}
-            
+
                   {response.subtitles && response.subtitles.length > 0 ? (
-                    <ul>
-                      {response.subtitles.map((subtitle, index) => (
-                        <li key={index} className={styles.recommendationSubtitle}>{subtitle}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>No subtitles available.</p>
-                  )}
+  <ul>
+    {response.subtitles.map((subtitlePair, index) => (
+      <React.Fragment key={index}>
+        <li className={styles.recommendationSubtitle}>{subtitlePair[0]}</li>
+        <li className={styles.recommendationSubtitle}>{subtitlePair[1]}</li>
+        {index < response.subtitles.length - 1 && <hr />} {/* Divider */}
+      </React.Fragment>
+    ))}
+  </ul>
+) : (
+  <p>No subtitles available.</p>
+)}
                 </div>
               )
-              
             )}
           </div>
         </div>
