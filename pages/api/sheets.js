@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 export default async function handler(req, res) {
   try {
     // Create credentials object from environment variables
-    const credentials = JSON.parse(process.env.NEXT_PUBLIC_GOOGLE_APPLICATION_CREDENTIALS);
+    const credentials = JSON.parse(Buffer.from(process.env.NEXT_PUBLIC_GOOGLE_APPLICATION_CREDENTIALS, 'base64').toString('utf-8'));
     const auth = new google.auth.GoogleAuth({
       credentials,
       scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
