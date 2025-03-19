@@ -45,7 +45,6 @@ export default async function handler(req, res) {
       );
 
       const data = await response.json();
-      console.log(data.choices[0].message.content)
 
       if (data.error) {
         res.status(500).json({ error: data.error.message });
