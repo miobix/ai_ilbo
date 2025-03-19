@@ -3,7 +3,7 @@ import { google } from 'googleapis';
 export default async function handler(req, res) {
   try {
     // Create credentials object from environment variables
-    const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+    const credentials = JSON.parse(process.env.NEXT_PUBLIC_GOOGLE_APPLICATION_CREDENTIALS);
     const auth = new google.auth.GoogleAuth({
       credentials,
       scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     const client = await auth.getClient();
     const sheets = google.sheets({ version: 'v4', auth: client });
 
-    const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+    const spreadsheetId = process.env.NEXT_PUBLIC_GOOGLE_SHEET_ID;
     const range = 'Prompt!B2:B3';
 
     const response = await sheets.spreadsheets.values.get({
