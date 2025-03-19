@@ -13,13 +13,32 @@ export default function Title() {
   const [error, setError] = useState(false); // State for error handling
   const [response, setResponse] = useState(""); // State for API response or generated title
   const [loading, setLoading] = useState(false);
-
+  const [loadingPrompt, setLoadingPrompt] = useState(false)
+  const [prompt, setPrompt] = useState([])    
   const subheaderLimit = 80;
 
   const handleChange = (e) => {
     setText(e.target.value);
     if (error && e.target.value) setError(false);
   };
+
+  //get prompt
+  useEffect(() => {
+    async function fetchData() {
+      setLoadingPrompt(true)
+      try {
+        const response = await fetch('/api/sheets');
+        const result = await response.json();
+        setLoadingPrompt(false)
+        setPrompt(result);
+        console.log("Data fetched:", result[0], result[1])
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    
+    fetchData();
+  }, []);
 
   const handleCharLimitChange = (e) => {
     const value = e.target.value;
@@ -47,6 +66,12 @@ export default function Title() {
       return;
     }
 
+    // Check if prompts are empty
+    if (!prompt.length || !prompt[0] || !prompt[1]) {
+      alert("Prompts are empty - please contact the admin");
+      return;
+    }
+
     setLoading(true);
     setResponse("");
     setPreviousText(text);
@@ -62,6 +87,7 @@ export default function Title() {
           userInput: text,
           characterLimit: charLimit,
           subheaderLimit: subheaderLimit,
+          prompt: prompt,
         }),
       });
 
@@ -80,7 +106,7 @@ export default function Title() {
 
         groups.forEach((group) => {
           const parts = group.split("&&").map((part) => part.trim());
-      
+
           if (parts.length === 3) {
             titles.push(parts[0]);
             subtitles.push([parts[1], parts[2]]); // Store subtitles as an array [line1, line2]
@@ -142,9 +168,9 @@ export default function Title() {
               <button
                 className={styles.generateButton}
                 onClick={handleGenerateClick}
-                disabled={loading || text === previousText}
+                disabled={loading || text === previousText ||  !prompt.length}
               >
-                제목생성
+                {loadingPrompt ? '프롬프트 로딩 중' : '제목생성'}
               </button>
               {/* <button
                 onClick={handleResetClick}
@@ -182,18 +208,23 @@ export default function Title() {
                   {/* Render Subtitles */}
 
                   {response.subtitles && response.subtitles.length > 0 ? (
-  <ul>
-    {response.subtitles.map((subtitlePair, index) => (
-      <React.Fragment key={index}>
-        <li className={styles.recommendationSubtitle}>{subtitlePair[0]}</li>
-        <li className={styles.recommendationSubtitle}>{subtitlePair[1]}</li>
-        {index < response.subtitles.length - 1 && <hr />} {/* Divider */}
-      </React.Fragment>
-    ))}
-  </ul>
-) : (
-  <p>No subtitles available.</p>
-)}
+                    <ul>
+                      {response.subtitles.map((subtitlePair, index) => (
+                        <React.Fragment key={index}>
+                          <li className={styles.recommendationSubtitle}>
+                            {subtitlePair[0]}
+                          </li>
+                          <li className={styles.recommendationSubtitle}>
+                            {subtitlePair[1]}
+                          </li>
+                          {index < response.subtitles.length - 1 && <hr />}{" "}
+                          {/* Divider */}
+                        </React.Fragment>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No subtitles available.</p>
+                  )}
                 </div>
               )
             )}
