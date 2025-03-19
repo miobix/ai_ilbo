@@ -10,8 +10,7 @@ export default async function handler(req, res) {
     const { userInput, characterLimit, subheaderLimit, prompt } = req.body;
     let sheetsSystemPrompt = prompt[0]
     let sheetsUserPrompt = prompt[1]
-
-    let articlesLimit = 1350
+    let articlesLimit = 1050
 
     let examples = newsData
     //.sort((a, b) => new Date(b.newsdate) - new Date(a.newsdate))  // Sort by newsdate, most recent first
