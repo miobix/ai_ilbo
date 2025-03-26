@@ -55,6 +55,32 @@
     color: #999;
   }
 
+  .radioButtonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+  }
+  
+  .radioButtonLine {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap; /* Allow wrapping if needed */
+  }
+  
+  .radioLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 5px;
+    white-space: nowrap; /* Prevent text from wrapping */
+  }
+  
+  .radioInput {
+    margin-right: 5px;
+  }
   /* Error styling */
 .errorTextarea {
     border-color: red;

@@ -131,3 +131,29 @@ export function getExternalImageSource(newsItem){
   }
 }
 
+
+// src/app/utils/newsDataMapping.js
+export const newsDataMapping = {
+  0: 'Paper.js',
+  1: 'Digital.js',
+  2: 'FirstPage.js',
+  3: 'Issue.js',
+  4: 'Politics.js',
+  5: 'Society.js',
+  6: 'Economy.js',
+  7: 'Health.js',
+  8: 'People.js',
+  9: 'Sports.js',
+  10: 'Opinion.js',
+  11: 'Insider.js',
+  12: 'Culture.js',
+  13: 'Rest.js'
+};
+
+// Function to get the correct filename
+export const getNewsDataFilename = (categoryNumber) => {
+  console.log(categoryNumber)
+  return newsDataMapping[categoryNumber] || 'defaultNews.js';
+};
+
+

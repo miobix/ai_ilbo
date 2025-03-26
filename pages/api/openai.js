@@ -1,16 +1,28 @@
 // pages/api/openai.js
 import fetch from "node-fetch"; // Make sure to install node-fetch if needed (npm install node-fetch)
-import { newsData } from '../../src/app/utils/constants';
-import { google } from "googleapis";
 import { readFileSync } from "fs";
-
+import { getNewsDataFilename } from '../../src/app/utils/common';
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { userInput, characterLimit, subheaderLimit, prompt } = req.body;
+    console.log(req.body)
+    const { userInput, characterLimit, subheaderLimit, prompt, examplesId } = req.body;
     let sheetsSystemPrompt = prompt[0]
     let sheetsUserPrompt = prompt[1]
     let articlesLimit = 1050
+
+    console.log(examplesId)
+    const filename = getNewsDataFilename(examplesId);
+
+    // Dynamically import the correct newsData file
+    let newsData;
+    try {
+      // Use dynamic import based on examplesList
+      newsData = await import(`../../src/app/utils/examples${filename}`).then(module => module.newsData);
+    } catch (importError) {
+      console.error("Error importing newsData:", importError);
+      return res.status(400).json({ error: "Invalid examples list specified" });
+    }
 
     let examples = newsData
     //.sort((a, b) => new Date(b.newsdate) - new Date(a.newsdate))  // Sort by newsdate, most recent first
