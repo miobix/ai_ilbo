@@ -14,10 +14,10 @@ export default function Home() {
 
   const environment = process.env.NEXT_PUBLIC_ENV;
   const baseString =
-    environment === "dev"
+    environment === "dev" 
       ? "http://localhost:3000/"
       : "https://www.yeongnam.ai/";
-
+ 
   useEffect(() => {
     fetch("/api/fetchEmailPress")
       .then((response) => response.json())
