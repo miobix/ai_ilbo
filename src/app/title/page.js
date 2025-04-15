@@ -51,31 +51,63 @@ export default function Title() {
     fetchData();
   }, []);
 
-  const handleGenerateClick = async () => {
-    if (loading) return;
-
-    if (text === previousText) {
-      return;
-    }
-
-    if (!text) {
-      setError(true);
-      return;
-    }
-
-    // Check if prompts are empty
-    if (!prompt.length || !prompt[0] || !prompt[1]) {
-      alert("Prompts are empty - please contact the admin");
-      return;
-    }
-
-    setLoading(true);
-    setResponse("");
-    setPreviousText(text);
-
-    // Make the API call to OpenAI
+  const getAssistantMessage = async () => {
+    console.log("Using assistant API");
     try {
-      console.log(exampleList);
+      const assistantResponse = await fetch("/api/openaiAssistant", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userInput: text,
+          characterLimit: charLimit,
+          subheaderLimit: subheaderLimit,
+          prompt: prompt,
+          examplesId: exampleList,
+        }),
+      });
+
+      const result = await assistantResponse.json();
+      console.log(result.choices);
+      setLoading(false);
+
+      if (result.choices && result.choices.length > 0) {
+        const responseText = result.choices[0].message.content;
+
+        // Split the response by the '##' separator
+        let groups = responseText.split("##").map((group) => group.trim());
+
+        let titles = [];
+        let subtitles = [];
+
+        groups.forEach((group) => {
+          const parts = group.split("&&").map((part) => part.trim());
+
+          if (parts.length === 3) {
+            titles.push(parts[0]);
+            subtitles.push([parts[1], parts[2]]); // Store subtitles as an array [line1, line2]
+          }
+        });
+
+        const recommendations = {
+          titles: titles,
+          subtitles: subtitles,
+        };
+
+        setResponse(recommendations);
+      } else {
+        console.log("No response generated.");
+      }
+    } catch (error) {
+      console.error("Error calling Assistant API", error);
+      setLoading(false);
+      console.log("An error occurred while generating the title.");
+    }
+  };
+
+  const getCompletionsMessage = async () => {
+    try {
       const openAIResponse = await fetch("/api/openai", {
         method: "POST",
         headers: {
@@ -125,6 +157,41 @@ export default function Title() {
       console.error("Error calling OpenAI API", error);
       setLoading(false);
       console.log("An error occurred while generating the title.");
+    }
+  };
+
+  const handleGenerateClick = async () => {
+    if (loading) return;
+
+    if (text === previousText) {
+      return;
+    }
+
+    if (!text) {
+      setError(true);
+      return;
+    }
+
+    // Check if prompts are empty
+    if (!prompt.length || !prompt[0] || !prompt[1]) {
+      alert("Prompts are empty - please contact the admin");
+      return;
+    }
+
+    setLoading(true);
+    setResponse("");
+    setPreviousText(text);
+
+    // Make the API call to OpenAI
+    if (exampleList == 0) {
+      // call the printed versions: assistant
+      getAssistantMessage();
+    } else if (exampleList == 1) {
+      // call the printed versions: assistant
+      getCompletionsMessage();
+    } else {
+      console.log("unsupported call");
+      setLoading(false);
     }
   };
 
