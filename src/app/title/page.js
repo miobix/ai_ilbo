@@ -7,12 +7,15 @@ import Header from "../components/Header/Header";
 import React, { useState, useEffect } from "react";
 
 export default function Title() {
-
-  let availableExamples = ["지면전체", "웹뉴스", "1면, 종합", "이슈, 기획","정치","사회, 경북","경제, 부동산","건강","대학, 사람&뉴스, 동네뉴스","스포츠","오피니언","토크인사이드, 출향 인사를 찾아서","문화, 위클리","기타"]
+  let availableExamples = [
+    "지면전체",
+    "웹뉴스",
+    // "1면, 종합", "이슈, 기획","정치","사회, 경북","경제, 부동산","건강","대학, 사람&뉴스, 동네뉴스","스포츠","오피니언","토크인사이드, 출향 인사를 찾아서","문화, 위클리","기타"
+  ];
 
   const [text, setText] = useState(""); // State for textarea input
   const [previousText, setPreviousText] = useState(""); // State to track previous text input
-  const [charLimit, setCharLimit] = useState(35); // State for character limit input
+  const [charLimit, setCharLimit] = useState(20); // State for character limit input
   const [error, setError] = useState(false); // State for error handling
   const [response, setResponse] = useState(""); // State for API response or generated title
   const [loading, setLoading] = useState(false);
@@ -28,7 +31,6 @@ export default function Title() {
 
   const handleRadioChange = (index) => {
     setExampleList(index);
-    
   };
 
   //get prompt
@@ -73,7 +75,7 @@ export default function Title() {
 
     // Make the API call to OpenAI
     try {
-      console.log(exampleList)
+      console.log(exampleList);
       const openAIResponse = await fetch("/api/openai", {
         method: "POST",
         headers: {
@@ -84,7 +86,7 @@ export default function Title() {
           characterLimit: charLimit,
           subheaderLimit: subheaderLimit,
           prompt: prompt,
-          examplesId: exampleList
+          examplesId: exampleList,
         }),
       });
 
@@ -126,6 +128,22 @@ export default function Title() {
     }
   };
 
+  const handleCharLimitChange = (e) => {
+    const value = e.target.value;
+    // Allow empty input or any number during typing
+    if (value === "" || /^[0-9\b]+$/.test(value)) {
+      setCharLimit(value);
+    }
+  };
+
+  // Handle blur event to enforce min/max limits
+  const handleCharLimitBlur = () => {
+    let value = parseInt(charLimit, 10);
+    if (isNaN(value) || value < 1) value = 1;
+    if (value > 50) value = 50;
+    setCharLimit(value);
+  };
+
   const handleResetClick = () => {
     setText("");
     setCharLimit(20);
@@ -133,7 +151,6 @@ export default function Title() {
     setResponse("");
     console.log("Reset button clicked: 초기화");
   };
-
 
   return (
     <main className={styles.main}>
@@ -151,57 +168,57 @@ export default function Title() {
               onChange={handleChange}
               placeholder="기사 텍스트 붙여넣으세요..."
             />
-            
+
             {/* Radio Button Section - Multiple lines */}
-<div className={styles.radioButtonContainer}>
-  {/* Split into multiple lines for better readability */}
-  <div className={styles.radioButtonLine}>
-    {availableExamples.slice(0, 5).map((example, index) => (
-      <label key={example} className={styles.radioLabel}>
-        <input
-          type="radio"
-          name="optionSelect"
-          checked={exampleList === index}
-          onChange={() => handleRadioChange(index)}
-          className={styles.radioInput}
-        />
-        {example}
-      </label>
-    ))}
-  </div>
-  <div className={styles.radioButtonLine}>
-    {availableExamples.slice(5, 10).map((example, index) => (
-      <label key={example} className={styles.radioLabel}>
-        <input
-          type="radio"
-          name="optionSelect"
-          checked={exampleList === index + 5}
-          onChange={() => handleRadioChange(index + 5)}
-          className={styles.radioInput}
-        />
-        {example}
-      </label>
-    ))}
-  </div>
-  <div className={styles.radioButtonLine}>
-    {availableExamples.slice(10).map((example, index) => (
-      <label key={example} className={styles.radioLabel}>
-        <input
-          type="radio"
-          name="optionSelect"
-          checked={exampleList === index + 10}
-          onChange={() => handleRadioChange(index + 10)}
-          className={styles.radioInput}
-        />
-        {example}
-      </label>
-    ))}
-  </div>
-</div>
+            <div className={styles.radioButtonContainer}>
+              {/* Split into multiple lines for better readability */}
+              <div className={styles.radioButtonLine}>
+                {availableExamples.slice(0, 5).map((example, index) => (
+                  <label key={example} className={styles.radioLabel}>
+                    <input
+                      type="radio"
+                      name="optionSelect"
+                      checked={exampleList === index}
+                      onChange={() => handleRadioChange(index)}
+                      className={styles.radioInput}
+                    />
+                    {example}
+                  </label>
+                ))}
+              </div>
+              <div className={styles.radioButtonLine}>
+                {availableExamples.slice(5, 10).map((example, index) => (
+                  <label key={example} className={styles.radioLabel}>
+                    <input
+                      type="radio"
+                      name="optionSelect"
+                      checked={exampleList === index + 5}
+                      onChange={() => handleRadioChange(index + 5)}
+                      className={styles.radioInput}
+                    />
+                    {example}
+                  </label>
+                ))}
+              </div>
+              <div className={styles.radioButtonLine}>
+                {availableExamples.slice(10).map((example, index) => (
+                  <label key={example} className={styles.radioLabel}>
+                    <input
+                      type="radio"
+                      name="optionSelect"
+                      checked={exampleList === index + 10}
+                      onChange={() => handleRadioChange(index + 10)}
+                      className={styles.radioInput}
+                    />
+                    {example}
+                  </label>
+                ))}
+              </div>
+            </div>
 
             {/* Input section for character limit */}
             <div className={styles.charLimitSection}>
-              {/* <label className={styles.charLimitLabel}>글자 수 제한:</label>
+              <label className={styles.charLimitLabel}>글자 수 제한:</label>
               <input
                 type="text"
                 className={styles.charLimitInput}
@@ -209,7 +226,7 @@ export default function Title() {
                 onChange={handleCharLimitChange}
                 onBlur={handleCharLimitBlur}
                 placeholder="20"
-              /> */}
+              />
               <button
                 className={styles.generateButton}
                 onClick={handleGenerateClick}
