@@ -1,0 +1,249 @@
+.main {
+    margin: 0 auto;
+    position: relative;
+    font-family: Noto Sans KR;
+  }
+  
+  .Main_cont {
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+  
+  .Main_cont_inner {
+    position: relative;
+    padding: 60px;
+    border-radius: 6px;
+    background-color: #fff;
+    min-height: 1000px;
+  }
+  .title {
+    text-align: center;
+    font-size: 36px; 
+    font-weight: bold;
+    color: #333;
+    margin-top: 20px;
+    margin-bottom: 20px; 
+  }
+  
+  .paragraph {
+    text-align: center;
+    font-size: 18px; 
+    color: #555;
+    max-width: 800px; 
+    margin: 0 auto; 
+    line-height: 1.6; 
+  }
+
+  
+  .textarea {
+    width: 100%;
+    max-width: 800px;
+    height: 300px;
+    padding: 15px;
+    font-size: 16px;
+    font-family: 'Noto Sans KR', sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical; 
+    margin-top: 40px; 
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .textarea::placeholder {
+    color: #999;
+  }
+
+  .radioButtonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+  }
+  
+  .radioButtonLine {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap; /* Allow wrapping if needed */
+  }
+  
+  .radioLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 0 5px;
+    white-space: nowrap; /* Prevent text from wrapping */
+  }
+  
+  .radioInput {
+    margin-right: 5px;
+  }
+  /* Error styling */
+.errorTextarea {
+    border-color: red;
+    border-width: 2px;
+  }
+  
+  /* Character Limit Section */
+.charLimitSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .charLimitLabel {
+    font-size: 16px;
+    color: #333;
+    margin-right: 10px;
+  }
+  
+  .charLimitInput {
+    width: 60px;
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+  }
+  
+  .generateButton {
+    padding: 10px 20px;
+    height: 40px;
+    width: 120px;
+    margin-right: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .generateButton:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  
+  .resetButton {
+    padding: 10px 20px;
+    height: 40px;
+    width: 120px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #ff4d4d;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .resetButton:hover {
+    background-color: #cc0000;
+  }
+
+  .responseSection {
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 20px;
+    margin: 40px auto;
+    max-width: 800px;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .responseTitle {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .recommendation {
+    margin-bottom: 20px;
+    margin-left: 20px;
+  }
+  
+  .recommendationTitle {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .recommendationSubtitle {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .keyTakeaways {
+    list-style-type: disc;
+    padding-left: 20px;
+    color: #555;
+  }
+  
+  @media screen and (max-width: 1350px) {
+    .Main_cont_inner {
+      padding: 40px 20px;
+    }
+  
+    .Main_cont {
+      padding: 0px 12px;
+    }
+  
+    .textarea {
+      width: 90%; /* Make the textarea a bit wider on medium screens */
+      height: 250px; /* Reduce the height slightly on smaller screens */
+    }
+
+    .charLimitInput {
+        width: 50px;
+      }
+  }
+  
+  @media screen and (max-width: 860px) {
+    .Main_cont_inner {
+      padding: 25px 20px;
+    }
+  
+    .textarea {
+      width: 95%; /* Make the textarea almost full-width on smaller screens */
+      height: 200px; /* Reduce height further on very small screens */
+    }
+
+    .generateButton {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+
+      .generateButton {
+        padding: 10px 20px;
+        height: 40px;
+        margin-right: 10px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      
+      .generateButton {
+        padding: 5px 10px;
+        font-size: 11px;
+        width: 70px
+      }
+      
+      .resetButton {
+        padding: 5px 10px;
+        font-size: 11px;
+        width: 70px
+      }
+      
+  }
