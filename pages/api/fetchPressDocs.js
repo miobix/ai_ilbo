@@ -44,7 +44,7 @@ export default async function fetchPressDocs(req, res) {
           Array.isArray(item.summary.key_takeaways)
       );
 
-      res.status(200).json(validatedData.slice(0, 20));
+      res.status(200).json(validatedData.slice(0, 50));
     } catch (error) {
       res.status(500).json({ message: "Something went wrong" });
     } finally {

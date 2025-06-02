@@ -64,7 +64,7 @@ export default async function fetchAllPress(req, res) {
       // Sort by timestamp again and limit to last 30 entries
       const sortedData = validatedData.sort((a, b) => new Date(b.timestamp.replace(" ", "T")) - new Date(a.timestamp.replace(" ", "T")));
 
-      res.status(200).json(sortedData.slice(0, 30));
+      res.status(200).json(sortedData.slice(0, 50));
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Something went wrong" });
