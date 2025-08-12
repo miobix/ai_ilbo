@@ -29,6 +29,7 @@ export default function Header() {
           <Link href="/category/sns"><button className={styles.headerButton}>{`SNS`}</button></Link>
           <Link href="/chart"><button className={styles.headerButton}>{`조회수`}</button></Link>
           <Link href="/youtube"><button className={styles.headerButton}>{`유투브 통계`}</button></Link>
+          <Link href="/check"><button className={styles.headerButton}>{`표절 검사기`}</button></Link>
 
         </div>
         </div>
