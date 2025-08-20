@@ -131,7 +131,7 @@ export default function Check() {
   };
 
   // Text comparison algorithm - Improved text comparison and highlighting
-  const compareTexts = (text1, text2, threshold = 0.72) => {
+  const compareTexts = (text1, text2, threshold = 0.6) => {
     // Split texts into sentences or chunks
     const sentences1 = text1.split(/[.!?]+/).filter((s) => s.trim().length > 10);
     const sentences2 = text2.split(/[.!?]+/).filter((s) => s.trim().length > 10);
@@ -139,16 +139,21 @@ export default function Check() {
     // Track matches with start/end indices
     let matches = [];
 
-    sentences1.forEach((sentence1) => {
-      const clean1 = sentence1.trim().toLowerCase();
-      sentences2.forEach((sentence2) => {
-        const clean2 = sentence2.trim().toLowerCase();
-        const similarity = calculateSimilarity(clean1, clean2);
-        if (similarity >= threshold) {
-          matches.push({ text: sentence1.trim() });
-        }
-      });
-    });
+sentences1.forEach((sentence1) => {
+  const clean1 = sentence1.trim().toLowerCase();
+  let hasMatch = false; // Add this flag
+  
+  sentences2.forEach((sentence2) => {
+    if (hasMatch) return; // Skip if we already found a match
+    
+    const clean2 = sentence2.trim().toLowerCase();
+    const similarity = calculateSimilarity(clean1, clean2);
+    if (similarity >= threshold) {
+      matches.push({ text: sentence1.trim() });
+      hasMatch = true; // Set flag to prevent further matches
+    }
+  });
+});
 
     // Highlight matches in the original text
     let highlightedText = text1;
@@ -160,7 +165,7 @@ export default function Check() {
 
     // Overall similarity percentage
     const similarityPercentage = Math.min(100, (matches.length / sentences1.length) * 100);
-
+    console.log(matches, sentences1);
     return { similarity: similarityPercentage, highlightedText };
   };
 
