@@ -6,8 +6,8 @@ import Header from "../components/Header/Header";
 import React, { useState, useEffect } from "react";
 
 export default function Check() {
-  const [reporterText, setReporterText] = useState(""); 
-  const [pressReleaseText, setPressReleaseText] = useState(""); 
+  const [reporterText, setReporterText] = useState("");
+  const [pressReleaseText, setPressReleaseText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [similarityRate, setSimilarityRate] = useState(0);
   const [highlightedText, setHighlightedText] = useState("");
@@ -16,31 +16,33 @@ export default function Check() {
   const [aiFeedback, setAiFeedback] = useState("");
   const [hasAnalyzed, setHasAnalyzed] = useState(false);
   const [errors, setErrors] = useState({ reporter: false, pressRelease: false });
+  const [aiAnalysisText, setAiAnalysisText] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
   const charLimit = 10000;
 
   const handleReporterChange = (e) => {
     const text = e.target.value.slice(0, charLimit);
     setReporterText(text);
-    setErrors(prev => ({ ...prev, reporter: false }));
+    setErrors((prev) => ({ ...prev, reporter: false }));
   };
 
   const handlePressReleaseChange = (e) => {
     const text = e.target.value.slice(0, charLimit);
     setPressReleaseText(text);
-    setErrors(prev => ({ ...prev, pressRelease: false }));
+    setErrors((prev) => ({ ...prev, pressRelease: false }));
   };
 
   // Simple plagiarism detection algorithm
-  const analyzeTexts = () => {
+  const analyzeTexts = async () => {
     const text1 = reporterText.trim();
     const text2 = pressReleaseText.trim();
-    
+
     // Validate inputs
     if (!text1 || !text2) {
       setErrors({
         reporter: !text1,
-        pressRelease: !text2
+        pressRelease: !text2,
       });
       return;
     }
@@ -48,95 +50,152 @@ export default function Check() {
     setIsLoading(true);
     setErrors({ reporter: false, pressRelease: false });
 
-    // Simulate processing time
-    setTimeout(() => {
-      const result = compareTexts(text1, text2);
-      setSimilarityRate(result.similarity);
-      setHighlightedText(result.highlightedText);
-      
-      // Simulate AI results
-      setAiPlagiarismRate(`${Math.round(result.similarity)}%`);
-      setAiOriginalityStatus(result.similarity > 30 ? "표절 의심" : "자체기사");
-      setAiFeedback("AI 분석 결과가 여기에 표시됩니다. 기사의 독창성을 높이기 위한 제안사항들이 포함될 예정입니다.");
-      
+    try {
+      // Run local analysis
+      const localResult = compareTexts(text1, text2);
+      setSimilarityRate(localResult.similarity);
+      setHighlightedText(localResult.highlightedText);
+
+      //Call AI API
+      const aiResponse = await fetch("/api/plagiarism", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          reporterText: text1,
+          pressReleaseText: text2,
+        }),
+      });
+
+      const result = await aiResponse.json();
+
+      if (result.choices && result.choices.length > 0) {
+        const responseText = result.choices[0].message.content;
+
+        // Parse the AI response
+        const lines = responseText.split("\n").filter((line) => line.trim());
+
+        let plagiarismRate = "";
+        let originalityStatus = "";
+        let reason = "";
+        let suggestions = [];
+
+        // Extract information from AI response
+        lines.forEach((line, index) => {
+          if (line.includes("표절률:")) {
+            plagiarismRate = line.split("표절률:")[1].trim();
+          } else if (line.includes("판정:")) {
+            originalityStatus = line.split("판정:")[1].trim();
+          } else if (line.includes("이유:")) {
+            reason = line.split("이유:")[1].trim();
+          } else if (line.includes("##개선제안##")) {
+            // Collect suggestions from the following lines
+            for (let i = index + 1; i < lines.length; i++) {
+              const suggestionLine = lines[i].trim();
+              if (suggestionLine && suggestionLine.match(/^\d+\./)) {
+                const cleanSuggestion = suggestionLine.replace(/^\d+\.\s*/, "");
+                if (!cleanSuggestion.includes("[미통과 기준") && !cleanSuggestion.includes("대한 구체적인 제안")) {
+                  suggestions.push(cleanSuggestion);
+                }
+              }
+            }
+          }
+        });
+
+        // Override suggestions if it's 자체기사
+        if (originalityStatus && originalityStatus.includes("자체기사")) {
+          suggestions = ["현재 기사는 자체기사 기준을 충족합니다.", "추가적인 개선사항이 필요하지 않습니다."];
+        }
+
+        // Fallback for empty or placeholder suggestions
+        if (suggestions.length === 0 || suggestions.every((s) => s.includes("[미통과 기준"))) {
+          suggestions = ["구체적인 개선 제안사항을 생성할 수 없습니다.", "AI 분석을 다시 시도해보세요."];
+        }
+
+        // Set AI results
+        setAiPlagiarismRate(plagiarismRate);
+        setAiOriginalityStatus(originalityStatus);
+        setAiFeedback(reason);
+        setSuggestions(suggestions);
+        setAiAnalysisText(responseText);
+      }
+
       setHasAnalyzed(true);
+    } catch (error) {
+      console.error("Error calling plagiarism API", error);
+      setAiFeedback("AI 분석 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    } finally {
       setIsLoading(false);
-    }, 100);
+    }
   };
 
-  // Text comparison algorithm
-  const compareTexts = (text1, text2) => {
-    // Split texts into sentences
-    const sentences1 = text1.split(/[.!?]+/).filter(s => s.trim().length > 10);
-    const sentences2 = text2.split(/[.!?]+/).filter(s => s.trim().length > 10);
-    
-    let matchedPhrases = [];
-    let totalMatches = 0;
+  // Text comparison algorithm - Improved text comparison and highlighting
+  const compareTexts = (text1, text2, threshold = 0.72) => {
+    // Split texts into sentences or chunks
+    const sentences1 = text1.split(/[.!?]+/).filter((s) => s.trim().length > 10);
+    const sentences2 = text2.split(/[.!?]+/).filter((s) => s.trim().length > 10);
 
-    // Compare sentences with fuzzy matching
-    sentences1.forEach(sentence1 => {
-      const cleanSentence1 = sentence1.trim().toLowerCase();
-      sentences2.forEach(sentence2 => {
-        const cleanSentence2 = sentence2.trim().toLowerCase();
-        const similarity = calculateSimilarity(cleanSentence1, cleanSentence2);
-        
-        if (similarity > 0.7) { // 70% similarity threshold
-          matchedPhrases.push(sentence1.trim());
-          totalMatches++;
+    // Track matches with start/end indices
+    let matches = [];
+
+    sentences1.forEach((sentence1) => {
+      const clean1 = sentence1.trim().toLowerCase();
+      sentences2.forEach((sentence2) => {
+        const clean2 = sentence2.trim().toLowerCase();
+        const similarity = calculateSimilarity(clean1, clean2);
+        if (similarity >= threshold) {
+          matches.push({ text: sentence1.trim() });
         }
       });
     });
 
-    // Calculate overall similarity percentage
-    const similarityPercentage = Math.min(100, (totalMatches / sentences1.length) * 100);
-
-    // Create highlighted text
+    // Highlight matches in the original text
     let highlightedText = text1;
-    matchedPhrases.forEach(phrase => {
-      const regex = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-      highlightedText = highlightedText.replace(regex, `<mark style="background-color: yellow;">${phrase}</mark>`);
+    matches.forEach((match) => {
+      const escaped = match.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(escaped, "g");
+      highlightedText = highlightedText.replace(regex, `<mark style="background-color: yellow;">$&</mark>`);
     });
 
-    return {
-      similarity: similarityPercentage,
-      highlightedText: highlightedText
-    };
+    // Overall similarity percentage
+    const similarityPercentage = Math.min(100, (matches.length / sentences1.length) * 100);
+
+    return { similarity: similarityPercentage, highlightedText };
   };
 
-  // Calculate similarity between two strings using Levenshtein distance
+  // Calculate cosine similarity between two strings
   const calculateSimilarity = (str1, str2) => {
-    const matrix = [];
-    const len1 = str1.length;
-    const len2 = str2.length;
+    const tokenize = (str) => str.toLowerCase().match(/\b\w+\b/g) || [];
 
-    for (let i = 0; i <= len2; i++) {
-      matrix[i] = [i];
-    }
-    for (let j = 0; j <= len1; j++) {
-      matrix[0][j] = j;
-    }
+    const words1 = tokenize(str1);
+    const words2 = tokenize(str2);
 
-    for (let i = 1; i <= len2; i++) {
-      for (let j = 1; j <= len1; j++) {
-        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-          matrix[i][j] = matrix[i - 1][j - 1];
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j - 1] + 1,
-            matrix[i][j - 1] + 1,
-            matrix[i - 1][j] + 1
-          );
-        }
-      }
-    }
+    const freq1 = {},
+      freq2 = {};
+    words1.forEach((w) => (freq1[w] = (freq1[w] || 0) + 1));
+    words2.forEach((w) => (freq2[w] = (freq2[w] || 0) + 1));
 
-    const maxLen = Math.max(len1, len2);
-    return maxLen === 0 ? 1 : 1 - (matrix[len2][len1] / maxLen);
+    const allWords = new Set([...words1, ...words2]);
+
+    let dot = 0,
+      mag1 = 0,
+      mag2 = 0;
+    allWords.forEach((word) => {
+      const v1 = freq1[word] || 0;
+      const v2 = freq2[word] || 0;
+      dot += v1 * v2;
+      mag1 += v1 * v1;
+      mag2 += v2 * v2;
+    });
+
+    if (mag1 === 0 || mag2 === 0) return 0;
+    return dot / (Math.sqrt(mag1) * Math.sqrt(mag2));
   };
 
   // Count Korean characters (excluding spaces)
   const countKoreanChars = (text) => {
-    return text.replace(/\s/g, '').length;
+    return text.replace(/\s/g, "").length;
   };
 
   return (
@@ -214,7 +273,7 @@ export default function Check() {
 
                 <div className={styles.aiStatsContainer}>
                   <div className={styles.aiStatBlock}>
-                    <div className={styles.statLabel}>표절률</div>
+                    <div className={styles.statLabel}>AI 표절률</div>
                     <div className={styles.statValue}>{hasAnalyzed ? aiPlagiarismRate : "-"}</div>
                   </div>
                   <div className={styles.aiStatBlock}>
@@ -223,7 +282,44 @@ export default function Check() {
                   </div>
                 </div>
 
-                <div className={styles.aiFeedbackTextarea}>{hasAnalyzed ? aiFeedback : "AI 분석 결과가 여기에 표시됩니다"}</div>
+                <div className={styles.aiResultsContainer}>
+                  <div className={styles.aiFeedbackSection}>
+                    <h4 className={styles.aiSectionTitle}>분석 결과</h4>
+                    <div className={styles.aiFeedbackTextarea}>{hasAnalyzed ? aiFeedback : "AI 분석 결과가 여기에 표시됩니다"}</div>
+                  </div>
+
+                  <div className={styles.suggestionsSection}>
+                    <h4 className={styles.aiSectionTitle}>개선 제안사항</h4>
+                    <div className={styles.suggestionsContainer}>
+                      {hasAnalyzed && suggestions.length > 0 ? (
+                        <ul className={styles.suggestionsList}>
+                          {suggestions.map((suggestion, index) => (
+                            <li key={index} className={styles.suggestionItem}>
+                              {suggestion}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className={styles.noSuggestions}>개선 제안사항이 여기에 표시됩니다</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                {/* <div className={styles.aiFeedbackTextarea}>{hasAnalyzed ? aiFeedback : "AI 분석 결과가 여기에 표시됩니다"}</div>
+
+                
+                {hasAnalyzed && suggestions.length > 0 && (
+                  <div className={styles.suggestionsContainer}>
+                    <h4 className={styles.suggestionsTitle}>개선 제안사항</h4>
+                    <ul className={styles.suggestionsList}>
+                      {suggestions.map((suggestion, index) => (
+                        <li key={index} className={styles.suggestionItem}>
+                          {suggestion}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )} */}
               </div>
             </div>
 
@@ -247,3 +343,27 @@ export default function Check() {
     </main>
   );
 }
+
+// Calculate Jaccard similarity between two strings
+// const calculateSimilarity = (str1, str2) => {
+//   // Convert to lowercase and split into word sets
+//   const words1 = new Set(
+//     str1
+//       .toLowerCase()
+//       .split(/\s+/)
+//       .filter((word) => word.length > 0)
+//   );
+//   const words2 = new Set(
+//     str2
+//       .toLowerCase()
+//       .split(/\s+/)
+//       .filter((word) => word.length > 0)
+//   );
+
+//   // Calculate intersection and union
+//   const intersection = new Set([...words1].filter((word) => words2.has(word)));
+//   const union = new Set([...words1, ...words2]);
+
+//   // Jaccard similarity = intersection / union
+//   return union.size === 0 ? 0 : intersection.size / union.size;
+// };

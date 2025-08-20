@@ -23,13 +23,13 @@ export default function Header() {
           <div className={styles.logo}>영남일보AI</div>
         </Link>
         <div className={styles.headerButtonsContainer}>
+          <Link href="/chart"><button className={styles.headerButton}>{`자체기사`}</button></Link>
+          <Link href="/check"><button className={styles.headerButton}>{`표절 검사기`}</button></Link>
           <Link href="/category/dgpressrelease"><button className={styles.headerButton}>{`대구/경북`}</button></Link>
           <Link href="/category/representatives"><button className={styles.headerButton}>{`의원실`}</button></Link>
           <Link href="/category/pressrelease"><button className={styles.headerButton}>{`보도자료`}</button></Link>
           <Link href="/category/sns"><button className={styles.headerButton}>{`SNS`}</button></Link>
-          <Link href="/chart"><button className={styles.headerButton}>{`조회수`}</button></Link>
-          <Link href="/youtube"><button className={styles.headerButton}>{`유투브 통계`}</button></Link>
-          <Link href="/check"><button className={styles.headerButton}>{`표절 검사기`}</button></Link>
+          <Link href="/youtube"><button className={styles.headerButton}>{`유튜브`}</button></Link>
 
         </div>
         </div>
