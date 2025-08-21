@@ -50,50 +50,50 @@ ${pressReleaseText}
 
 위 요건과 원본 비교를 종합하여 판정하세요.`;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "당신은 영남일보의 편집 전문가입니다. 기사의 독창성과 자체기사 여부를 정확하게 판단하고 건설적인 피드백을 제공합니다."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      max_tokens: 1000,
-      temperature: 0.3,
-    });
+    // const completion = await openai.chat.completions.create({
+    //   model: "gpt-4o",
+    //   messages: [
+    //     {
+    //       role: "system",
+    //       content: "당신은 영남일보의 편집 전문가입니다. 기사의 독창성과 자체기사 여부를 정확하게 판단하고 건설적인 피드백을 제공합니다."
+    //     },
+    //     {
+    //       role: "user",
+    //       content: prompt
+    //     }
+    //   ],
+    //   max_tokens: 1000,
+    //   temperature: 0.3,
+    // });
 
-    res.status(200).json({
-      choices: completion.choices,
-      usage: completion.usage
-    });
+    // res.status(200).json({
+    //   choices: completion.choices,
+    //   usage: completion.usage
+    // });
 
 
 // GPT 5 try
 
-// const result = await openai.responses.create({
-//   model: "gpt-5",
-//   input: [
-//     {
-//       role: "system",
-//       content: "당신은 영남일보의 편집 전문가입니다. 기사의 독창성과 자체기사 여부를 정확하게 판단하고 건설적인 피드백을 제공합니다."
-//     },
-//     {
-//       role: "user",
-//       content: prompt
-//     }
-//   ],
-//   reasoning: { effort: "low" },
-//   text: { verbosity: "low" },
-// });
+const result = await openai.responses.create({
+  model: "gpt-5",
+  input: [
+    {
+      role: "system",
+      content: "당신은 영남일보의 편집 전문가입니다. 기사의 독창성과 자체기사 여부를 정확하게 판단하고 건설적인 피드백을 제공합니다."
+    },
+    {
+      role: "user",
+      content: prompt
+    }
+  ],
+  reasoning: { effort: "low" },
+  text: { verbosity: "low" },
+});
 
-// res.status(200).json({
-//   text: result.output_text,
-//   raw: result
-// });
+res.status(200).json({
+  text: result.output_text,
+  raw: result
+});
 
 
 

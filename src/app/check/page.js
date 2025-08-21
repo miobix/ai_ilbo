@@ -70,12 +70,12 @@ export default function Check() {
 
       const result = await aiResponse.json();
       console.log(result)
-      if (result.choices && result.choices.length > 0) {
-        const responseText = result.choices[0].message.content;
+      if (result.text && result.text.length > 0) {
+        const responseText = result.text
 
         // Parse the AI response
         const lines = responseText.split("\n").filter((line) => line.trim());
-
+        console.log(lines)
         let plagiarismRate = "";
         let originalityStatus = "";
         let reason = "";
@@ -119,6 +119,57 @@ export default function Check() {
         setAiFeedback(reason);
         setSuggestions(suggestions);
         setAiAnalysisText(responseText);
+
+        // for gpt 4
+        // if (result.choices && result.choices.length > 0) {
+        // const responseText = result.choices[0].message.content;
+
+        // // Parse the AI response
+        // const lines = responseText.split("\n").filter((line) => line.trim());
+
+        // let plagiarismRate = "";
+        // let originalityStatus = "";
+        // let reason = "";
+        // let suggestions = [];
+
+        // // Extract information from AI response
+        // lines.forEach((line, index) => {
+        //   if (line.includes("표절률:")) {
+        //     plagiarismRate = line.split("표절률:")[1].trim();
+        //   } else if (line.includes("판정:")) {
+        //     originalityStatus = line.split("판정:")[1].trim();
+        //   } else if (line.includes("이유:")) {
+        //     reason = line.split("이유:")[1].trim();
+        //   } else if (line.includes("##개선제안##")) {
+        //     // Collect suggestions from the following lines
+        //     for (let i = index + 1; i < lines.length; i++) {
+        //       const suggestionLine = lines[i].trim();
+        //       if (suggestionLine && suggestionLine.match(/^\d+\./)) {
+        //         const cleanSuggestion = suggestionLine.replace(/^\d+\.\s*/, "");
+        //         if (!cleanSuggestion.includes("[미통과 기준") && !cleanSuggestion.includes("대한 구체적인 제안")) {
+        //           suggestions.push(cleanSuggestion);
+        //         }
+        //       }
+        //     }
+        //   }
+        // });
+
+        // // Override suggestions if it's 자체기사
+        // if (originalityStatus && originalityStatus.includes("자체기사")) {
+        //   suggestions = ["현재 기사는 자체기사 기준을 충족합니다.", "추가적인 개선사항이 필요하지 않습니다."];
+        // }
+
+        // // Fallback for empty or placeholder suggestions
+        // if (suggestions.length === 0 || suggestions.every((s) => s.includes("[미통과 기준"))) {
+        //   suggestions = ["구체적인 개선 제안사항을 생성할 수 없습니다.", "AI 분석을 다시 시도해보세요."];
+        // }
+
+        // // Set AI results
+        // setAiPlagiarismRate(plagiarismRate);
+        // setAiOriginalityStatus(originalityStatus);
+        // setAiFeedback(reason);
+        // setSuggestions(suggestions);
+        // setAiAnalysisText(responseText);
       }
 
       setHasAnalyzed(true);
