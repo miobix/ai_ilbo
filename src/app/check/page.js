@@ -69,7 +69,7 @@ export default function Check() {
       });
 
       const result = await aiResponse.json();
-
+      console.log(result)
       if (result.choices && result.choices.length > 0) {
         const responseText = result.choices[0].message.content;
 
@@ -131,26 +131,34 @@ export default function Check() {
   };
 
   // Text comparison algorithm - Improved text comparison and highlighting
-  const compareTexts = (text1, text2, threshold = 0.6) => {
-    // Split texts into sentences or chunks
-    const sentences1 = text1.split(/[.!?]+/).filter((s) => s.trim().length > 10);
-    const sentences2 = text2.split(/[.!?]+/).filter((s) => s.trim().length > 10);
+  const compareTexts = (text1, text2, threshold = 0.2) => {
+    const normalize = (str) => str.replace(/\s+/g, " ").trim().toLowerCase();
 
+    // Split texts into sentences or chunks
+    const sentences1 = normalize(text1)
+      .split(/[.!?]+/)
+      .filter(Boolean);
+    const sentences2 = normalize(text2)
+      .split(/[.!?]+/)
+      .filter(Boolean);
     // Track matches with start/end indices
     let matches = [];
 
-sentences1.forEach((sentence1) => {
+    // Get original sentences before normalization for highlighting
+const originalSentences1 = text1.split(/[.!?]+/).map(s => s.trim()).filter(Boolean);
+
+sentences1.forEach((sentence1, index) => {
   const clean1 = sentence1.trim().toLowerCase();
-  let hasMatch = false; // Add this flag
-  
+  let hasMatch = false; 
+
   sentences2.forEach((sentence2) => {
-    if (hasMatch) return; // Skip if we already found a match
-    
+    if (hasMatch) return;
+
     const clean2 = sentence2.trim().toLowerCase();
     const similarity = calculateSimilarity(clean1, clean2);
     if (similarity >= threshold) {
-      matches.push({ text: sentence1.trim() });
-      hasMatch = true; // Set flag to prevent further matches
+      matches.push({ text: originalSentences1[index] }); // ← Use original sentence
+      hasMatch = true;
     }
   });
 });
@@ -158,20 +166,22 @@ sentences1.forEach((sentence1) => {
     // Highlight matches in the original text
     let highlightedText = text1;
     matches.forEach((match) => {
-      const escaped = match.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const regex = new RegExp(escaped, "g");
+const escaped = match.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const regex = new RegExp(escaped, "gu"); // add "u" for Unicode
       highlightedText = highlightedText.replace(regex, `<mark style="background-color: yellow;">$&</mark>`);
     });
 
     // Overall similarity percentage
     const similarityPercentage = Math.min(100, (matches.length / sentences1.length) * 100);
-    console.log(matches, sentences1);
     return { similarity: similarityPercentage, highlightedText };
   };
 
   // Calculate cosine similarity between two strings
   const calculateSimilarity = (str1, str2) => {
-    const tokenize = (str) => str.toLowerCase().match(/\b\w+\b/g) || [];
+    const segmenter = new Intl.Segmenter('ko', { granularity: 'word' });
+const tokenize = s => Array.from(segmenter.segment(s.normalize('NFKC').toLowerCase()))
+  .filter(x => x.isWordLike)
+  .map(x => x.segment);
 
     const words1 = tokenize(str1);
     const words2 = tokenize(str2);
