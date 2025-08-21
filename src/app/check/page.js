@@ -182,7 +182,7 @@ export default function Check() {
   };
 
   // Text comparison algorithm - Improved text comparison and highlighting
-  const compareTexts = (text1, text2, threshold = 0.2) => {
+  const compareTexts = (text1, text2, threshold = 0.6) => {
     const normalize = (str) => str.replace(/\s+/g, " ").trim().toLowerCase();
 
     // Split texts into sentences or chunks
