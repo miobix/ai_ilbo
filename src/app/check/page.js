@@ -103,11 +103,6 @@ export default function Check() {
           }
         });
 
-        // Override suggestions if it's 자체기사
-        if (originalityStatus && originalityStatus.includes("자체기사")) {
-          suggestions = ["현재 기사는 자체기사 기준을 충족합니다.", "추가적인 개선사항이 필요하지 않습니다."];
-        }
-
         // Fallback for empty or placeholder suggestions
         if (suggestions.length === 0 || suggestions.every((s) => s.includes("[미통과 기준"))) {
           suggestions = ["구체적인 개선 제안사항을 생성할 수 없습니다.", "AI 분석을 다시 시도해보세요."];
