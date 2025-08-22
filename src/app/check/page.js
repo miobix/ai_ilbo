@@ -10,6 +10,7 @@ export default function Check() {
   const [pressReleaseText, setPressReleaseText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [similarityRate, setSimilarityRate] = useState(0);
+  const [similarityRateJaccard, setSimilarityRateJaccard] = useState(0);
   const [highlightedText, setHighlightedText] = useState("");
   const [aiPlagiarismRate, setAiPlagiarismRate] = useState("");
   const [aiOriginalityStatus, setAiOriginalityStatus] = useState("");
@@ -53,7 +54,9 @@ export default function Check() {
     try {
       // Run local analysis
       const localResult = compareTexts(text1, text2);
+
       setSimilarityRate(localResult.similarity);
+      setSimilarityRateJaccard(localResult.jaccardSimilarity);
       setHighlightedText(localResult.highlightedText);
 
       //Call AI API
@@ -70,6 +73,11 @@ export default function Check() {
 
       const result = await aiResponse.json();
       console.log(result)
+
+      // for gpt 4
+        // if (result.choices && result.choices.length > 0) {
+        // const responseText = result.choices[0].message.content;
+
       if (result.text && result.text.length > 0) {
         const responseText = result.text
 
@@ -115,56 +123,7 @@ export default function Check() {
         setSuggestions(suggestions);
         setAiAnalysisText(responseText);
 
-        // for gpt 4
-        // if (result.choices && result.choices.length > 0) {
-        // const responseText = result.choices[0].message.content;
-
-        // // Parse the AI response
-        // const lines = responseText.split("\n").filter((line) => line.trim());
-
-        // let plagiarismRate = "";
-        // let originalityStatus = "";
-        // let reason = "";
-        // let suggestions = [];
-
-        // // Extract information from AI response
-        // lines.forEach((line, index) => {
-        //   if (line.includes("표절률:")) {
-        //     plagiarismRate = line.split("표절률:")[1].trim();
-        //   } else if (line.includes("판정:")) {
-        //     originalityStatus = line.split("판정:")[1].trim();
-        //   } else if (line.includes("이유:")) {
-        //     reason = line.split("이유:")[1].trim();
-        //   } else if (line.includes("##개선제안##")) {
-        //     // Collect suggestions from the following lines
-        //     for (let i = index + 1; i < lines.length; i++) {
-        //       const suggestionLine = lines[i].trim();
-        //       if (suggestionLine && suggestionLine.match(/^\d+\./)) {
-        //         const cleanSuggestion = suggestionLine.replace(/^\d+\.\s*/, "");
-        //         if (!cleanSuggestion.includes("[미통과 기준") && !cleanSuggestion.includes("대한 구체적인 제안")) {
-        //           suggestions.push(cleanSuggestion);
-        //         }
-        //       }
-        //     }
-        //   }
-        // });
-
-        // // Override suggestions if it's 자체기사
-        // if (originalityStatus && originalityStatus.includes("자체기사")) {
-        //   suggestions = ["현재 기사는 자체기사 기준을 충족합니다.", "추가적인 개선사항이 필요하지 않습니다."];
-        // }
-
-        // // Fallback for empty or placeholder suggestions
-        // if (suggestions.length === 0 || suggestions.every((s) => s.includes("[미통과 기준"))) {
-        //   suggestions = ["구체적인 개선 제안사항을 생성할 수 없습니다.", "AI 분석을 다시 시도해보세요."];
-        // }
-
-        // // Set AI results
-        // setAiPlagiarismRate(plagiarismRate);
-        // setAiOriginalityStatus(originalityStatus);
-        // setAiFeedback(reason);
-        // setSuggestions(suggestions);
-        // setAiAnalysisText(responseText);
+        
       }
 
       setHasAnalyzed(true);
@@ -189,11 +148,28 @@ export default function Check() {
       .filter(Boolean);
     // Track matches with start/end indices
     let matches = [];
-
+    let jaccardMatches = []
     // Get original sentences before normalization for highlighting
-const originalSentences1 = text1.split(/[.!?]+/).map(s => s.trim()).filter(Boolean);
+    const originalSentences1 = text1.split(/[.!?]+/).map(s => s.trim()).filter(Boolean);
 
-sentences1.forEach((sentence1, index) => {
+    sentences1.forEach((sentence1, index) => {
+      const clean1 = sentence1.trim().toLowerCase();
+      let hasMatch = false; 
+
+      sentences2.forEach((sentence2) => {
+        if (hasMatch) return;
+
+        const clean2 = sentence2.trim().toLowerCase();
+        const similarity = calculateSimilarity(clean1, clean2);
+        if (similarity >= threshold) {
+          matches.push({ text: originalSentences1[index] }); 
+          hasMatch = true;
+        }
+
+      });
+    });
+
+  sentences1.forEach((sentence1, index) => {
   const clean1 = sentence1.trim().toLowerCase();
   let hasMatch = false; 
 
@@ -201,12 +177,15 @@ sentences1.forEach((sentence1, index) => {
     if (hasMatch) return;
 
     const clean2 = sentence2.trim().toLowerCase();
-    const similarity = calculateSimilarity(clean1, clean2);
-    if (similarity >= threshold) {
-      matches.push({ text: originalSentences1[index] }); // ← Use original sentence
+    const jaccardSimilarity = calculateJaccardSimilarity(clean1, clean2);
+
+    if (jaccardSimilarity >= threshold) {
+      jaccardMatches.push({ text: originalSentences1[index] }); 
       hasMatch = true;
     }
   });
+
+
 });
 
     // Highlight matches in the original text
@@ -219,8 +198,34 @@ const regex = new RegExp(escaped, "gu"); // add "u" for Unicode
 
     // Overall similarity percentage
     const similarityPercentage = Math.min(100, (matches.length / sentences1.length) * 100);
-    return { similarity: similarityPercentage, highlightedText };
-  };
+    const jaccardSimilarityPercentage = Math.min(100, (jaccardMatches.length / sentences1.length) * 100);
+    return { similarity: similarityPercentage, jaccardSimilarity: jaccardSimilarityPercentage, highlightedText };
+ 
+  }
+
+//Calculate Jaccard similarity between two strings
+const calculateJaccardSimilarity = (str1, str2) => {
+  // Convert to lowercase and split into word sets
+  const words1 = new Set(
+    str1
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((word) => word.length > 0)
+  );
+  const words2 = new Set(
+    str2
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((word) => word.length > 0)
+  );
+
+  // Calculate intersection and union
+  const intersection = new Set([...words1].filter((word) => words2.has(word)));
+  const union = new Set([...words1, ...words2]);
+
+  // Jaccard similarity = intersection / union
+  return union.size === 0 ? 0 : intersection.size / union.size;
+};
 
   // Calculate cosine similarity between two strings
   const calculateSimilarity = (str1, str2) => {
@@ -307,8 +312,12 @@ const tokenize = s => Array.from(segmenter.segment(s.normalize('NFKC').toLowerCa
 
                 <div className={styles.statsContainer}>
                   <div className={styles.statBlock}>
-                    <div className={styles.statLabel}>유사율</div>
+                    <div className={styles.statLabel}>유사율 (Cosine)</div>
                     <div className={styles.statValue}>{hasAnalyzed ? `${Math.round(similarityRate)}%` : "-"}</div>
+                  </div>
+                    <div className={styles.statBlock}>
+                    <div className={styles.statLabel}>유사율 (Jaccard)</div>
+                    <div className={styles.statValue}>{hasAnalyzed ? `${Math.round(similarityRateJaccard)}%` : "-"}</div>
                   </div>
                   <div className={styles.statBlock}>
                     <div className={styles.statLabel}>기사 글자수</div>
@@ -405,26 +414,4 @@ const tokenize = s => Array.from(segmenter.segment(s.normalize('NFKC').toLowerCa
   );
 }
 
-// Calculate Jaccard similarity between two strings
-// const calculateSimilarity = (str1, str2) => {
-//   // Convert to lowercase and split into word sets
-//   const words1 = new Set(
-//     str1
-//       .toLowerCase()
-//       .split(/\s+/)
-//       .filter((word) => word.length > 0)
-//   );
-//   const words2 = new Set(
-//     str2
-//       .toLowerCase()
-//       .split(/\s+/)
-//       .filter((word) => word.length > 0)
-//   );
 
-//   // Calculate intersection and union
-//   const intersection = new Set([...words1].filter((word) => words2.has(word)));
-//   const union = new Set([...words1, ...words2]);
-
-//   // Jaccard similarity = intersection / union
-//   return union.size === 0 ? 0 : intersection.size / union.size;
-// };
