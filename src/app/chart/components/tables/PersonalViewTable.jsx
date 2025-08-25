@@ -2,6 +2,7 @@
 import React, { useMemo, useState } from "react";
 import styles from "../../chart.module.css";
 import { useTableSort } from "../../hooks/useTable";
+import { toDateInputValue } from "../../lib/dateUtils";
 import { getSelfRatioClass } from "../../lib/tableUtils";
 
 const COLUMNS=[
@@ -63,14 +64,14 @@ export default function PersonalViewTable({ newsData }){
           <input
             className={styles.select}
             type="date"
-            value={dateRange.from.toISOString().slice(0,10)}
+            value={toDateInputValue(dateRange.from)}
             onChange={e=>setDateRange(r=>({...r,from:new Date(e.target.value)}))}
           />
           <span>~</span>
           <input
             className={styles.select}
             type="date"
-            value={dateRange.to.toISOString().slice(0,10)}
+            value={toDateInputValue(dateRange.to)}
             onChange={e=>setDateRange(r=>({...r,to:new Date(e.target.value)}))}
           />
           <input className={styles.select} placeholder="기자 검색" value={query} onChange={e=>setQuery(e.target.value)} />
