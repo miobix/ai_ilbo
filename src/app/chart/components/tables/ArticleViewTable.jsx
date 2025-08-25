@@ -2,11 +2,13 @@
 import React, { useMemo, useState } from "react";
 import styles from "../../chart.module.css";
 import { useTableSort } from "../../hooks/useTable";
+import { formatLevel, getLevelClass } from "../../lib/tableUtils";
 
 const COLUMNS=[
   {label:'출고일', key:'newsdate'},
   {label:'제목', key:'newstitle'},
   {label:'부서', key:'code_name'},
+  {label:'작성자', key:'writers'},
   {label:'조회수', key:'ref'},
   {label:'등급', key:'level'},
 ];
@@ -79,11 +81,26 @@ export default function ArticleViewTable({ newsData }){
           <tbody>
       {paginated.map((a,i)=> (
               <tr key={a.newskey||i} className={styles.tr}>
-        <td className={styles.td} data-label="출고일">{new Date(a.newsdate).toLocaleDateString('ko-KR',{year:'2-digit',month:'2-digit',day:'2-digit'})}</td>
-        <td className={styles.td} data-label="제목" title={a.newstitle} style={{textAlign:'left'}}>{a.newstitle}</td>
-        <td className={styles.td} data-label="부서">{a.code_name||'-'}</td>
-        <td className={styles.td} data-label="조회수">{a.ref.toLocaleString()}</td>
-        <td className={styles.td} data-label="등급">{a.level}</td>
+  <td className={`${styles.td} ${styles.nowrap}`} data-label="출고일" title={new Date(a.newsdate).toLocaleString('ko-KR')}>{new Date(a.newsdate).toLocaleDateString('ko-KR',{year:'2-digit',month:'2-digit',day:'2-digit'})}</td>
+        <td className={styles.td} data-label="제목" style={{textAlign:'left'}}>
+          {a.newskey ? (
+            <a
+              href={`https://www.yeongnam.com/web/view.php?key=${a.newskey}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.link}
+              title={a.newstitle}
+            >
+              {a.newstitle}
+            </a>
+          ) : (
+            a.newstitle
+          )}
+        </td>
+  <td className={`${styles.td} ${styles.nowrap}`} data-label="부서" title={a.code_name||'-'}>{a.code_name||'-'}</td>
+  <td className={`${styles.td} ${styles.nowrap}`} data-label="작성자" title={a.byline_gijaname || a.writers || '-'}>{a.byline_gijaname || a.writers || '-'}</td>
+  <td className={`${styles.td} ${styles.nowrap}`} data-label="조회수" title={(Number(a.ref)||0).toLocaleString()}>{(Number(a.ref)||0).toLocaleString()}</td>
+  <td className={`${styles.td} ${styles.nowrap}`} data-label="등급"><span className={getLevelClass(a.level)}>{formatLevel(a.level)}</span></td>
               </tr>
             ))}
             {sorted.length===0 && (<tr><td className={styles.td} colSpan={COLUMNS.length}>데이터가 없습니다.</td></tr>)}

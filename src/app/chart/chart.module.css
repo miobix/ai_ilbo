@@ -42,6 +42,13 @@
 .levelSelf{background:#dbeafe;color:#1e40af}
 .levelNonSelf{background:#f3f4f6;color:#374151}
 
+/* links */
+.link{color:#2563eb;text-decoration:none}
+.link:hover{text-decoration:underline}
+
+/* utility */
+.nowrap{white-space:nowrap}
+
 @media (max-width: 768px){
   .tabsBar{grid-template-columns:repeat(auto-fit,minmax(0,1fr));margin:0 8px}
   .card{margin:8px}
@@ -98,12 +105,14 @@
   .articleViewTable tbody .td{padding:8px 10px;border-top:0}
   /* 1행: 제목 전체 */
   .articleViewTable tbody .td:nth-child(2){grid-column:1/3;grid-row:1}
-  /* 2행: 출고일 | 부서 */
+  /* 2행: 출고일 | 작성자 */
   .articleViewTable tbody .td:nth-child(1){grid-column:1;grid-row:2;border-top:1px solid #f3f4f6}
-  .articleViewTable tbody .td:nth-child(3){grid-column:2;grid-row:2}
+  .articleViewTable tbody .td:nth-child(4){grid-column:2;grid-row:2}
   /* 3행: 조회수 | 등급 */
-  .articleViewTable tbody .td:nth-child(4){grid-column:1;grid-row:3;border-top:1px solid #f3f4f6}
-  .articleViewTable tbody .td:nth-child(5){grid-column:2;grid-row:3}
+  .articleViewTable tbody .td:nth-child(5){grid-column:1;grid-row:3;border-top:1px solid #f3f4f6}
+  .articleViewTable tbody .td:nth-child(6){grid-column:2;grid-row:3}
+  /* 부서는 모바일에서 숨김 */
+  .articleViewTable tbody .td:nth-child(3){display:none}
   /* 제목 라벨 숨김 */
   .articleViewTable tbody .td:nth-child(2)::before{display:none}
   /* DepartmentViewTable: 상단 부서, 아래 2열 지표 */
