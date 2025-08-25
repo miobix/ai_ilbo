@@ -1,33 +1,42 @@
 "use client";
+import React, { useState } from "react";
 import Image from "next/image";
-import styles from "./page.module.css";
+import layoutStyles from "./page.module.css";
+import chartStyles from "./chart.module.css";
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
-
-import React, { useState, useEffect } from "react";
+import StatsSection from "./components/StatsSection";
+import ViewsSection from "./components/ViewsSection";
 
 export default function Chart() {
-    return (
-      <main className={styles.main}>
-        <Header />
-        <div className={styles.main_inner}>
-          <div className={styles.Main_cont}>
-            <div 
-              className={styles.Main_cont_inner}
-              style={{ height: "calc(100vh - 200px)" }} // Adjust the 200px based on your header/footer height
+  const [activeMain, setActiveMain] = useState("stats");
+
+  return (
+    <main className={layoutStyles.main}>
+      <Header />
+      <div className={layoutStyles.main_inner}>
+        <div className={layoutStyles.Main_cont}>
+          <div className={chartStyles.tabsBar}>
+            <button
+              className={`${chartStyles.tabBtn} ${activeMain === "stats" ? chartStyles.active : ""}`}
+              onClick={() => setActiveMain("stats")}
             >
-              <iframe
-                src="https://yeongnamilbo-chart.vercel.app/"
-                width="100%"
-                height="100%"
-                style={{ border: "none", display: "block" }}
-                loading="lazy"
-                allowFullScreen
-              />
-            </div>
+              일일 출고현황
+            </button>
+            <button
+              className={`${chartStyles.tabBtn} ${activeMain === "views" ? chartStyles.active : ""}`}
+              onClick={() => setActiveMain("views")}
+            >
+              기사 통계
+            </button>
+          </div>
+          <div className={chartStyles.contentWrap}>
+            {activeMain === "stats" && <StatsSection />}
+            {activeMain === "views" && <ViewsSection />}
           </div>
         </div>
-        <Footer />
-      </main>
-    );
-  }
+      </div>
+      <Footer />
+    </main>
+  );
+}
