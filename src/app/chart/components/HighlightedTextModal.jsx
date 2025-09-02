@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import TooltipHighlight from './TooltipHighlight';
+import React, { useState } from "react";
+import TooltipHighlight from "./TooltipHighlight";
 
 export default function HighlightedTextModal({ text, spellings }) {
   if (!text || !spellings || spellings.length === 0) return <span>{text}</span>;
@@ -9,39 +9,40 @@ export default function HighlightedTextModal({ text, spellings }) {
 
   const processText = (inputText) => {
   if (!inputText) return inputText;
-  
-  // Replace escape sequences with actual characters
-  let processed = inputText
-    .replace(/\\'/g, "'")
-    .replace(/\\"/g, '"')
-    .replace(/\\n/g, '\n')
-    .replace(/\\t/g, '\t');
-  
-  processed = processed.replace(/<[^>]*>/g, '');
-  // processed = processed.replace(/\.\s+/g, '.\n');
 
-    let periodCount = 0;
+  // Remove img tags completely
+  let processed = inputText.replace(/<img[^>]*>/g, "");
 
-  processed = processed.replace(/\./g, (match, offset, string) => {
-    periodCount++;
-    // Check if there's whitespace after the period and we've hit the 3rd period
-    if (periodCount % 3 === 0 && string[offset + 1] === ' ') {
-      return '.\n\n';
-    }
-    return match;
-  });
-  
+  // Convert HTML entities to actual characters
+  processed = processed.replace(/&lt;/g, "<")
+                    .replace(/&gt;/g, ">")
+                    .replace(/&amp;/g, "&")
+                    .replace(/&quot;/g, '"')
+                    .replace(/&#39;/g, "'");
+
+  // Convert <br/> and <br> tags to line breaks
+  processed = processed.replace(/<br\s*\/?>/g, "\n");
+
+  // Remove any remaining HTML tags
+  processed = processed.replace(/<[^>]*>/g, "");
+
+  // Convert multiple consecutive line breaks to paragraph breaks
+  processed = processed.replace(/\n{3,}/g, "\n\n");
+
+  // Trim whitespace at start and end
+  processed = processed.trim();
+
   return processed;
 };
 
   const processedText = processText(text);
-let elements = [processedText];
+  let elements = [processedText];
 
   sortedSpellings.forEach(({ mistake, reason, suggestion }) => {
     const newElements = [];
 
     elements.forEach((el) => {
-      if (typeof el !== 'string') {
+      if (typeof el !== "string") {
         newElements.push(el);
         return;
       }
@@ -51,14 +52,7 @@ let elements = [processedText];
         if (part) newElements.push(part);
 
         if (i < parts.length - 1) {
-          newElements.push(
-            <TooltipHighlight
-              key={Math.random()}
-              text={mistake}
-              reason={reason}
-              suggestion={suggestion}
-            />
-          );
+          newElements.push(<TooltipHighlight key={Math.random()} text={mistake} reason={reason} suggestion={suggestion} />);
         }
       });
     });
@@ -67,13 +61,15 @@ let elements = [processedText];
   });
 
   return (
-  <div style={{ 
-    minHeight: '200px', 
-    lineHeight: '1.6',
-    whiteSpace: 'pre-line',
-    maxWidth: '1000px'
-  }}>
-    {elements}
-  </div>
-);
+    <div
+      style={{
+        minHeight: "200px",
+        lineHeight: "1.6",
+        whiteSpace: "pre-line",
+        maxWidth: "1000px",
+      }}
+    >
+      {elements}
+    </div>
+  );
 }

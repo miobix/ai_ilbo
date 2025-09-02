@@ -28,7 +28,6 @@ export default function WebArticleList({ webArticleData }) {
     setShowModal(false);
   };
 
-  // Somewhere in your component
 const getSpellings = async (nid) => {
   try {
     const res = await fetch(`/api/fetchSpellings?nid=${nid}`);
@@ -37,7 +36,7 @@ const getSpellings = async (nid) => {
     return data;
   } catch (err) {
     console.error(err);
-    return { original_text: '', spellings: [] }; 
+    return { html_text: '', spellings: [] }; 
   }
 };
 
@@ -220,7 +219,7 @@ const getSpellings = async (nid) => {
             
                 <div style={{ lineHeight: 1.5, whiteSpace: 'pre-wrap', marginTop: '20px',  maxHeight: 'calc(60vh - 120px)', // Account for title, padding, and button
   overflowY: 'auto' }}>
-        <HighlightedTextModal text={modalItem.original_text} spellings={modalItem.spellings} />
+        <HighlightedTextModal text={modalItem.html_text} spellings={modalItem.spellings} />
       </div>
 
              <button
