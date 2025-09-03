@@ -90,14 +90,17 @@
   /* 1행: 순번(1) | 제목(3) 전체 2칸 */
   .webArticleTable tbody .td:nth-child(1){grid-column:1;grid-row:1;text-align:center;background:#f3f4f6;border-radius:6px;font-weight:700}
   .webArticleTable tbody .td:nth-child(3){grid-column:2/4;grid-row:1}
-  /* 2행: 출고일시(2) | 작성자(4) | 등급(5) */
+  /* 2행: 출고일시(2) | 작성자(5) | 부서(6) */
   .webArticleTable tbody .td:nth-child(2){grid-column:1;grid-row:2;border-top:1px solid #f3f4f6}
-  .webArticleTable tbody .td:nth-child(4){grid-column:2;grid-row:2}
-  .webArticleTable tbody .td:nth-child(5){grid-column:3;grid-row:2}
+  .webArticleTable tbody .td:nth-child(5){grid-column:2;grid-row:2}
+  .webArticleTable tbody .td:nth-child(6){grid-column:3;grid-row:2}
+  /* 3행: 오탈자(4) | 등급(7) */
+  .webArticleTable tbody .td:nth-child(4){grid-column:1;grid-row:3;border-top:1px solid #f3f4f6}
+  .webArticleTable tbody .td:nth-child(7){grid-column:2;grid-row:3}
   /* 불필요 필드(등록일시, 등록자, 분류)는 모바일에서 숨김 */
-  .webArticleTable tbody .td:nth-child(6),
-  .webArticleTable tbody .td:nth-child(7),
-  .webArticleTable tbody .td:nth-child(8){display:none}
+  .webArticleTable tbody .td:nth-child(8),
+  .webArticleTable tbody .td:nth-child(9),
+  .webArticleTable tbody .td:nth-child(10){display:none}
   /* 상단(순번, 제목) 라벨 제거로 깔끔하게 */
   .webArticleTable tbody .td:nth-child(1)::before,
   .webArticleTable tbody .td:nth-child(3)::before{display:none}
