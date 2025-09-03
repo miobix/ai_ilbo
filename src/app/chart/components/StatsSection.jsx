@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../chart.module.css";
 import DailyArticleStats from "./charts/DailyArticleStats";
 import WebArticleList from "./tables/WebArticleList";
+import WebArticleDeptChart from "./WebArticleDeptChart";
 
 const StatsSection = () => {
   const [articlesData, setArticlesData] = useState([]);
@@ -33,6 +34,7 @@ const StatsSection = () => {
   return (
     <>
       <DailyArticleStats newsData={articlesData} />
+      <WebArticleDeptChart webArticleData={articlesData} />
       <WebArticleList webArticleData={articlesData} />
     </>
   );

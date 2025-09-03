@@ -7,7 +7,7 @@ import { idToName } from "../../data/userMapping";
 import { getCategoryName } from "../../data/categoryMapping";
 import HighlightedTextModal from "../HighlightedTextModal";
 
-const columns = ["순번", "출고일시", "제목", "교열", "작성자", "등급", "등록일시", "등록자ID", "분류"];
+const columns = ["순번", "출고일시", "제목", "교열", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
 
 export default function WebArticleList({ webArticleData }) {
   const [selectedDatetime, setSelectedDatetime] = useState("today");
@@ -56,7 +56,8 @@ const getSpellings = async (nid) => {
   const webArticles = useMemo(() => {
     const sel = dateGroups.find((g) => g.value === selectedDatetime);
     const list = (webArticleData || []).filter((a) => (sel ? a.newsdate && String(a.newsdate).startsWith(sel.dateStr) : true));
-    return list;
+    // 역매핑 없이 writer_buseo가 있으면 사용, 없으면 '기타'
+    return list.map((it) => ({ ...it, dept: it.writer_buseo || "기타" }));
   }, [webArticleData, selectedDatetime, dateGroups]);
 
   const sorted = useMemo(() => sortData(webArticles), [webArticles, sortData]);
@@ -66,13 +67,17 @@ const getSpellings = async (nid) => {
     return sorted.slice(start, start + itemsPerPage);
   }, [sorted, currentPage]);
 
+  // 차트는 분리된 컴포넌트(WebArticleDeptChart)로 렌더링합니다.
+
   // 날짜 필터 변경 시 1페이지로 리셋
   React.useEffect(() => {
     setCurrentPage(1);
   }, [selectedDatetime]);
 
   return (
-    <div className={styles.card}>
+    <>
+      {/* 하단 카드: 웹출고 기사 목록 */}
+      <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div>
           <div className={styles.cardTitle}>웹출고 기사 목록</div>
@@ -92,9 +97,9 @@ const getSpellings = async (nid) => {
         <table className={styles.table + " " + styles.webArticleTable}>
           <thead>
             <tr className={styles.tr}>
-              {columns.map((c, idx) => (
+        {columns.map((c, idx) => (
                 <th key={idx} className={styles.th}>
-                  <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "spellings", "writers", "level", "reg_dt", "reg_id", "art_org_class"][idx])}>
+          <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "spellings", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}>
                     {c}
                   </button>
                 </th>
@@ -129,6 +134,9 @@ const getSpellings = async (nid) => {
 
                 <td className={styles.td} data-label="작성자" title={item.writers}>
                   {item.writers ? truncateText(item.writers, 10) : "-"}
+                </td>
+                <td className={styles.td} data-label="부서" title={item.dept}>
+                  {item.dept || "-"}
                 </td>
                 <td className={styles.td} data-label="등급">
                   <span className={getLevelClass(item.level)}>{formatLevel(item.level)}</span>
@@ -250,5 +258,6 @@ const getSpellings = async (nid) => {
         </div>
       )}
     </div>
+    </>
   );
 }

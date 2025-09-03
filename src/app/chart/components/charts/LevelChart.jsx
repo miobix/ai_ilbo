@@ -29,7 +29,7 @@ function transformMonthly(news){
 const fmtKorean=(v)=>v.toLocaleString();
 
 const LevelChart=({newsData})=>{
-  const [period,setPeriod]=useState('weekly');
+  const [period,setPeriod]=useState('monthly');
   const [selectedMonth,setSelectedMonth]=useState('all');
   const weekly=useMemo(()=>transformWeekly(newsData),[newsData]);
   const monthly=useMemo(()=>transformMonthly(newsData),[newsData]);

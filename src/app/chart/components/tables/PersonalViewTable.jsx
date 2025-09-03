@@ -20,6 +20,7 @@ export default function PersonalViewTable({ newsData }){
     from:new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     to:new Date()
   });
+  const [excludeFortune,setExcludeFortune]=useState(true); // 운세 기사 제외 여부 (ViewChart와 일치시키기 위해 기본값 true)
   const [currentPage,setCurrentPage]=useState(1);
   const itemsPerPage=50;
 
@@ -31,6 +32,7 @@ export default function PersonalViewTable({ newsData }){
     for(const a of newsData){
       const t=new Date(a.newsdate).getTime();
       if(!(t>=fromTime && t<=toTime)) continue;
+      if(excludeFortune && a.newsclass_names?.includes('운세')) continue;
       const name=a.byline_gijaname || '무기명';
       const ref=Number(a.ref)||0; const isSelf=String(a.level)==='1';
       const rec=m.get(name)||{reporter:name,totalViews:0,articleCount:0,level1:0};
@@ -41,7 +43,7 @@ export default function PersonalViewTable({ newsData }){
       selfRatio: r.articleCount? Math.round((r.level1/r.articleCount)*100):0,
       averageViews: r.articleCount? Math.round(r.totalViews/r.articleCount):0,
     }));
-  },[newsData,dateRange]);
+  },[newsData,dateRange,excludeFortune]);
 
   const filtered=useMemo(()=> rows.filter(r=>r.reporter.includes(query)),[rows,query]);
   const sorted=useMemo(()=> sortData(filtered),[filtered,sortData]);
@@ -75,7 +77,28 @@ export default function PersonalViewTable({ newsData }){
             onChange={e=>setDateRange(r=>({...r,to:new Date(e.target.value)}))}
           />
           <input className={styles.select} placeholder="기자 검색" value={query} onChange={e=>setQuery(e.target.value)} />
+          <label style={{display:'inline-flex',alignItems:'center',gap:6,fontSize:12}}>
+            <input type="checkbox" checked={excludeFortune} onChange={e=>setExcludeFortune(e.target.checked)} /> 운세 제외
+          </label>
         </div>
+      </div>
+      {/* 요약 합계 */}
+      <div className={styles.cardContent}>
+        {sorted.length>0 ? (
+          (()=>{
+            const tot = sorted.reduce((acc,r)=>{ acc.views+=r.totalViews; acc.articles+=r.articleCount; return acc; },{views:0,articles:0});
+            const avg = tot.articles? Math.round(tot.views / tot.articles) : 0;
+            return (
+              <div style={{display:'flex',gap:16,flexWrap:'wrap',fontSize:12,color:'#374151'}}>
+                <div>합계 조회수: <b>{tot.views.toLocaleString()}</b></div>
+                <div>합계 기사수: <b>{tot.articles.toLocaleString()}</b></div>
+                <div>전체 평균: <b>{avg.toLocaleString()}</b></div>
+              </div>
+            );
+          })()
+        ) : (
+          <div style={{fontSize:12,color:'#6b7280'}}>데이터가 없습니다.</div>
+        )}
       </div>
       <div className={styles.cardContent+" "+styles.tableWrap}>
         <table className={styles.table+" "+styles.personalViewTable}>
