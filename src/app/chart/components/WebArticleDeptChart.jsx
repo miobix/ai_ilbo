@@ -5,7 +5,7 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 
 // 독립형 부서별 막대 차트: props.items가 없으면 API에서 직접 로드하고, 날짜 셀렉터로 오늘/어제 필터링
 export default function WebArticleDeptChart({ items }) {
-  const [selectedDatetime, setSelectedDatetime] = useState("today");
+  const [selectedDatetime, setSelectedDatetime] = useState("yesterday");
   const [fetched, setFetched] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

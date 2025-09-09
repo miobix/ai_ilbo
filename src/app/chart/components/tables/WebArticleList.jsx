@@ -10,7 +10,7 @@ import HighlightedTextModal from "../HighlightedTextModal";
 const columns = ["순번", "출고일시", "제목", "교열", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
 
 export default function WebArticleList({ webArticleData }) {
-  const [selectedDatetime, setSelectedDatetime] = useState("today");
+  const [selectedDatetime, setSelectedDatetime] = useState("yesterday");
   const { sortData, handleSort } = useTableSort("newsdate", "desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [modalItem, setModalItem] = useState(null);
