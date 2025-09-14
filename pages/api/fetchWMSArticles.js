@@ -8,7 +8,9 @@ export default async function handler(req,res){
     const db=client.db("yeongnam-visits");
     const col=db.collection("wms_data");
     const threeMonthsAgo=new Date(); threeMonthsAgo.setMonth(threeMonthsAgo.getMonth()-3);
-  const projection={ _id:1,nid:1,service_daytime:1,title:1,writers:1,writer_buseo:1,level:1,embargo_type:1,reg_dt:1,reg_id:1,art_org_class:1,last_update:1,spellings:1 };
+  const projection={ _id:1,nid:1,service_daytime:1,title:1,writers:1,writer_buseo:1,level:1,embargo_type:1,reg_dt:1,reg_id:1,art_org_class:1,last_update:1};
+  //  const projection={ _id:1,nid:1,service_daytime:1,title:1,writers:1,writer_buseo:1,level:1,embargo_type:1,reg_dt:1,reg_id:1,art_org_class:1,last_update:1,spellings:1 };
+
     const docs=await col.find({ service_daytime:{ $gte: threeMonthsAgo }, title:{ $exists:true } }).project(projection).sort({ service_daytime:-1 }).toArray();
 
     const prune = (obj)=>{
