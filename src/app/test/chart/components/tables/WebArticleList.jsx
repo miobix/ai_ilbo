@@ -7,8 +7,8 @@ import { idToName } from "../../data/userMapping";
 import { getCategoryName } from "../../data/categoryMapping";
 import HighlightedTextModal from "../HighlightedTextModal";
 
-// const columns = ["순번", "출고일시", "제목", "교열", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
-const columns = ["순번", "출고일시", "제목", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
+const columns = ["순번", "출고일시", "제목", "교열", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
+// const columns = ["순번", "출고일시", "제목", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
 
 export default function WebArticleList({ webArticleData }) {
   const [selectedDatetime, setSelectedDatetime] = useState("yesterday");
@@ -99,9 +99,9 @@ const getSpellings = async (nid) => {
             <tr className={styles.tr}>
         {columns.map((c, idx) => (
                 <th key={idx} className={styles.th}>
-                            {/* <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "spellings", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}> */}
+                            <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "spellings", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}>
 
-          <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}>
+          {/* <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}> */}
                     {c}
                   </button>
                 </th>
@@ -120,7 +120,7 @@ const getSpellings = async (nid) => {
                 <td className={styles.td} data-label="제목" style={{ maxWidth: 360, color: item.embargo_type === "1" ? "#dc2626" : undefined }} title={item.newstitle}>
                   {item.newstitle || "-"}
                 </td>
-                {/* <td className={styles.td} data-label="오탈자" title={item.newsEditNumber}> 
+                <td className={styles.td} data-label="오탈자" title={item.newsEditNumber}> 
                 {item.spellings && !isNaN(Number(item.spellings)) && (
     <span
       className={`${styles.badge} ${styles.badgeMispell}`}
@@ -132,7 +132,7 @@ const getSpellings = async (nid) => {
       {item.spellings}
     </span>
   )}
-                </td> */}
+                </td>
 
                 <td className={styles.td} data-label="작성자" title={item.writers}>
                   {item.writers ? truncateText(item.writers, 10) : "-"}

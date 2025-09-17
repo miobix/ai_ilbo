@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import styles from "../../chart.module.css";
+import styles from "../chart.module.css";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 
 // 독립형 부서별 막대 차트: props.items가 없으면 API에서 직접 로드하고, 날짜 셀렉터로 오늘/어제 필터링

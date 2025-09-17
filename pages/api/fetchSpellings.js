@@ -14,11 +14,11 @@ export default async function handler(req, res) {
 
     const doc = await col.findOne(
       { nid },
-      { projection: { _id: 0, original_text: 1, spellings: 1 } }
+      { projection: { _id: 0, html_text: 1, spellings: 1 } }
     );
 
     const result = {
-      original_text: doc?.original_text || "",
+      html_text: doc?.html_text || "",
       spellings: doc?.spellings || []
     };
 

@@ -72,18 +72,18 @@ export default function Check() {
       });
 
       const result = await aiResponse.json();
-      console.log(result)
+      console.log(result);
 
       // for gpt 4
-        // if (result.choices && result.choices.length > 0) {
-        // const responseText = result.choices[0].message.content;
+      // if (result.choices && result.choices.length > 0) {
+      // const responseText = result.choices[0].message.content;
 
       if (result.text && result.text.length > 0) {
-        const responseText = result.text
+        const responseText = result.text;
 
         // Parse the AI response
         const lines = responseText.split("\n").filter((line) => line.trim());
-        console.log(lines)
+        console.log(lines);
         let plagiarismRate = "";
         let originalityStatus = "";
         let reason = "";
@@ -122,8 +122,6 @@ export default function Check() {
         setAiFeedback(reason);
         setSuggestions(suggestions);
         setAiAnalysisText(responseText);
-
-        
       }
 
       setHasAnalyzed(true);
@@ -148,13 +146,16 @@ export default function Check() {
       .filter(Boolean);
     // Track matches with start/end indices
     let matches = [];
-    let jaccardMatches = []
+    let jaccardMatches = [];
     // Get original sentences before normalization for highlighting
-    const originalSentences1 = text1.split(/[.!?]+/).map(s => s.trim()).filter(Boolean);
+    const originalSentences1 = text1
+      .split(/[.!?]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
 
     sentences1.forEach((sentence1, index) => {
       const clean1 = sentence1.trim().toLowerCase();
-      let hasMatch = false; 
+      let hasMatch = false;
 
       sentences2.forEach((sentence2) => {
         if (hasMatch) return;
@@ -162,37 +163,34 @@ export default function Check() {
         const clean2 = sentence2.trim().toLowerCase();
         const similarity = calculateSimilarity(clean1, clean2);
         if (similarity >= threshold) {
-          matches.push({ text: originalSentences1[index] }); 
+          matches.push({ text: originalSentences1[index] });
           hasMatch = true;
         }
-
       });
     });
 
-  sentences1.forEach((sentence1, index) => {
-  const clean1 = sentence1.trim().toLowerCase();
-  let hasMatch = false; 
+    sentences1.forEach((sentence1, index) => {
+      const clean1 = sentence1.trim().toLowerCase();
+      let hasMatch = false;
 
-  sentences2.forEach((sentence2) => {
-    if (hasMatch) return;
+      sentences2.forEach((sentence2) => {
+        if (hasMatch) return;
 
-    const clean2 = sentence2.trim().toLowerCase();
-    const jaccardSimilarity = calculateJaccardSimilarity(clean1, clean2);
+        const clean2 = sentence2.trim().toLowerCase();
+        const jaccardSimilarity = calculateJaccardSimilarity(clean1, clean2);
 
-    if (jaccardSimilarity >= threshold) {
-      jaccardMatches.push({ text: originalSentences1[index] }); 
-      hasMatch = true;
-    }
-  });
-
-
-});
+        if (jaccardSimilarity >= threshold) {
+          jaccardMatches.push({ text: originalSentences1[index] });
+          hasMatch = true;
+        }
+      });
+    });
 
     // Highlight matches in the original text
     let highlightedText = text1;
     matches.forEach((match) => {
-const escaped = match.text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const regex = new RegExp(escaped, "gu"); // add "u" for Unicode
+      const escaped = match.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(escaped, "gu"); // add "u" for Unicode
       highlightedText = highlightedText.replace(regex, `<mark style="background-color: yellow;">$&</mark>`);
     });
 
@@ -200,39 +198,39 @@ const regex = new RegExp(escaped, "gu"); // add "u" for Unicode
     const similarityPercentage = Math.min(100, (matches.length / sentences1.length) * 100);
     const jaccardSimilarityPercentage = Math.min(100, (jaccardMatches.length / sentences1.length) * 100);
     return { similarity: similarityPercentage, jaccardSimilarity: jaccardSimilarityPercentage, highlightedText };
- 
-  }
+  };
 
-//Calculate Jaccard similarity between two strings
-const calculateJaccardSimilarity = (str1, str2) => {
-  // Convert to lowercase and split into word sets
-  const words1 = new Set(
-    str1
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((word) => word.length > 0)
-  );
-  const words2 = new Set(
-    str2
-      .toLowerCase()
-      .split(/\s+/)
-      .filter((word) => word.length > 0)
-  );
+  //Calculate Jaccard similarity between two strings
+  const calculateJaccardSimilarity = (str1, str2) => {
+    // Convert to lowercase and split into word sets
+    const words1 = new Set(
+      str1
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((word) => word.length > 0)
+    );
+    const words2 = new Set(
+      str2
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((word) => word.length > 0)
+    );
 
-  // Calculate intersection and union
-  const intersection = new Set([...words1].filter((word) => words2.has(word)));
-  const union = new Set([...words1, ...words2]);
+    // Calculate intersection and union
+    const intersection = new Set([...words1].filter((word) => words2.has(word)));
+    const union = new Set([...words1, ...words2]);
 
-  // Jaccard similarity = intersection / union
-  return union.size === 0 ? 0 : intersection.size / union.size;
-};
+    // Jaccard similarity = intersection / union
+    return union.size === 0 ? 0 : intersection.size / union.size;
+  };
 
   // Calculate cosine similarity between two strings
   const calculateSimilarity = (str1, str2) => {
-    const segmenter = new Intl.Segmenter('ko', { granularity: 'word' });
-const tokenize = s => Array.from(segmenter.segment(s.normalize('NFKC').toLowerCase()))
-  .filter(x => x.isWordLike)
-  .map(x => x.segment);
+    const segmenter = new Intl.Segmenter("ko", { granularity: "word" });
+    const tokenize = (s) =>
+      Array.from(segmenter.segment(s.normalize("NFKC").toLowerCase()))
+        .filter((x) => x.isWordLike)
+        .map((x) => x.segment);
 
     const words1 = tokenize(str1);
     const words2 = tokenize(str2);
@@ -282,18 +280,24 @@ const tokenize = s => Array.from(segmenter.segment(s.normalize('NFKC').toLowerCa
                 <div className={styles.charCount}>
                   {countKoreanChars(reporterText)} / {charLimit}
                 </div>
-                <textarea
+                {/* Apply highlighting to section 1 instead of section 3 */}
+                <div
                   className={`${styles.sectionTextarea} ${errors.reporter ? styles.errorTextarea : ""}`}
-                  value={reporterText}
-                  onChange={handleReporterChange}
-                  placeholder="기사 텍스트를 붙여넣으세요..."
+                  contentEditable
+                  onInput={(e) => setReporterText(e.target.innerText)}
+                  dangerouslySetInnerHTML={{
+                    __html: hasAnalyzed ? highlightedText : reporterText || "기사 텍스트를 붙여넣으세요...",
+                  }}
+                  style={{
+                    border: errors.reporter ? "2px solid red" : "1px solid #ccc",
+                  }}
                 />
                 {errors.reporter && <div className={styles.errorMessage}>내용을 입력해주세요</div>}
               </div>
 
               {/* Section 2: Press Release Text Input */}
               <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>비교할 보도자료/원본</h3>
+                <h3 className={styles.sectionTitle}>비교할 원본</h3>
                 <div className={styles.charCount}>
                   {countKoreanChars(pressReleaseText)} / {charLimit}
                 </div>
@@ -306,49 +310,23 @@ const tokenize = s => Array.from(segmenter.segment(s.normalize('NFKC').toLowerCa
                 {errors.pressRelease && <div className={styles.errorMessage}>내용을 입력해주세요</div>}
               </div>
 
-              {/* Section 3: Program Results */}
-              <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>검사 결과</h3>
-
-                <div className={styles.statsContainer}>
-                  <div className={styles.statBlock}>
-                    <div className={styles.statLabel}>유사율 (Cosine)</div>
-                    <div className={styles.statValue}>{hasAnalyzed ? `${Math.round(similarityRate)}%` : "-"}</div>
-                  </div>
-                    <div className={styles.statBlock}>
-                    <div className={styles.statLabel}>유사율 (Jaccard)</div>
-                    <div className={styles.statValue}>{hasAnalyzed ? `${Math.round(similarityRateJaccard)}%` : "-"}</div>
-                  </div>
-                  <div className={styles.statBlock}>
-                    <div className={styles.statLabel}>기사 글자수</div>
-                    <div className={styles.statValue}>{countKoreanChars(reporterText)}</div>
-                  </div>
-                  <div className={styles.statBlock}>
-                    <div className={styles.statLabel}>원본 글자수</div>
-                    <div className={styles.statValue}>{countKoreanChars(pressReleaseText)}</div>
-                  </div>
-                </div>
-
-                <div
-                  className={styles.resultTextarea}
-                  dangerouslySetInnerHTML={{
-                    __html: hasAnalyzed ? highlightedText : reporterText || "분석 결과가 여기에 표시됩니다",
-                  }}
-                />
-              </div>
-
-              {/* Section 4: AI Results */}
-              <div className={styles.section}>
-                <h3 className={styles.sectionTitle}>AI 분석 결과</h3>
+              {/* Section 4: AI Results - Now elongated on the right */}
+              <div className={`${styles.section} `}>
+                <h3 className={styles.sectionTitle}>AI 분석 결과: {hasAnalyzed ? aiOriginalityStatus : "-"}</h3>
 
                 <div className={styles.aiStatsContainer}>
+                  <div className={styles.statBlock}>
+                    <div className={styles.statLabel}>유사율</div>
+                    <div className={styles.statValue}>{hasAnalyzed ? `${Math.round(similarityRate)}%` : "-"}</div>
+                  </div>
                   <div className={styles.aiStatBlock}>
                     <div className={styles.statLabel}>AI 표절률</div>
                     <div className={styles.statValue}>{hasAnalyzed ? aiPlagiarismRate : "-"}</div>
                   </div>
-                  <div className={styles.aiStatBlock}>
-                    <div className={styles.statLabel}>자체기사 여부</div>
-                    <div className={styles.statValue}>{hasAnalyzed ? aiOriginalityStatus : "-"}</div>
+
+                  <div className={styles.statBlock}>
+                    <div className={styles.statLabel}>기사 글자수</div>
+                    <div className={styles.statValue}>{countKoreanChars(reporterText)}</div>
                   </div>
                 </div>
 
@@ -375,21 +353,6 @@ const tokenize = s => Array.from(segmenter.segment(s.normalize('NFKC').toLowerCa
                     </div>
                   </div>
                 </div>
-                {/* <div className={styles.aiFeedbackTextarea}>{hasAnalyzed ? aiFeedback : "AI 분석 결과가 여기에 표시됩니다"}</div>
-
-                
-                {hasAnalyzed && suggestions.length > 0 && (
-                  <div className={styles.suggestionsContainer}>
-                    <h4 className={styles.suggestionsTitle}>개선 제안사항</h4>
-                    <ul className={styles.suggestionsList}>
-                      {suggestions.map((suggestion, index) => (
-                        <li key={index} className={styles.suggestionItem}>
-                          {suggestion}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )} */}
               </div>
             </div>
 
@@ -413,5 +376,3 @@ const tokenize = s => Array.from(segmenter.segment(s.normalize('NFKC').toLowerCa
     </main>
   );
 }
-
-
