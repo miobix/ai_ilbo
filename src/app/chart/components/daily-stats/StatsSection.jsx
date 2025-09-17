@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import styles from "../chart.module.css";
-import DailyArticleStats from "./charts/DailyArticleStats";
-import WebArticleList from "./tables/WebArticleList";
+import styles from "../../chart.module.css";
+import DailyArticleStats from "./DailyArticleStats";
+import WebArticleList from "./WebArticleList";
 import WebArticleDeptChart from "./WebArticleDeptChart";
 
 const StatsSection = () => {

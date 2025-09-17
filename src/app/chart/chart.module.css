@@ -4,6 +4,92 @@
 .active{background:#111827;color:#fff}
 .contentWrap{padding:8px}
 
+/* 새로운 버튼 스타일들 */
+.actionBtn{
+  appearance:none;
+  border:1px solid #e5e7eb;
+  background:#fff;
+  color:#374151;
+  padding:8px 16px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:500;
+  transition:all 0.15s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  white-space:nowrap;
+}
+
+.actionBtn:hover{
+  background:#f9fafb;
+  border-color:#d1d5db;
+  transform:translateY(-1px);
+  box-shadow:0 2px 4px rgba(0,0,0,0.1);
+}
+
+.actionBtn:active{
+  transform:translateY(0);
+  box-shadow:0 1px 2px rgba(0,0,0,0.1);
+}
+
+.actionBtnPrimary{
+  background:#3b82f6;
+  color:#fff;
+  border-color:#3b82f6;
+}
+
+.actionBtnPrimary:hover{
+  background:#2563eb;
+  border-color:#2563eb;
+}
+
+.actionBtnSecondary{
+  background:#6b7280;
+  color:#fff;
+  border-color:#6b7280;
+}
+
+.actionBtnSecondary:hover{
+  background:#4b5563;
+  border-color:#4b5563;
+}
+
+.actionBtnSuccess{
+  background:#10b981;
+  color:#fff;
+  border-color:#10b981;
+}
+
+.actionBtnSuccess:hover{
+  background:#059669;
+  border-color:#059669;
+}
+
+.actionBtnToggle{
+  background:#f3f4f6;
+  color:#374151;
+  border-color:#e5e7eb;
+}
+
+.actionBtnToggle.active{
+  background:#3b82f6;
+  color:#fff;
+  border-color:#3b82f6;
+  box-shadow:0 0 0 3px rgba(59,130,246,0.1);
+}
+
+.actionBtnToggle:hover{
+  background:#e5e7eb;
+  border-color:#d1d5db;
+}
+
+.actionBtnToggle.active:hover{
+  background:#2563eb;
+  border-color:#2563eb;
+}
+
 .card{border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin:8px auto;max-width:1200px}
 .subCard{border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin:0;height:100%;display:flex;flex-direction:column}
 .cardHeader{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f3f4f6;padding:16px;gap:8px;flex-wrap:wrap}
@@ -37,6 +123,44 @@
 
 .selectRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .select{border:1px solid #e5e7eb;border-radius:6px;padding:8px 10px;background:#fff}
+
+/* 개선된 헤더 레이아웃 */
+.cardHeaderImproved{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  border-bottom:1px solid #f3f4f6;
+  padding:16px;
+}
+
+.cardTitleRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.controlsRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+.leftControls{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  flex:1;
+}
+
+.rightControls{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
 
 .grid{display:grid;gap:16px}
 .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}

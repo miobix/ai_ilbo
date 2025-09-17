@@ -5,8 +5,8 @@ import layoutStyles from "./page.module.css";
 import chartStyles from "./chart.module.css";
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
-import StatsSection from "./components/StatsSection";
-import ViewsSection from "./components/ViewsSection";
+import StatsSection from "./components/daily-stats/StatsSection";
+import ViewsSection from "./components/article-stats/ViewsSection";
 
 export default function Chart() {
   const [activeMain, setActiveMain] = useState("stats");

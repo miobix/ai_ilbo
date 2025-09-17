@@ -4,6 +4,7 @@ import styles from "../../chart.module.css";
 import { useTableSort } from "../../hooks/useTable";
 import { toDateInputValue } from "../../lib/dateUtils";
 import { getSelfRatioClass } from "../../lib/tableUtils";
+import { arrayToCSV, downloadCSV, generateFilenameWithDateRange } from "../../lib/csvUtils";
 
 const COLUMNS=[
   { label:'부서', key:'department' },
@@ -21,19 +22,17 @@ export default function DepartmentViewTable({ newsData }){
 
   const departments=useMemo(()=>{
     if(!newsData?.length||!dateRange?.from||!dateRange?.to) return [];
-    const from=dateRange.from.getTime(); const to=dateRange.to.getTime();
-    const map=new Map();
+    const m=new Map(); const from=Math.min(dateRange.from.getTime(),dateRange.to.getTime()); const to=Math.max(dateRange.from.getTime(),dateRange.to.getTime());
     for(const a of newsData){
       const t=new Date(a.newsdate).getTime(); if(t<from||t>to) continue;
-      const dep=a.code_name||'미분류';
-      const views=Number(a.ref)||0; const isSelf=String(a.level)==='1';
-      const rec=map.get(dep)||{department:dep,totalViews:0,articleCount:0,level1Count:0};
-      rec.totalViews+=views; rec.articleCount+=1; if(isSelf) rec.level1Count+=1; map.set(dep,rec);
+      const name=a.code_name||'기타'; const ref=Number(a.ref)||0; const isSelf=String(a.level)==='1';
+      const rec=m.get(name)||{department:name,totalViews:0,articleCount:0,level1:0};
+      rec.totalViews+=ref; rec.articleCount+=1; if(isSelf) rec.level1+=1; m.set(name,rec);
     }
-    return Array.from(map.values()).map(d=>({
-      ...d,
-      selfRatio: d.articleCount? Math.round((d.level1Count/d.articleCount)*100):0,
-      averageViews: d.articleCount? Math.round(d.totalViews/d.articleCount):0,
+    return Array.from(m.values()).map(r=>({
+      ...r,
+      selfRatio: r.articleCount? Math.round((r.level1/r.articleCount)*100):0,
+      averageViews: r.articleCount? Math.round(r.totalViews/r.articleCount):0,
     }));
   },[newsData,dateRange]);
 
@@ -43,17 +42,48 @@ export default function DepartmentViewTable({ newsData }){
 
   useEffect(()=>{ setCurrentPage(1); },[dateRange]);
 
+  // CSV 다운로드 함수
+  const handleDownloadCSV = () => {
+    const csvData = sorted.map(row => ({
+      ...row,
+      selfRatio: `${row.selfRatio}%`, // 퍼센트 기호 추가
+      totalViews: row.totalViews.toLocaleString(),
+      averageViews: row.averageViews.toLocaleString(),
+    }));
+    
+    const csvContent = arrayToCSV(csvData, COLUMNS);
+    const filename = generateFilenameWithDateRange('부서별_조회수', dateRange.from, dateRange.to);
+    downloadCSV(csvContent, filename);
+  };
+
   return (
     <div className={styles.card}>
-      <div className={styles.cardHeader}>
-        <div>
+      <div className={styles.cardHeaderImproved}>
+        <div className={styles.cardTitleRow}>
           <div className={styles.cardTitle}>부서별 조회수 현황</div>
-          {/* 전체 통계 */}
+          <button 
+            className={`${styles.actionBtn} ${styles.actionBtnSuccess}`}
+            onClick={handleDownloadCSV}
+          >
+            📥 CSV 다운로드
+          </button>
         </div>
-        <div className={styles.selectRow}>
-          <input className={styles.select} type="date" value={toDateInputValue(dateRange.from)} onChange={e=>setDateRange(r=>({...r,from:new Date(e.target.value)}))} />
-          <span>~</span>
-          <input className={styles.select} type="date" value={toDateInputValue(dateRange.to)} onChange={e=>setDateRange(r=>({...r,to:new Date(e.target.value)}))} />
+        <div className={styles.controlsRow}>
+          <div className={styles.leftControls}>
+            <input 
+              className={styles.select} 
+              type="date" 
+              value={toDateInputValue(dateRange.from)} 
+              onChange={e=>setDateRange(r=>({...r,from:new Date(e.target.value)}))} 
+            />
+            <span style={{color: '#6b7280', fontSize: '14px'}}>~</span>
+            <input 
+              className={styles.select} 
+              type="date" 
+              value={toDateInputValue(dateRange.to)} 
+              onChange={e=>setDateRange(r=>({...r,to:new Date(e.target.value)}))} 
+            />
+          </div>
         </div>
       </div>
       <div className={styles.cardContent+" "+styles.tableWrap}>
