@@ -72,15 +72,17 @@ export const departmentMembers = {
     { name: "박현주", id: "hjpark", webId: "waa13825" },
     { name: "강남진", id: "75kangnj", webId: "waa15033" },
   ],
-  문화체육: [
+  문화: [
     { name: "백승운", id: "swback", webId: "waa11434" },
     { name: "박주희", id: "jh", webId: "waa12517" },
     { name: "임훈", id: "hoony", webId: "waa13482" },
     { name: "조현희", id: "hyunhee", webId: "waa14739" },
     { name: "정수민", id: "jsmean", webId: "waa14925" },
+    { name: "김은경", id: "enigma", webId: "wa930149" },
+  ],
+  체육: [
     { name: "이효설", id: "hobak", webId: "waa12277" },
     { name: "정지윤", id: "yooni", webId: "waa14523" },
-    { name: "김은경", id: "enigma" },
   ],
   디지털: [
     { name: "이지영", id: "4to11", webId: "waa14859" },
@@ -115,18 +117,19 @@ export const departmentMembers = {
 export const departmentNames = Object.keys(departmentMembers);
 
 // 기사 데이터의 code_name과 UI 부서명을 매핑
-// 데이터의 code_name이 예: '디지털뉴스부','정치부','경제부','사회부','경북부','문화체육부','사진부','스토리텔링팀','논설실' 등일 때를 커버
+// 데이터의 code_name이 예: '디지털뉴스부','정치부','경제부','사회부','경북부','문화부','체육부','사진부','스토리텔링팀','논설실' 등일 때를 커버
 export const departmentCodeNameMap = {
-  '디지털': '디지털뉴스부',
-  '정치': '정치부',
-  '경제': '경제부',
-  '사회': '사회부',
-  '경북': '경북부',
-  '문화체육': '문화체육부',
-  '사진팀': '사진부',
-  '스토리텔링': '스토리텔링팀',
-  '논설실': '논설실',
-  '기타': '기타',
+  디지털: "디지털뉴스부",
+  정치: "정치부",
+  경제: "경제부",
+  사회: "사회부",
+  경북: "경북부",
+  문화: "문화부",
+  체육: "체육부",
+  사진팀: "사진부",
+  스토리텔링: "스토리텔링팀",
+  논설실: "논설실",
+  기타: "기타",
 };
 
 // UI 부서명을 기사 code_name으로 변환(없으면 원문 반환)
