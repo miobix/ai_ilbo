@@ -7,8 +7,8 @@ import { idToName } from "../../data/userMapping";
 import { getCategoryName } from "../../data/categoryMapping";
 import HighlightedTextModal from "../HighlightedTextModal";
 
-const columns = ["순번", "출고일시", "제목", "교열", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
-// const columns = ["순번", "출고일시", "제목", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
+// const columns = ["순번", "출고일시", "제목", "교열", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
+const columns = ["순번", "출고일시", "제목", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
 
 export default function WebArticleList({ webArticleData }) {
   const [selectedDatetime, setSelectedDatetime] = useState("yesterday");
@@ -67,8 +67,6 @@ const getSpellings = async (nid) => {
     return sorted.slice(start, start + itemsPerPage);
   }, [sorted, currentPage]);
 
-  // 차트는 분리된 컴포넌트(WebArticleDeptChart)로 렌더링합니다.
-
   // 날짜 필터 변경 시 1페이지로 리셋
   React.useEffect(() => {
     setCurrentPage(1);
@@ -99,9 +97,7 @@ const getSpellings = async (nid) => {
             <tr className={styles.tr}>
         {columns.map((c, idx) => (
                 <th key={idx} className={styles.th}>
-                            <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "spellings", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}>
-
-          {/* <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}> */}
+          <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}>
                     {c}
                   </button>
                 </th>
@@ -120,20 +116,6 @@ const getSpellings = async (nid) => {
                 <td className={styles.td} data-label="제목" style={{ maxWidth: 360, color: item.embargo_type === "1" ? "#dc2626" : undefined }} title={item.newstitle}>
                   {item.newstitle || "-"}
                 </td>
-                <td className={styles.td} data-label="오탈자" title={item.newsEditNumber}> 
-                {item.spellings && !isNaN(Number(item.spellings)) && (
-    <span
-      className={`${styles.badge} ${styles.badgeMispell}`}
-      onClick={async () => {
-        const spellingsData = await getSpellings(item.newskey);
-        openModal({ ...item, ...spellingsData });
-      }}
-    >
-      {item.spellings}
-    </span>
-  )}
-                </td>
-
                 <td className={styles.td} data-label="작성자" title={item.writers}>
                   {item.writers ? truncateText(item.writers, 10) : "-"}
                 </td>
@@ -226,11 +208,11 @@ const getSpellings = async (nid) => {
             }}
             onClick={(e) => e.stopPropagation()} // prevent modal click from closing
           >
-            <h3 style={{marginRight: '25px'}}>{modalItem.newstitle}</h3>
+            <h3 style={{marginRight: '25px'}}>{modalItem?.newstitle}</h3>
             
                 <div style={{ lineHeight: 1.5, whiteSpace: 'pre-wrap', marginTop: '20px',  maxHeight: 'calc(60vh - 120px)', // Account for title, padding, and button
   overflowY: 'auto' }}>
-        <HighlightedTextModal text={modalItem.html_text} spellings={modalItem.spellings} />
+        <HighlightedTextModal text={modalItem?.html_text} spellings={modalItem?.spellings} />
       </div>
 
              <button

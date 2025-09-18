@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import styles from "../chart.module.css";
-import LevelChart from "./charts/LevelChart";
-import ViewChart from "./charts/ViewChart";
-import DepartmentViewTable from "./tables/DepartmentViewTable";
-import PersonalViewTable from "./tables/PersonalViewTable";
-import ArticleViewTable from "./tables/ArticleViewTable";
+import styles from "../../chart.module.css";
+import LevelChart from "./LevelChart";
+import ViewChart from "./ViewChart";
+import DepartmentViewTable from "./DepartmentViewTable";
+import PersonalViewTable from "./PersonalViewTable";
+import ArticleViewTable from "./ArticleViewTable";
 
 const ViewsSection = () => {
   const [active, setActive] = useState("department");
