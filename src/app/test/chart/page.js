@@ -5,8 +5,8 @@ import layoutStyles from "./page.module.css";
 import chartStyles from "./chart.module.css";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
-import StatsSection from "./components/StatsSection";
-import ViewsSection from "./components/ViewsSection";
+import StatsSection from "./components/daily-stats/StatsSection";
+import ViewsSection from "./components/article-stats/ViewsSection";
 
 export default function Chart() {
   const [activeMain, setActiveMain] = useState("stats");
@@ -23,16 +23,16 @@ export default function Chart() {
             >
               일일 출고현황
             </button>
-            {/* <button
+            <button
               className={`${chartStyles.tabBtn} ${activeMain === "views" ? chartStyles.active : ""}`}
               onClick={() => setActiveMain("views")}
             >
               기사 통계
-            </button> */}
+            </button>
           </div>
           <div className={chartStyles.contentWrap}>
             {activeMain === "stats" && <StatsSection />}
-            {/* {activeMain === "views" && <ViewsSection />} */}
+            {activeMain === "views" && <ViewsSection />}
           </div>
         </div>
       </div>
