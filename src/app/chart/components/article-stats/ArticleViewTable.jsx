@@ -17,6 +17,8 @@ const COLUMNS=[
 
 export default function ArticleViewTable({ newsData }){
   const { handleSort, sortData } = useTableSort('ref','desc');
+  const [mobileSortKey,setMobileSortKey]=useState('ref');
+  const [mobileSortOrder,setMobileSortOrder]=useState('desc');
   const [query,setQuery]=useState('');
   const [dateRange,setDateRange]=useState({
     from:new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -105,6 +107,18 @@ export default function ArticleViewTable({ newsData }){
               onChange={e=>setQuery(e.target.value)} 
             />
           </div>
+        </div>
+      </div>
+      {/* 모바일 정렬 바 */}
+      <div className={styles.mobileSortBar}>
+        <div className={styles.mobileSortGroup}>
+          <label className={styles.mobileSortLabel} htmlFor="articleMobileSort">정렬</label>
+          <select id="articleMobileSort" className={styles.mobileSortSelect} value={mobileSortKey} onChange={e=>{setMobileSortKey(e.target.value); setMobileSortOrder('desc'); handleSort(e.target.value);}}>
+            {COLUMNS.map(c=>(<option key={c.key} value={c.key}>{c.label}</option>))}
+          </select>
+          <button type="button" className={styles.sortDirBtn} onClick={()=>{handleSort(mobileSortKey); setMobileSortOrder(o=>o==='asc'?'desc':'asc');}}>
+            {mobileSortOrder==='asc'?'▲':'▼'}
+          </button>
         </div>
       </div>
       <div className={styles.cardContent}>
