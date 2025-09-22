@@ -24,6 +24,8 @@ const SELF_COLUMNS=[
 
 export default function PersonalViewTable({ newsData }){
   const { handleSort, sortData } = useTableSort('averageViews','desc');
+  const [mobileSortKey,setMobileSortKey]=useState('averageViews');
+  const [mobileSortOrder,setMobileSortOrder]=useState('desc');
   const [query,setQuery]=useState('');
   const [dateRange,setDateRange]=useState({
     from:new Date(new Date().getFullYear(), new Date().getMonth(), 1),
@@ -161,6 +163,17 @@ export default function PersonalViewTable({ newsData }){
               {showSelfOnly ? '📰 전체보기' : '✏️ 자체기사만'}
             </button>
           </div>
+        </div>
+      </div>
+      <div className={styles.mobileSortBar}>
+        <div className={styles.mobileSortGroup}>
+          <label className={styles.mobileSortLabel} htmlFor="personalMobileSort">정렬</label>
+          <select id="personalMobileSort" className={styles.mobileSortSelect} value={mobileSortKey} onChange={e=>{setMobileSortKey(e.target.value); setMobileSortOrder('desc'); handleSort(e.target.value);}}>
+            {COLUMNS.map(c=>(<option key={c.key} value={c.key}>{c.label}</option>))}
+          </select>
+          <button type="button" className={styles.sortDirBtn} onClick={()=>{handleSort(mobileSortKey); setMobileSortOrder(o=>o==='asc'?'desc':'asc');}}>
+            {mobileSortOrder==='asc'?'▲':'▼'}
+          </button>
         </div>
       </div>
       {/* 요약 합계 */}

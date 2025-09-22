@@ -3,10 +3,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "../../chart.module.css";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 
-// 독립형 부서별 막대 차트: props.items가 없으면 API에서 직접 로드하고, 날짜 셀렉터로 오늘/어제 필터링
-export default function WebArticleDeptChart({ items }) {
+// API 기반 부서별 막대 차트: 날짜 셀렉터로 오늘/어제 호출
+export default function WebArticleDeptChart() {
   const [selectedDatetime, setSelectedDatetime] = useState("yesterday");
-  const [fetched, setFetched] = useState([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -20,69 +20,35 @@ export default function WebArticleDeptChart({ items }) {
     ];
   }, []);
 
+  const selectedDateStr = useMemo(() => {
+    const sel = dateGroups.find((g) => g.value === selectedDatetime);
+    const d = sel?.baseDate || new Date();
+    return d.toISOString().split('T')[0];
+  }, [dateGroups, selectedDatetime]);
+
   useEffect(() => {
     let ignore = false;
-    if (items && items.length) return; // 부모에서 데이터를 주면 fetch 생략
     (async () => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch("/api/fetchWMSArticles");
-        if (res.status === 204) { if (!ignore) setFetched([]); return; }
-        if (!res.ok) throw new Error("API 실패");
+        const res = await fetch(`/api/fetchDailyByDepartment?date=${selectedDateStr}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        if (!ignore) setFetched(Array.isArray(data) ? data : (data?.items || []));
+        if (!ignore) setItems(Array.isArray(data?.items) ? data.items : []);
       } catch (e) {
-        if (!ignore) setError(e?.message || "데이터를 불러오지 못했습니다.");
+        if (!ignore) setError(e.message || '데이터 로드 실패');
       } finally {
         if (!ignore) setLoading(false);
       }
     })();
     return () => { ignore = true; };
-  }, [items]);
-
-  const baseList = useMemo(() => (items && items.length ? items : fetched), [items, fetched]);
-
-  const filtered = useMemo(() => {
-    const sel = dateGroups.find((g) => g.value === selectedDatetime);
-    let start, end;
-    if (sel?.baseDate) {
-      const d = sel.baseDate;
-      // UTC 경계 기준으로 하루 범위 계산 (API가 UTC 기반일 가능성 반영)
-      start = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0, 0, 0, 0));
-      end = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 23, 59, 59, 999));
-    }
-    const list = (baseList || []).filter((a) => {
-      if (!start || !end) return true;
-      const dt = a?.newsdate ? new Date(a.newsdate) : null;
-      return dt && dt.getTime() >= start.getTime() && dt.getTime() <= end.getTime();
-    });
-    return list.map((it) => {
-      // 부서명 정규화: writer_buseo가 "부서1, 부서2" 형태면 첫 번째만 사용, 공백 트림
-      const raw = typeof it?.writer_buseo === 'string' ? it.writer_buseo : (typeof it?.dept === 'string' ? it.dept : '');
-      const primary = raw ? raw.split(',')[0].trim() : '';
-      const dept = primary || '기타';
-      return { ...it, dept };
-    });
-  }, [baseList, selectedDatetime, dateGroups]);
+  }, [selectedDateStr]);
 
   const deptData = useMemo(() => {
-    const m = new Map(); // dept -> { total, self, nonSelf }
-    for (const it of filtered || []) {
-      const dept = it?.dept || "기타";
-      const lvl = it?.level;
-      const isSelf = String(lvl) === "1" || Number(lvl) === 1; // 자체
-      if (!m.has(dept)) m.set(dept, { total: 0, self: 0, nonSelf: 0 });
-      const v = m.get(dept);
-      v.total += 1;
-      if (isSelf) v.self += 1; else v.nonSelf += 1;
-    }
-    const rows = Array.from(m, ([name, v]) => {
-      const ratio = v.total ? Math.round((v.self / v.total) * 100) : 0; // 자체 비율 %
-      return { name, count: v.total, self: v.self, nonSelf: v.nonSelf, ratio };
-    }).sort((a, b) => b.count - a.count);
-    return rows;
-  }, [filtered]);
+    // API는 이미 { name, count, self, nonSelf, ratio } 구조 제공
+    return (items || []).slice().sort((a,b)=> b.count - a.count);
+  }, [items]);
 
   const getBarColor = (ratio) => (ratio >= 35 ? '#34d399' : ratio >= 25 ? '#fcd34d' : '#f87171');
 

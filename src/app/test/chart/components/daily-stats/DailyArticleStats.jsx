@@ -1,27 +1,45 @@
 "use client";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "../../chart.module.css";
 import { getLevelClass } from "../../lib/tableUtils";
 
-const DailyArticleStats = ({ newsData }) => {
-  const stats = useMemo(()=>{
-    if(!newsData?.length){return{todayArticles:0,todayLevelStats:{},yesterdayArticles:0,yesterdayLevelStats:{},todaySelfArticleRatio:0,yesterdaySelfArticleRatio:0,todaySelfArticles:0,yesterdaySelfArticles:0,todayGeneralArticles:0};}
-    const today=new Date(); const yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
-    const todayStr=today.toISOString().split('T')[0]; const yesterdayStr=yesterday.toISOString().split('T')[0];
-    const todayArticles=newsData.filter(a=>a.newsdate && String(a.newsdate).startsWith(todayStr));
-    const yesterdayArticles=newsData.filter(a=>a.newsdate && String(a.newsdate).startsWith(yesterdayStr));
-    const calc=(arr)=>{const m={}; arr.forEach(a=>{const l=a.level||'5'; m[l]=(m[l]||0)+1;}); return m;}
-    const ts=todayArticles.filter(a=>String(a.level)==='1').length;
-    const tg=todayArticles.filter(a=>String(a.level)==='2').length;
-    const ys=yesterdayArticles.filter(a=>String(a.level)==='1').length;
-    const tr=todayArticles.length?Math.round((ts/todayArticles.length)*100):0;
-    const yr=yesterdayArticles.length?Math.round((ys/yesterdayArticles.length)*100):0;
-    return {todayArticles:todayArticles.length,todayLevelStats:calc(todayArticles),yesterdayArticles:yesterdayArticles.length,yesterdayLevelStats:calc(yesterdayArticles),todaySelfArticleRatio:tr,yesterdaySelfArticleRatio:yr,todaySelfArticles:ts,yesterdaySelfArticles:ys,todayGeneralArticles:tg};
-  },[newsData]);
+const DailyArticleStats = () => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [apiData, setApiData] = useState(null);
+
+  const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch(`/api/fetchDailyTotals?date=${todayStr}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setApiData(data);
+      } catch (e) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [todayStr]);
+
+  const stats = useMemo(() => {
+    if (!apiData) {
+      return { todayArticles: 0, todayLevelStats: {}, yesterdayArticles: 0, yesterdayLevelStats: {}, todaySelfArticleRatio: 0, yesterdaySelfArticleRatio: 0, todaySelfArticles: 0 };
+    }
+    const { todayArticles, todayLevelStats = {}, yesterdayArticles, yesterdayLevelStats = {} } = apiData;
+    const todaySelfArticles = Number(todayLevelStats["1"]) || 0;
+    const todaySelfArticleRatio = todayArticles ? Math.round((todaySelfArticles / todayArticles) * 100) : 0;
+    const yesterdaySelfArticleRatio = yesterdayArticles ? Math.round(((Number(yesterdayLevelStats["1"]) || 0) / yesterdayArticles) * 100) : 0;
+    return { todayArticles, todayLevelStats, yesterdayArticles, yesterdayLevelStats, todaySelfArticleRatio, yesterdaySelfArticleRatio, todaySelfArticles };
+  }, [apiData]);
 
   const getYesterdayDate=()=>{const y=new Date(); y.setDate(y.getDate()-1); const yy=String(y.getFullYear()).slice(-2); const mm=String(y.getMonth()+1).padStart(2,'0'); const dd=String(y.getDate()).padStart(2,'0'); const days=['일','월','화','수','목','금','토']; return `${yy}-${mm}-${dd} (${days[y.getDay()]})`;};
-  const getLastUpdateTime=()=>{if(!newsData?.length||!newsData[0].last_update) return null; const t=new Date(newsData[0].last_update); return t.toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'UTC'});}
-
   const renderLevelStats=(levelStats)=>{
     const levels=Object.keys(levelStats||{}).sort(); if(!levels.length) return <span>기사 없음</span>;
     let self=0, non=0; levels.forEach(l=>{if(l==='1') self+=levelStats[l]; else non+=levelStats[l];});
@@ -33,12 +51,14 @@ const DailyArticleStats = ({ newsData }) => {
     );
   };
 
+  if (loading) return <div className={styles.card}><div className={styles.cardContent}>데이터를 불러오는 중...</div></div>;
+  if (error) return <div className={styles.card}><div className={styles.cardContent}>에러: {error}</div></div>;
+
   return (
     <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div>
           <div className={styles.cardTitle}>자체 기사 통계</div>
-          <div className={styles.cardDesc}>{getLastUpdateTime() && `최종 업데이트: ${getLastUpdateTime()}`}</div>
           <div className={styles.cardDesc}><span style={{color:'#2563eb',fontWeight:600}}>등급1 : 자체</span>, <span style={{color:'#374151',fontWeight:600}}>나머지 등급 : 비자체</span></div>
         </div>
         <button className={styles.tabBtn} onClick={()=>window.location.reload()}>새로고침</button>

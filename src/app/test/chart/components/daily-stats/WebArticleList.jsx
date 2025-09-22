@@ -1,23 +1,26 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "../../chart.module.css";
 import { useTableSort } from "../../hooks/useTable";
-import { truncateText, formatLevel, getLevelClass, getClickableBadgeClass } from "../../lib/tableUtils";
+import { truncateText, formatLevel, getLevelClass } from "../../lib/tableUtils";
 import { idToName } from "../../data/userMapping";
 import { getCategoryName } from "../../data/categoryMapping";
 import HighlightedTextModal from "../HighlightedTextModal";
 
-// const columns = ["순번", "출고일시", "제목", "교열", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
-const columns = ["순번", "출고일시", "제목", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
+const columns = ["순번", "출고일시", "제목", "교열", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
 
-export default function WebArticleList({ webArticleData }) {
+export default function WebArticleList() {
   const [selectedDatetime, setSelectedDatetime] = useState("yesterday");
   const { sortData, handleSort } = useTableSort("newsdate", "desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [modalItem, setModalItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [articles, setArticles] = useState([]);
+  const [meta, setMeta] = useState(null);
 
-  const itemsPerPage = 50;
+  const pageSize = 100; // API page_size
 
   const openModal = (item) => {
     setModalItem(item);
@@ -29,17 +32,24 @@ export default function WebArticleList({ webArticleData }) {
     setShowModal(false);
   };
 
-const getSpellings = async (nid) => {
-  try {
-    const res = await fetch(`/api/fetchSpellings?nid=${nid}`);
-    if (!res.ok) throw new Error('Failed to fetch spellings');
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    console.error(err);
-    return { html_text: '', spellings: [] }; 
-  }
-};
+  const spellingCacheRef = React.useRef(new Map());
+  const [loadingSpellingNid, setLoadingSpellingNid] = useState(null);
+  const fetchSpellingDetails = async (nid) => {
+    if (!nid) return { html_text: '', spellings: [] };
+    if (spellingCacheRef.current.has(nid)) return spellingCacheRef.current.get(nid);
+    try {
+      setLoadingSpellingNid(nid);
+      const res = await fetch(`/api/fetchSpellingDetails?nid=${nid}`);
+      if (!res.ok) throw new Error('Failed to fetch spelling details');
+      const data = await res.json();
+      const shaped = { html_text: data.html_text || '', spellings: Array.isArray(data.spellings)? data.spellings: [] };
+      spellingCacheRef.current.set(nid, shaped);
+      return shaped;
+    } catch (e) {
+      console.error(e);
+      return { html_text: '', spellings: [] };
+    } finally { setLoadingSpellingNid(null); }
+  };
 
   const dateGroups = useMemo(() => {
     const t = new Date();
@@ -53,24 +63,64 @@ const getSpellings = async (nid) => {
     ];
   }, []);
 
-  const webArticles = useMemo(() => {
+  const selectedDateStr = useMemo(() => {
     const sel = dateGroups.find((g) => g.value === selectedDatetime);
-    const list = (webArticleData || []).filter((a) => (sel ? a.newsdate && String(a.newsdate).startsWith(sel.dateStr) : true));
-    // 역매핑 없이 writer_buseo가 있으면 사용, 없으면 '기타'
-    return list.map((it) => ({ ...it, dept: it.writer_buseo || "기타" }));
-  }, [webArticleData, selectedDatetime, dateGroups]);
+    return sel?.dateStr || new Date().toISOString().split('T')[0];
+  }, [selectedDatetime, dateGroups]);
+
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        setArticles([]);
+        setMeta(null);
+        const res = await fetch(`/api/fetchDailyWebList?date=${selectedDateStr}&page=1&page_size=${pageSize}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (!ignore) {
+          setArticles(Array.isArray(data?.items) ? data.items : []);
+          setMeta(data?.meta || null);
+          setCurrentPage(1);
+        }
+      } catch (e) {
+        if (!ignore) setError(e.message || '데이터 로드 실패');
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    })();
+    return () => { ignore = true; };
+  }, [selectedDateStr]);
+
+  const webArticles = useMemo(() => {
+    return (articles || []).map(it => ({ ...it, dept: it.dept || it.writer_buseo || '기타' }));
+  }, [articles]);
+
+  // 출고일시(뉴스 publish) = newsdate, 등록일시 = reg_dt
+  const formatNewsTime = (item) => {
+    const raw = item?.newsdate;
+    if(!raw) return '-';
+    const d = new Date(raw);
+    if(isNaN(d.getTime())) return '-';
+    // newsdate 가 자정(00:00)만 오는 경우 시간 표시 대신 날짜만 노출
+    const hours = d.getHours();
+    const minutes = d.getMinutes();
+    if(hours === 0 && minutes === 0) {
+      return d.toLocaleDateString('ko-KR', { month:'2-digit', day:'2-digit'}); // MM.DD
+    }
+    return d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Seoul' });
+  };
 
   const sorted = useMemo(() => sortData(webArticles), [webArticles, sortData]);
-  const totalPages = Math.ceil(sorted.length / itemsPerPage) || 1;
+  const totalPages = Math.ceil(sorted.length / pageSize) || 1;
   const paginated = useMemo(() => {
-    const start = (currentPage - 1) * itemsPerPage;
-    return sorted.slice(start, start + itemsPerPage);
+  const start = (currentPage - 1) * pageSize;
+  return sorted.slice(start, start + pageSize);
   }, [sorted, currentPage]);
 
   // 날짜 필터 변경 시 1페이지로 리셋
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedDatetime]);
+  // selectedDatetime 변경 시 fetch 로직에서 currentPage 리셋 처리됨
 
   return (
     <>
@@ -80,6 +130,9 @@ const getSpellings = async (nid) => {
         <div>
           <div className={styles.cardTitle}>웹출고 기사 목록</div>
           <div className={styles.cardDesc}>붉은색 기사는 엠바고 기사입니다.</div>
+          {meta && (
+            <div className={styles.cardDesc} style={{marginTop:4}}>총 {meta.total_articles}건</div>
+          )}
         </div>
         <div className={styles.selectRow}>
           <select className={styles.select} value={selectedDatetime} onChange={(e) => setSelectedDatetime(e.target.value)}>
@@ -97,7 +150,7 @@ const getSpellings = async (nid) => {
             <tr className={styles.tr}>
         {columns.map((c, idx) => (
                 <th key={idx} className={styles.th}>
-          <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}>
+          <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "spellErrorCount", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}>
                     {c}
                   </button>
                 </th>
@@ -105,16 +158,41 @@ const getSpellings = async (nid) => {
             </tr>
           </thead>
           <tbody>
-            {paginated.map((item, idx) => (
+            {loading && (
+              <tr><td className={styles.td} colSpan={columns.length}>불러오는 중...</td></tr>
+            )}
+            {error && !loading && (
+              <tr><td className={styles.td} colSpan={columns.length} style={{color:'#b91c1c'}}>에러: {error}</td></tr>
+            )}
+            {!loading && !error && paginated.map((item, idx) => (
               <tr key={item.newskey || item._id || idx} className={styles.tr}>
                 <td className={styles.td} data-label="순번">
-                  {(currentPage - 1) * itemsPerPage + idx + 1}
+                  {(currentPage - 1) * pageSize + idx + 1}
                 </td>
-                <td className={styles.td} data-label="출고일시">
-                  {item.newsdate ? new Date(item.newsdate).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "UTC" }) : "-"}
-                </td>
+                <td className={styles.td} data-label="출고일시">{formatNewsTime(item)}</td>
                 <td className={styles.td} data-label="제목" style={{ maxWidth: 360, color: item.embargo_type === "1" ? "#dc2626" : undefined }} title={item.newstitle}>
                   {item.newstitle || "-"}
+                </td>
+                <td className={styles.td} data-label="교열">
+                  {(() => {
+                    const count = Array.isArray(item.spellings) ? item.spellings.length : (typeof item.spellErrorCount === 'number' ? item.spellErrorCount : (isNaN(Number(item.spellings)) ? null : Number(item.spellings)));
+                    if (count == null) return '-';
+                    return (
+                      <span
+                        className={`${styles.badge} ${styles.badgeMispell}`}
+                        onClick={async () => {
+                          const detail = await fetchSpellingDetails(item.newskey || item.nid || item.news_id);
+                          openModal({ ...item, ...detail });
+                        }}
+                        style={{ position: 'relative' }}
+                      >
+                        {loadingSpellingNid === (item.newskey || item.nid) && (
+                          <span style={{position:'absolute',left:'50%',top:'50%',transform:'translate(-50%, -50%)',fontSize:10}}>⏳</span>
+                        )}
+                        {count}
+                      </span>
+                    );
+                  })()}
                 </td>
                 <td className={styles.td} data-label="작성자" title={item.writers}>
                   {item.writers ? truncateText(item.writers, 10) : "-"}
@@ -130,21 +208,20 @@ const getSpellings = async (nid) => {
                     <div>
                       {(() => {
                         const sel = dateGroups.find((g) => g.value === selectedDatetime);
-                        const regDateStr = String(item.reg_dt).split("T")[0];
+                        const regDateStr = String(item.reg_dt).split('T')[0];
                         const isSel = sel && regDateStr === sel.dateStr;
+                        const d = new Date(item.reg_dt);
                         return (
                           <>
                             {!isSel && (
-                              <div style={{ color: "#6b7280" }}>{new Date(item.reg_dt).toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit", timeZone: "UTC" })}</div>
+                              <div style={{ color: '#6b7280' }}>{d.toLocaleDateString('ko-KR', { year:'numeric', month:'2-digit', day:'2-digit', timeZone:'Asia/Seoul' })}</div>
                             )}
-                            <div>{new Date(item.reg_dt).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", hour12: true, timeZone: "UTC" })}</div>
+                            <div>{d.toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit', hour12:true, timeZone:'Asia/Seoul' })}</div>
                           </>
                         );
                       })()}
                     </div>
-                  ) : (
-                    "-"
-                  )}
+                  ) : '-'}
                 </td>
                 <td className={styles.td} data-label="등록자" title={item.reg_id}>
                   {idToName[item.reg_id] || item.reg_id || "-"}
@@ -154,7 +231,7 @@ const getSpellings = async (nid) => {
                 </td>
               </tr>
             ))}
-            {sorted.length === 0 && (
+    {!loading && !error && sorted.length === 0 && (
               <tr>
                 <td className={styles.td} colSpan={columns.length}>
                   웹출고 기사가 없습니다.
@@ -164,7 +241,7 @@ const getSpellings = async (nid) => {
           </tbody>
         </table>
       </div>
-      {totalPages > 1 && (
+  {totalPages > 1 && !loading && !error && (
         <div style={{ display: "flex", gap: 8, justifyContent: "center", alignItems: "center", padding: "12px" }}>
           <button className={styles.select} disabled={currentPage === 1} onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}>
             이전

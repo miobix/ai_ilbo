@@ -2,12 +2,12 @@
 import React, { useMemo, useState } from "react";
 import styles from "../../chart.module.css";
 import { useTableSort } from "../../hooks/useTable";
-import { truncateText, formatLevel, getLevelClass, getClickableBadgeClass } from "../../lib/tableUtils";
+import { truncateText, formatLevel, getLevelClass } from "../../lib/tableUtils";
 import { idToName } from "../../data/userMapping";
 import { getCategoryName } from "../../data/categoryMapping";
 import HighlightedTextModal from "../HighlightedTextModal";
 
-// const columns = ["순번", "출고일시", "제목", "교열", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
+// 교열 컬럼은 test 전용으로 유지, 프로덕션에서는 제외
 const columns = ["순번", "출고일시", "제목", "작성자", "부서", "등급", "등록일시", "등록자ID", "분류"];
 
 export default function WebArticleList({ webArticleData }) {
@@ -16,6 +16,9 @@ export default function WebArticleList({ webArticleData }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [modalItem, setModalItem] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  // 모바일 정렬 전용 상태 (헤더 숨김 시 사용) - 교열 제외
+  const [mobileSortKey, setMobileSortKey] = useState("newsdate");
+  const [mobileSortOrder, setMobileSortOrder] = useState("desc");
 
   const itemsPerPage = 50;
 
@@ -29,17 +32,7 @@ export default function WebArticleList({ webArticleData }) {
     setShowModal(false);
   };
 
-const getSpellings = async (nid) => {
-  try {
-    const res = await fetch(`/api/fetchSpellings?nid=${nid}`);
-    if (!res.ok) throw new Error('Failed to fetch spellings');
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    console.error(err);
-    return { html_text: '', spellings: [] }; 
-  }
-};
+  // 교열 기능 제거됨 (test 전용 유지)
 
   const dateGroups = useMemo(() => {
     const t = new Date();
@@ -74,6 +67,30 @@ const getSpellings = async (nid) => {
     setCurrentPage(1);
   }, [selectedDatetime]);
 
+  // 모바일에서 사용할 정렬 옵션 (모바일에서 숨기는 필드는 제외: 등록일시/등록자ID/분류 제외)
+  const mobileSortOptions = [
+    { label: "순번", key: "index" },
+    { label: "출고일시", key: "newsdate" },
+    { label: "제목", key: "newstitle" },
+    { label: "작성자", key: "writers" },
+    { label: "부서", key: "dept" },
+    { label: "등급", key: "level" },
+  ];
+
+  const onChangeMobileSortKey = (e) => {
+    const k = e.target.value;
+    setMobileSortKey(k);
+    // 새로운 키 선택 시 기본 정렬 방향(desc)로 초기화한다고 가정
+    setMobileSortOrder("desc");
+    handleSort(k); // 훅 내부에서 동일 키 재클릭 시 토글되는 방식이므로 첫 호출은 desc 기준 유지
+  };
+
+  const onToggleMobileSortOrder = () => {
+    // 동일 키로 다시 handleSort 호출하여 asc/desc 토글
+    handleSort(mobileSortKey);
+    setMobileSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+  };
+
   return (
     <>
       {/* 하단 카드: 웹출고 기사 목록 */}
@@ -93,14 +110,31 @@ const getSpellings = async (nid) => {
           </select>
         </div>
       </div>
+      {/* 모바일 전용 정렬 바 (768px 이하에서만 노출) */}
+      <div className={styles.mobileSortBar}>
+        <div className={styles.mobileSortGroup}>
+          <label className={styles.mobileSortLabel} htmlFor="mobileSortSelect">정렬</label>
+          <select
+            id="mobileSortSelect"
+            className={styles.mobileSortSelect}
+            value={mobileSortKey}
+            onChange={onChangeMobileSortKey}
+          >
+            {mobileSortOptions.map((o) => (
+              <option key={o.key} value={o.key}>{o.label}</option>
+            ))}
+          </select>
+          <button type="button" className={styles.sortDirBtn} onClick={onToggleMobileSortOrder} aria-label="정렬 방향 토글">
+            {mobileSortOrder === "asc" ? "▲" : "▼"}
+          </button>
+        </div>
+      </div>
       <div className={styles.cardContent + " " + styles.tableWrap}>
         <table className={styles.table + " " + styles.webArticleTable}>
           <thead>
             <tr className={styles.tr}>
         {columns.map((c, idx) => (
                 <th key={idx} className={styles.th}>
-                            {/* <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "spellings", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}> */}
-
           <button className={styles.tabBtn} onClick={() => handleSort(["index", "newsdate", "newstitle", "writers", "dept", "level", "reg_dt", "reg_id", "art_org_class"][idx])}>
                     {c}
                   </button>
@@ -120,19 +154,7 @@ const getSpellings = async (nid) => {
                 <td className={styles.td} data-label="제목" style={{ maxWidth: 360, color: item.embargo_type === "1" ? "#dc2626" : undefined }} title={item.newstitle}>
                   {item.newstitle || "-"}
                 </td>
-                {/* <td className={styles.td} data-label="오탈자" title={item.newsEditNumber}> 
-                {item.spellings && !isNaN(Number(item.spellings)) && (
-    <span
-      className={`${styles.badge} ${styles.badgeMispell}`}
-      onClick={async () => {
-        const spellingsData = await getSpellings(item.newskey);
-        openModal({ ...item, ...spellingsData });
-      }}
-    >
-      {item.spellings}
-    </span>
-  )}
-                </td> */}
+                {/* 교열 컬럼 제거됨 */}
 
                 <td className={styles.td} data-label="작성자" title={item.writers}>
                   {item.writers ? truncateText(item.writers, 10) : "-"}
