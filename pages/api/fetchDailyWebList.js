@@ -11,8 +11,8 @@ export default async function handler(req, res) {
     const { date, page = '1', page_size = '100' } = req.query;
     if (!date) return res.status(400).json({ error: 'Missing required query param: date (YYYY-MM-DD)' });
 
-    const baseUrl = process.env.DAILY_TOTALS_BASE_URL || process.env.NEXT_PUBLIC_AI_SERVER_BASE_URL || 'https://skilled-amazingly-whippet.ngrok-free.app';
-    const token = process.env.DAILY_TOTALS_TOKEN || (process.env.NEXT_PUBLIC_NAMGYU_FAST_API_KEY || '').replace(/^Bearer\s+/i, '').trim();
+    const baseUrl = process.env.NEXT_PUBLIC_AI_SERVER_BASE_URL
+    const token = process.env.NEXT_PUBLIC_NAMGYU_FAST_API_KEY.trim();
     if (!token) return res.status(500).json({ error: 'Server not configured: set DAILY_TOTALS_TOKEN or NEXT_PUBLIC_NAMGYU_FAST_API_KEY' });
 
     const url = `${baseUrl.replace(/\/$/, '')}/articles/daily/web-list?date=${encodeURIComponent(date)}&page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(page_size)}`;
