@@ -10,26 +10,52 @@ export default function HighlightedTextModal({ text, spellings }) {
   const processText = (inputText) => {
   if (!inputText) return inputText;
 
-  // Remove img tags completely
-  let processed = inputText.replace(/<img[^>]*>/g, "");
+  let processed = inputText;
 
-  // Convert HTML entities to actual characters
+  // First: Convert HTML entities to actual characters (this is crucial)
   processed = processed.replace(/&lt;/g, "<")
                     .replace(/&gt;/g, ">")
-                    .replace(/&amp;/g, "&")
                     .replace(/&quot;/g, '"')
-                    .replace(/&#39;/g, "'");
+                    .replace(/&#39;/g, "'")
+                    .replace(/&amp;/g, "&")
+                    .replace(/&nbsp;/g, " ");
 
+  // Now process HTML tags for line breaks BEFORE removing them
   // Convert <br/> and <br> tags to line breaks
-  processed = processed.replace(/<br\s*\/?>/g, "\n");
+  processed = processed.replace(/<br\s*\/?>/gi, "\n");
+  
+  // Convert div tags to line breaks (both opening and closing)
+  processed = processed.replace(/<div[^>]*>/gi, "\n")
+                      .replace(/<\/div>/gi, "\n");
+
+  // Convert &lt;br/&gt; patterns that might be double-encoded
+  processed = processed.replace(/&lt;br\s*\/?&gt;/gi, "\n");
+
+  // Remove img tags completely
+  processed = processed.replace(/<img[^>]*>/g, "");
+
+  // Remove bold tags but keep content
+  processed = processed.replace(/<\/?b>/gi, "");
 
   // Remove any remaining HTML tags
   processed = processed.replace(/<[^>]*>/g, "");
 
-  // Convert multiple consecutive line breaks to paragraph breaks
-  processed = processed.replace(/\n{3,}/g, "\n\n");
+  // Convert literal \n in the text to actual line breaks
+  processed = processed.replace(/\\n/g, "\n");
 
-  // Trim whitespace at start and end
+  // Add line breaks before section headers (◆)
+  processed = processed.replace(/\s*(◆[^◆\n]*)/g, "\n\n$1");
+  
+  // Add line breaks before reporter byline
+  processed = processed.replace(/\s*([가-힣]{2,4}기자\s+[a-zA-Z@.]+)/g, "\n\n$1");
+
+  // Clean up excessive whitespace
+  processed = processed.replace(/[ \t]+/g, " ")  // Multiple spaces to single space
+                      .replace(/\n[ \t]+/g, "\n")  // Remove spaces after line breaks  
+                      .replace(/[ \t]+\n/g, "\n")  // Remove spaces before line breaks
+                      .replace(/\n{3,}/g, "\n\n");  // Max 2 consecutive line breaks
+
+  // Remove leading/trailing whitespace
   processed = processed.trim();
 
   return processed;

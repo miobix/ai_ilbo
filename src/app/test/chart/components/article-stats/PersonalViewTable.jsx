@@ -24,12 +24,14 @@ const SELF_COLUMNS=[
 
 export default function PersonalViewTable({ newsData }){
   const { handleSort, sortData } = useTableSort('averageViews','desc');
+  const [mobileSortKey,setMobileSortKey]=useState('averageViews');
+  const [mobileSortOrder,setMobileSortOrder]=useState('desc');
   const [query,setQuery]=useState('');
   const [dateRange,setDateRange]=useState({
     from:new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     to:new Date()
   });
-  const [showSelfOnly, setShowSelfOnly] = useState(false);
+  const [showSelfOnly, setShowSelfOnly] = useState(false); // 자체기사만 보기 여부
   const [currentPage,setCurrentPage]=useState(1);
   const itemsPerPage=50;
 
@@ -39,6 +41,7 @@ export default function PersonalViewTable({ newsData }){
     const fromTime=Math.min(dateRange.from.getTime(), dateRange.to.getTime());
     const toTime=Math.max(dateRange.from.getTime(), dateRange.to.getTime());
     
+    // 먼저 모든 데이터를 처리해서 원래 자체비율을 계산
     for(const a of newsData){
       const t=new Date(a.newsdate).getTime();
       if(!(t>=fromTime && t<=toTime)) continue;
@@ -53,13 +56,15 @@ export default function PersonalViewTable({ newsData }){
         articleCount:0,
         level1:0,
         selfViews:0,
-        originalTotalViews: 0,
-        originalArticleCount: 0
+        originalTotalViews: 0,  // 원래 총 조회수
+        originalArticleCount: 0  // 원래 총 기사수
       };
       
+      // 원래 데이터는 항상 누적
       rec.originalTotalViews+=ref; 
       rec.originalArticleCount+=1;
       
+      // 자체기사만 보기 모드가 아니거나, 자체기사인 경우에만 현재 표시용 데이터에 누적
       if(!showSelfOnly || isSelf) {
         rec.totalViews+=ref; 
         rec.articleCount+=1;
@@ -74,10 +79,10 @@ export default function PersonalViewTable({ newsData }){
     }
     
     return Array.from(m.values())
-      .filter(r => showSelfOnly ? r.level1 > 0 : true)
+      .filter(r => showSelfOnly ? r.level1 > 0 : true)  // 자체기사만 보기 모드에서는 자체기사가 있는 기자만
       .map(r=>({
         ...r,
-        selfRatio: r.originalArticleCount? Math.round((r.level1/r.originalArticleCount)*100):0,
+        selfRatio: r.originalArticleCount? Math.round((r.level1/r.originalArticleCount)*100):0,  // 항상 원래 비율 사용
         averageViews: r.articleCount? Math.round(r.totalViews/r.articleCount):0,
         selfArticleCount: r.level1,
         selfAverageViews: r.level1? Math.round(r.selfViews/r.level1):0,
@@ -92,14 +97,16 @@ export default function PersonalViewTable({ newsData }){
     return sorted.slice(start, start+itemsPerPage);
   },[sorted,currentPage]);
 
+  // Reset to first page when filters change
   React.useEffect(()=>{ setCurrentPage(1); },[query,dateRange,showSelfOnly]);
 
   const COLUMNS = showSelfOnly ? SELF_COLUMNS : ALL_COLUMNS;
 
+  // CSV 다운로드 함수
   const handleDownloadCSV = () => {
     const csvData = sorted.map(row => ({
       ...row,
-      selfRatio: `${row.selfRatio}%`,
+      selfRatio: `${row.selfRatio}%`, // 퍼센트 기호 추가
       totalViews: row.totalViews.toLocaleString(),
       averageViews: row.averageViews.toLocaleString(),
       selfAverageViews: row.selfAverageViews.toLocaleString(),
@@ -158,6 +165,18 @@ export default function PersonalViewTable({ newsData }){
           </div>
         </div>
       </div>
+      <div className={styles.mobileSortBar}>
+        <div className={styles.mobileSortGroup}>
+          <label className={styles.mobileSortLabel} htmlFor="personalMobileSort">정렬</label>
+          <select id="personalMobileSort" className={styles.mobileSortSelect} value={mobileSortKey} onChange={e=>{setMobileSortKey(e.target.value); setMobileSortOrder('desc'); handleSort(e.target.value);}}>
+            {COLUMNS.map(c=>(<option key={c.key} value={c.key}>{c.label}</option>))}
+          </select>
+          <button type="button" className={styles.sortDirBtn} onClick={()=>{handleSort(mobileSortKey); setMobileSortOrder(o=>o==='asc'?'desc':'asc');}}>
+            {mobileSortOrder==='asc'?'▲':'▼'}
+          </button>
+        </div>
+      </div>
+      {/* 요약 합계 */}
       <div className={styles.cardContent}>
         {sorted.length>0 ? (
           (()=>{
