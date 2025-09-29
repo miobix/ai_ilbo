@@ -1,52 +1,71 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import styles from "../../chart.module.css";
 import { useTableSort } from "../../hooks/useTable";
 import { toDateInputValue } from "../../lib/dateUtils";
-import { getSelfRatioClass } from "../../lib/tableUtils";
+import { formatLevel, getLevelClass } from "../../lib/tableUtils";
 import { arrayToCSV, downloadCSV, generateFilenameWithDateRange } from "../../lib/csvUtils";
 
 const COLUMNS=[
-  { label:'제목', key:'title' },
-  { label:'부서', key:'department' },
-  { label:'조회수', key:'views' },
-  { label:'자체', key:'level' },
-  { label:'등록일', key:'newsdate' },
+  {label:'출고일', key:'newsdate'},
+  {label:'제목', key:'newstitle'},
+  {label:'부서', key:'code_name'},
+  {label:'작성자', key:'writers'},
+  {label:'조회수', key:'ref'},
+  {label:'등급', key:'level'},
 ];
 
 export default function ArticleViewTable({ newsData }){
-  const [dateRange,setDateRange]=useState({from:new Date(new Date().getFullYear(), new Date().getMonth(), 1), to:new Date()});
-  const { handleSort, sortData } = useTableSort('views','desc');
+  const { handleSort, sortData } = useTableSort('ref','desc');
+  const [mobileSortKey,setMobileSortKey]=useState('ref');
+  const [mobileSortOrder,setMobileSortOrder]=useState('desc');
+  const [query,setQuery]=useState('');
+  const [dateRange,setDateRange]=useState({
+    from:new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    to:new Date()
+  });
   const [currentPage,setCurrentPage]=useState(1);
   const itemsPerPage=50;
-  const [onlySelf, setOnlySelf] = useState(false);
 
-  const articles=useMemo(()=>{
-    if(!newsData?.length||!dateRange?.from||!dateRange?.to) return [];
-    const from=Math.min(dateRange.from.getTime(),dateRange.to.getTime()); const to=Math.max(dateRange.from.getTime(),dateRange.to.getTime());
-    return newsData
-      .filter(a=>{ const t=new Date(a.newsdate).getTime(); return t>=from&&t<=to; })
-      .filter(a=> onlySelf? String(a.level)==='1': true)
-      .map(a=>({
-        id: a.seq,
-        title: a.title,
-        department: a.code_name||'기타',
-        views: Number(a.ref)||0,
-        level: String(a.level)==='1'? '자체':'공유',
-        newsdate: a.newsdate,
-      }));
-  },[newsData,dateRange,onlySelf]);
+  const rows=useMemo(()=>{
+    if(!newsData?.length) return [];
+    return newsData.map(a=>({
+      ...a,
+      writers: a.byline_gijaname||'무기명',
+      newsdate: new Date(a.newsdate).toISOString().split('T')[0],
+      ref: Number(a.ref)||0,
+      level: a.level,
+    }));
+  },[newsData]);
 
-  const sorted=useMemo(()=>sortData(articles),[articles,sortData]);
-  const totalPages=Math.ceil(sorted.length/itemsPerPage);
-  const paginated=useMemo(()=>{ const s=(currentPage-1)*itemsPerPage; return sorted.slice(s,s+itemsPerPage); },[sorted,currentPage]);
+  const dateFiltered=useMemo(()=>{
+    if(!dateRange?.from || !dateRange?.to) return rows;
+    const fromTime=Math.min(dateRange.from.getTime(), dateRange.to.getTime());
+    const toTime=Math.max(dateRange.from.getTime(), dateRange.to.getTime());
+    return rows.filter(r=>{
+      const t=new Date(r.newsdate).getTime();
+      return t>=fromTime && t<=toTime;
+    });
+  },[rows,dateRange]);
 
-  useEffect(()=>{ setCurrentPage(1); },[dateRange,onlySelf]);
+  const filtered=useMemo(()=> dateFiltered.filter(r=> (r.newstitle||'').includes(query)),[dateFiltered,query]);
+  const sorted=useMemo(()=> sortData(filtered),[filtered,sortData]);
+  const totalPages=Math.ceil(sorted.length/itemsPerPage) || 1;
+  const paginated=useMemo(()=>{
+    const start=(currentPage-1)*itemsPerPage;
+    return sorted.slice(start, start+itemsPerPage);
+  },[sorted,currentPage]);
 
+  // Reset to first page when filters change
+  React.useEffect(()=>{ setCurrentPage(1); },[query,dateRange]);
+
+  // CSV 다운로드 함수
   const handleDownloadCSV = () => {
     const csvData = sorted.map(row => ({
       ...row,
-      views: row.views.toLocaleString(),
+      newsdate: new Date(row.newsdate).toLocaleDateString('ko-KR'),
+      ref: row.ref.toLocaleString(),
+      level: formatLevel(row.level),
     }));
     
     const csvContent = arrayToCSV(csvData, COLUMNS);
@@ -68,31 +87,48 @@ export default function ArticleViewTable({ newsData }){
         </div>
         <div className={styles.controlsRow}>
           <div className={styles.leftControls}>
-            <input 
-              className={styles.select} 
-              type="date" 
-              value={toDateInputValue(dateRange.from)} 
-              onChange={e=>setDateRange(r=>({...r,from:new Date(e.target.value)}))} 
+            <input
+              className={styles.select}
+              type="date"
+              value={toDateInputValue(dateRange.from)}
+              onChange={e=>setDateRange(r=>({...r,from:new Date(e.target.value)}))}
             />
             <span style={{color: '#6b7280', fontSize: '14px'}}>~</span>
+            <input
+              className={styles.select}
+              type="date"
+              value={toDateInputValue(dateRange.to)}
+              onChange={e=>setDateRange(r=>({...r,to:new Date(e.target.value)}))}
+            />
             <input 
               className={styles.select} 
-              type="date" 
-              value={toDateInputValue(dateRange.to)} 
-              onChange={e=>setDateRange(r=>({...r,to:new Date(e.target.value)}))} 
+              placeholder="기사 제목 검색" 
+              value={query} 
+              onChange={e=>setQuery(e.target.value)} 
             />
-          </div>
-          <div className={styles.rightControls}>
-            <label className={styles.switch}>
-              <input type="checkbox" checked={onlySelf} onChange={e=>setOnlySelf(e.target.checked)} />
-              <span className={styles.slider}></span>
-            </label>
-            <span className={styles.switchLabel}>자체만</span>
           </div>
         </div>
       </div>
+      {/* 모바일 정렬 바 */}
+      <div className={styles.mobileSortBar}>
+        <div className={styles.mobileSortGroup}>
+          <label className={styles.mobileSortLabel} htmlFor="articleMobileSort">정렬</label>
+          <select id="articleMobileSort" className={styles.mobileSortSelect} value={mobileSortKey} onChange={e=>{setMobileSortKey(e.target.value); setMobileSortOrder('desc'); handleSort(e.target.value);}}>
+            {COLUMNS.map(c=>(<option key={c.key} value={c.key}>{c.label}</option>))}
+          </select>
+          <button type="button" className={styles.sortDirBtn} onClick={()=>{handleSort(mobileSortKey); setMobileSortOrder(o=>o==='asc'?'desc':'asc');}}>
+            {mobileSortOrder==='asc'?'▲':'▼'}
+          </button>
+        </div>
+      </div>
+      <div className={styles.cardContent}>
+        <div style={{display:'flex',gap:16,flexWrap:'wrap',fontSize:12,color:'#374151',marginBottom:16}}>
+          <div>전체 기사수: <b>{sorted.length.toLocaleString()}</b></div>
+          <div>표시중: <b>{paginated.length}</b></div>
+        </div>
+      </div>
       <div className={styles.cardContent+" "+styles.tableWrap}>
-        <table className={styles.table}>
+        <table className={styles.table+" "+styles.articleViewTable}>
           <thead>
             <tr className={styles.tr}>
               {COLUMNS.map(c=> (
@@ -101,17 +137,18 @@ export default function ArticleViewTable({ newsData }){
             </tr>
           </thead>
           <tbody>
-            {paginated.map((item,idx)=> (
-              <tr key={`${item.id}-${idx}`} className={styles.tr}>
-                <td className={styles.td} data-label="제목">{item.title}</td>
-                <td className={styles.td} data-label="부서">{item.department}</td>
-                <td className={styles.td} data-label="조회수">{item.views.toLocaleString()}</td>
-                <td className={styles.td} data-label="자체"><span className={getSelfRatioClass(item.level==='자체'?100:0)}>{item.level}</span></td>
-                <td className={styles.td} data-label="등록일">{item.newsdate}</td>
+            {paginated.map((r,i)=> (
+              <tr key={r.seq+"-"+i} className={styles.tr}>
+                <td className={styles.td} data-label="출고일">{r.newsdate}</td>
+                <td className={styles.td} data-label="제목" style={{textAlign:'left',maxWidth:300}}>{r.newstitle}</td>
+                <td className={styles.td} data-label="부서">{r.code_name}</td>
+                <td className={styles.td} data-label="작성자">{r.writers}</td>
+                <td className={styles.td} data-label="조회수">{r.ref.toLocaleString()}</td>
+                <td className={styles.td} data-label="등급"><span className={getLevelClass(r.level)}>{formatLevel(r.level)}</span></td>
               </tr>
             ))}
-            {paginated.length===0 && (
-              <tr><td className={styles.td} colSpan={COLUMNS.length}>선택한 조건에 해당하는 데이터가 없습니다.</td></tr>
+            {sorted.length===0 && (
+              <tr><td className={styles.td} colSpan={COLUMNS.length}>조건에 맞는 기사가 없습니다.</td></tr>
             )}
           </tbody>
         </table>

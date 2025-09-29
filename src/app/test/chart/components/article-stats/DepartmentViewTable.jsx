@@ -17,6 +17,8 @@ const COLUMNS=[
 export default function DepartmentViewTable({ newsData }){
   const [dateRange,setDateRange]=useState({from:new Date(new Date().getFullYear(), new Date().getMonth(), 1), to:new Date()});
   const { handleSort, sortData } = useTableSort('averageViews','desc');
+  const [mobileSortKey,setMobileSortKey]=useState('averageViews');
+  const [mobileSortOrder,setMobileSortOrder]=useState('desc');
   const [currentPage,setCurrentPage]=useState(1);
   const itemsPerPage=50;
 
@@ -42,10 +44,11 @@ export default function DepartmentViewTable({ newsData }){
 
   useEffect(()=>{ setCurrentPage(1); },[dateRange]);
 
+  // CSV 다운로드 함수
   const handleDownloadCSV = () => {
     const csvData = sorted.map(row => ({
       ...row,
-      selfRatio: `${row.selfRatio}%`,
+      selfRatio: `${row.selfRatio}%`, // 퍼센트 기호 추가
       totalViews: row.totalViews.toLocaleString(),
       averageViews: row.averageViews.toLocaleString(),
     }));
@@ -83,6 +86,17 @@ export default function DepartmentViewTable({ newsData }){
               onChange={e=>setDateRange(r=>({...r,to:new Date(e.target.value)}))} 
             />
           </div>
+        </div>
+      </div>
+      <div className={styles.mobileSortBar}>
+        <div className={styles.mobileSortGroup}>
+          <label className={styles.mobileSortLabel} htmlFor="deptMobileSort">정렬</label>
+          <select id="deptMobileSort" className={styles.mobileSortSelect} value={mobileSortKey} onChange={e=>{setMobileSortKey(e.target.value); setMobileSortOrder('desc'); handleSort(e.target.value);}}>
+            {COLUMNS.map(c=>(<option key={c.key} value={c.key}>{c.label}</option>))}
+          </select>
+          <button type="button" className={styles.sortDirBtn} onClick={()=>{handleSort(mobileSortKey); setMobileSortOrder(o=>o==='asc'?'desc':'asc');}}>
+            {mobileSortOrder==='asc'?'▲':'▼'}
+          </button>
         </div>
       </div>
       <div className={styles.cardContent+" "+styles.tableWrap}>

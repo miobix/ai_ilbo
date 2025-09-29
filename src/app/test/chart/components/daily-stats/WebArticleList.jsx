@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import styles from "../../chart.module.css";
 import { useTableSort } from "../../hooks/useTable";
 import { truncateText, formatLevel, getLevelClass } from "../../lib/tableUtils";
@@ -171,7 +172,20 @@ export default function WebArticleList() {
                 </td>
                 <td className={styles.td} data-label="출고일시">{formatNewsTime(item)}</td>
                 <td className={styles.td} data-label="제목" style={{ maxWidth: 360, color: item.embargo_type === "1" ? "#dc2626" : undefined }} title={item.newstitle}>
-                  {item.newstitle || "-"}
+                  <Link 
+                    href={`https://www.yeongnam.com/web/view.php?key=${item.newskey}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ 
+                      textDecoration: "none", 
+                      color: "inherit",
+                      cursor: "pointer"
+                    }}
+                    onMouseOver={(e) => e.target.style.textDecoration = "underline"}
+                    onMouseOut={(e) => e.target.style.textDecoration = "none"}
+                  >
+                    {item.newstitle || "-"}
+                  </Link>
                 </td>
                 <td className={styles.td} data-label="교열">
                   {(() => {
