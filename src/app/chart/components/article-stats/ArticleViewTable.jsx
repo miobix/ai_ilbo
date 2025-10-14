@@ -140,7 +140,20 @@ export default function ArticleViewTable({ newsData }){
             {paginated.map((r,i)=> (
               <tr key={r.seq+"-"+i} className={styles.tr}>
                 <td className={styles.td} data-label="출고일">{r.newsdate}</td>
-                <td className={styles.td} data-label="제목" style={{textAlign:'left',maxWidth:300}}>{r.newstitle}</td>
+                <td
+                  className={styles.td}
+                  data-label="제목"
+                  style={{ textAlign: 'left', maxWidth: 300 }}
+                >
+                  <a
+                    href={`https://www.yeongnam.com/web/view.php?key=${r.newskey}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: '#007bff', textDecoration: 'underline', cursor: 'pointer' }}
+                  >
+                    {r.newstitle}
+                  </a>
+                </td>
                 <td className={styles.td} data-label="부서">{r.code_name}</td>
                 <td className={styles.td} data-label="작성자">{r.writers}</td>
                 <td className={styles.td} data-label="조회수">{r.ref.toLocaleString()}</td>
