@@ -119,7 +119,10 @@ export default function Visits() {
                   <LineChart data={chartData}>
                     <XAxis dataKey="date" />
                     <YAxis />
-                    <Tooltip />
+                    <Tooltip
+  labelFormatter={(label) => `날짜: ${label}`} // X-axis value
+  formatter={(value, name) => [value, groupLabels[name] || name]} // value + friendly name
+/>
                     <Legend formatter={(value) => groupLabels[value] || value} />
                     {allGroups
                       .concat("기타")
