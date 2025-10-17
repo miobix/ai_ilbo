@@ -13,8 +13,8 @@ const groupLabels = {
   homeMobile: "홈 모바일",
   sectionDesktop: "섹션 웹",
   sectionMobile: "섹션 모바일",
-  viewDesktop: "뷰 웹",
-  viewMobile: "뷰 모바일",
+  viewDesktop: "기사 웹",
+  viewMobile: "기사 모바일",
   total: "총",
   기타: "기타",
 };
@@ -120,9 +120,9 @@ export default function Visits() {
                     <XAxis dataKey="date" />
                     <YAxis />
                     <Tooltip
-  labelFormatter={(label) => `날짜: ${label}`} // X-axis value
-  formatter={(value, name) => [value, groupLabels[name] || name]} // value + friendly name
-/>
+                      labelFormatter={(label) => `날짜: ${label}`} // X-axis value
+                      formatter={(value, name) => [value, groupLabels[name] || name]} // value + friendly name
+                    />
                     <Legend formatter={(value) => groupLabels[value] || value} />
                     {allGroups
                       .concat("기타")
