@@ -13,7 +13,7 @@ export default async function handler(req,res){
 
     const projection={ _id:0,pagePath:1,date:1,pageViews:1 };
 
-    const docs=await col.find({ date:{ $gte: oneMonthAgoStr }, pagePath:{ $exists:true } }).project(projection).sort({ date:-1 }).toArray();
+    const docs=await col.find({ date:{ $gte: oneMonthAgoStr }, pagePath:{ $exists:true } }).project(projection).sort({ date:1 }).toArray();
 
 // Grouping logic
     const grouped = {
