@@ -1,0 +1,735 @@
+.main {
+  margin: 0 auto;
+  position: relative;
+  font-family: Noto Sans KR;
+}
+
+.Main_cont {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.Main_cont_inner {
+  position: relative;
+  padding: 60px;
+  border-radius: 6px;
+  background-color: #fff;
+  min-height: 1000px;
+}
+.title {
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.paragraph {
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.textarea {
+  width: 100%;
+  max-width: 800px;
+  height: 300px;
+  padding: 15px;
+  font-size: 16px;
+  font-family: "Noto Sans KR", sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  margin-top: 40px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.textarea::placeholder {
+  color: #999;
+}
+
+.radioButtonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.radioButtonLine {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap; /* Allow wrapping if needed */
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin: 0 5px;
+  white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.radioInput {
+  margin-right: 5px;
+}
+/* Error styling */
+.errorTextarea {
+  border-color: red;
+  border-width: 2px;
+}
+
+/* Character Limit Section */
+.charLimitSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.charLimitLabel {
+  font-size: 16px;
+  color: #333;
+  margin-right: 10px;
+}
+
+.charLimitInput {
+  width: 60px;
+  padding: 5px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.generateButton {
+  padding: 10px 20px;
+  height: 40px;
+  width: 120px;
+  margin-right: 10px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.generateButton:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+.resetButton {
+  padding: 10px 20px;
+  height: 40px;
+  width: 120px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #ff4d4d;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.resetButton:hover {
+  background-color: #cc0000;
+}
+
+.responseSection {
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 20px;
+  margin: 40px auto;
+  max-width: 800px;
+  text-align: left;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.responseTitle {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.recommendation {
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.recommendationTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.recommendationSubtitle {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.keyTakeaways {
+  list-style-type: disc;
+  padding-left: 20px;
+  color: #555;
+}
+
+.pageHeader {
+  text-align: left;
+  margin-bottom: 40px;
+}
+
+.pageTitle {
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.pageSubtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* Sections Container */
+.sectionsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 
+    "left-top right"
+    "left-bottom right";
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+/* Add grid area assignments */
+.section:nth-child(1) {
+  grid-area: left-top;
+}
+
+.section:nth-child(2) {
+  grid-area: left-bottom;
+}
+
+.section:nth-child(3) {
+  grid-area: right;
+  height: 815px;
+}
+
+.section {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 20px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 15px 0;
+  text-align: center;
+}
+
+.charCount {
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.sectionTextarea {
+  flex: 1;
+  width: 100%;
+  padding: 15px;
+  font-size: 14px;
+  font-family: 'Noto Sans KR', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: none;
+  outline: none;
+}
+
+.sectionTextarea::placeholder {
+  color: #999;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Stats Blocks - Horizontal Layout */
+.statsContainer {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.statBlock {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 4px;
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.statLabel {
+  font-size: 10px;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 3px;
+}
+
+.statValue {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1;
+}
+
+/* Result Textarea */
+.resultTextarea {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  font-size: 14px;
+  font-family: 'Noto Sans KR', sans-serif;
+  overflow-y: auto;
+  line-height: 1.5;
+  min-height: 0; /* Allow it to shrink */
+}
+
+/* AI Stats - Horizontal Layout */
+.aiStatsContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.aiStatBlock {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 4px;
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+/* Button */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.analyzeButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+  justify-content: center;
+}
+
+.analyzeButton:hover:not(:disabled) {
+  background-color: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.analyzeButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.aiFeedbackSection,
+.suggestionsSection {
+  flex: 1;
+  min-width: 0; 
+  display: flex;
+  flex-direction: column;
+}
+
+.aiSectionTitle {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.aiFeedbackTextarea {
+  flex: 1; /* Take remaining space */
+  overflow-y: auto;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #333;
+  height: auto
+}
+
+
+.suggestionsContainer {
+  min-height: 200px;
+  overflow-y: auto;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+.suggestionsList {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+.suggestionItem {
+  margin-bottom: 12px;
+  line-height: 1.5;
+  color: #495057;
+  font-size: 14px;
+}
+
+.noSuggestions {
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  padding: 50px 20px;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  
+  .aiResultsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+  }
+  
+  .aiFeedbackTextarea,
+  .suggestionsContainer {
+    min-height: 150px;
+    max-height: 300px;
+  }
+}
+
+/* Spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mobile Responsive */
+/*@media screen and (max-width: 1200px) {*/
+  .sectionsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .section {
+    height: 400px;
+  }
+/*}*/
+
+@media screen and (max-width: 768px) {
+  .sectionsContainer {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+      "left-top"
+      "left-bottom" 
+      "right";
+  }
+
+  .section:nth-child(3) {
+  grid-area: right;
+  max-height: 520px;
+}
+  
+  .section {
+    height: 350px;
+  }
+  
+  .pageTitle {
+    font-size: 28px;
+  }
+  
+  .pageSubtitle {
+    font-size: 14px;
+  }
+  
+  .statsContainer,
+  .aiStatsContainer {
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .statBlock,
+  .aiStatBlock {
+    min-height: 45px;
+    padding: 6px 2px;
+  }
+  
+  .statLabel {
+    font-size: 9px;
+  }
+  
+  .statValue {
+    font-size: 14px;
+  }
+  
+  .analyzeButton {
+    font-size: 16px;
+    padding: 10px 25px;
+  }
+}
+
+@media screen and (max-width: 1350px) {
+  .Main_cont_inner {
+    padding: 40px 20px;
+  }
+
+  .Main_cont {
+    padding: 0px 12px;
+  }
+
+  .textarea {
+    width: 90%; /* Make the textarea a bit wider on medium screens */
+    height: 250px; /* Reduce the height slightly on smaller screens */
+  }
+
+  .charLimitInput {
+    width: 50px;
+  }
+}
+
+@media screen and (max-width: 860px) {
+  .Main_cont_inner {
+    padding: 25px 20px;
+  }
+
+  .textarea {
+    width: 95%; /* Make the textarea almost full-width on smaller screens */
+    height: 200px; /* Reduce height further on very small screens */
+  }
+
+  .generateButton {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .generateButton {
+    padding: 10px 20px;
+    height: 40px;
+    margin-right: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .generateButton {
+    padding: 5px 10px;
+    font-size: 11px;
+    width: 70px;
+  }
+
+  .resetButton {
+    padding: 5px 10px;
+    font-size: 11px;
+    width: 70px;
+  }
+}
+
+
+.aiResultsContainer {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  height: 100%; 
+}
+
+.aiFeedbackSection,
+.suggestionsSection {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.aiSectionTitle {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  flex-shrink: 0; /* Prevent title from shrinking */
+}
+
+/* Update the existing .aiFeedbackTextarea to fix height issues */
+.aiFeedbackTextarea {
+  flex: 1; /* Take remaining space */
+  overflow-y: auto;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #333;
+}
+
+.suggestionsContainer {
+  flex: 1; /* Take remaining space */
+  overflow-y: auto;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+.suggestionsList {
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: decimal;
+  height: 100%;
+}
+
+.suggestionItem {
+  margin-bottom: 12px;
+  line-height: 1.5;
+  color: #495057;
+  font-size: 14px;
+}
+
+.noSuggestions {
+  color: #6c757d;
+  font-style: italic;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* Update the mobile responsive section */
+@media (max-width: 768px) {
+  .aiResultsContainer {
+    gap: 15px;
+  }
+  
+  .aiFeedbackTextarea,
+  .suggestionsContainer {
+    font-size: 13px;
+  }
+  
+  .aiSectionTitle {
+    font-size: 13px;
+  }
+  
+  /* Your existing mobile styles for other elements */
+  .sectionsContainer {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .section {
+    height: 350px;
+  }
+  
+  .pageTitle {
+    font-size: 28px;
+  }
+  
+  .pageSubtitle {
+    font-size: 14px;
+  }
+  
+  .statsContainer,
+  .aiStatsContainer {
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .statBlock,
+  .aiStatBlock {
+    min-height: 45px;
+    padding: 6px 2px;
+  }
+  
+  .statLabel {
+    font-size: 9px;
+  }
+  
+  .statValue {
+    font-size: 14px;
+  }
+  
+  .analyzeButton {
+    font-size: 16px;
+    padding: 10px 25px;
+  }
+}
+
+/* Only stack vertically on very small screens */
+@media (max-width: 480px) {
+  .aiResultsContainer {
+    flex-direction: column;
+  }
+}
