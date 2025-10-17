@@ -174,7 +174,9 @@ export default function Visits() {
                     .filter((grp) => visibleLines[grp])
                     .map((grp) => (
                       <tr key={grp} className={cstyles.tr}>
-                        <td className={cstyles.td} data-label="Page Path">{groupLabels[grp]}</td>
+                        <td className={cstyles.td} data-label="Page Path">
+                          {groupLabels[grp]}
+                        </td>
                         {chartData.map((d) => (
                           <td key={d.date} className={cstyles.td} data-label={`${groupLabels[grp]} • ${d.date}`}>
                             {d[grp]}
