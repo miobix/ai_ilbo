@@ -16,7 +16,6 @@ const groupLabels = {
   viewDesktop: "기사 웹",
   viewMobile: "기사 모바일",
   total: "총",
-  기타: "기타",
 };
 
 function prepareChartData(visitsData) {
@@ -33,7 +32,6 @@ function prepareChartData(visitsData) {
       if (grp !== "total") sumOthers += val;
     });
 
-    obj["기타"] = obj.total - sumOthers;
     return obj;
   });
 
@@ -56,13 +54,8 @@ export default function Visits() {
     sectionMobile: false,
     viewDesktop: false,
     viewMobile: false,
-    기타: false,
   });
-  const [period, setPeriod] = useState("월"); // default
 
-  const periods = ["월", "1주전", "2주전", "3주전", "4주전"];
-
-  //loaddata
   useEffect(() => {
     const fetchArticlesData = async () => {
       try {
@@ -125,7 +118,7 @@ export default function Visits() {
                     />
                     <Legend formatter={(value) => groupLabels[value] || value} />
                     {allGroups
-                      .concat("기타")
+                      
                       .map((grp, idx) =>
                         visibleLines[grp] ? (
                           <Line
@@ -145,7 +138,7 @@ export default function Visits() {
                 {/* checkboxes as tabsBar */}
                 {/* Checkboxes */}
                 <div className={cstyles.selectRow} style={{ marginTop: 12, flexWrap: "wrap" }}>
-                  {allGroups.concat("기타").map((grp) => (
+                  {allGroups.map((grp) => (
                     <label key={grp} className={cstyles.select}>
                       <input type="checkbox" checked={visibleLines[grp]} onChange={() => setVisibleLines((prev) => ({ ...prev, [grp]: !prev[grp] }))} style={{ marginRight: 6 }} />
                       {groupLabels[grp]}
@@ -170,7 +163,7 @@ export default function Visits() {
                 </thead>
                 <tbody>
                   {allGroups
-                    .concat("기타")
+              
                     .filter((grp) => visibleLines[grp])
                     .map((grp) => (
                       <tr key={grp} className={cstyles.tr}>
