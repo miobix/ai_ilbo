@@ -122,15 +122,15 @@ export default function Visits() {
             <div className={styles.pageHeader}>
               <h1 className={styles.pageTitle}>영남일보 홈페이지 접속 통계</h1>
             </div>
- {/* Checkboxes */}
-                <div className={cstyles.selectRow} style={{ marginTop: 12, flexWrap: "wrap" }}>
-                  {allGroups.map((grp) => (
-                    <label key={grp} className={cstyles.select}>
-                      <input type="checkbox" checked={visibleLines[grp]} onChange={() => setVisibleLines((prev) => ({ ...prev, [grp]: !prev[grp] }))} style={{ marginRight: 6 }} />
-                      {groupLabels[grp]}
-                    </label>
-                  ))}
-                </div>
+            {/* Checkboxes */}
+            <div className={cstyles.selectRow} style={{ marginTop: 12, flexWrap: "wrap" }}>
+              {allGroups.map((grp) => (
+                <label key={grp} className={cstyles.select}>
+                  <input type="checkbox" checked={visibleLines[grp]} onChange={() => setVisibleLines((prev) => ({ ...prev, [grp]: !prev[grp] }))} style={{ marginRight: 6 }} />
+                  {groupLabels[grp]}
+                </label>
+              ))}
+            </div>
             <div className={cstyles.card}>
               <div className={cstyles.cardHeader}>
                 <div className={cstyles.cardTitle}>60일 조회수 트렌드</div>
@@ -161,7 +161,6 @@ export default function Visits() {
                 </ResponsiveContainer>
 
                 {/* checkboxes as tabsBar */}
-               
               </div>
             </div>
 
