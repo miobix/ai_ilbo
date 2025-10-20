@@ -90,13 +90,14 @@
   border-color:#2563eb;
 }
 
-.card{border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin:8px auto;max-width:1200px; overflow:auto;display:flex;flex-direction:column}
+.card{border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin:20px 8px auto;max-width:1200px; overflow:auto;display:flex;flex-direction:column; padding: 20px}
 .subCard{border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin:0;height:100%;display:flex;flex-direction:column}
 .cardHeader{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f3f4f6;padding:16px;gap:8px;flex-wrap:wrap}
 .cardTitle{font-size:16px;font-weight:700}
 .cardDesc{font-size:12px;color:#6b7280;margin-top:4px}
 .cardContent{padding:16px}
-.cardContentGrow{padding:16px;flex:1}
+.cardContentGrow{padding:16px;flex:1; display: flex; 
+  justify-content: center;}
 
 .badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
 .badgeGreen{background:#dcfce7;color:#166534}
@@ -121,7 +122,7 @@
 .table tbody td:first-child{position:sticky;left:0;background:#fff;z-index:0}
 
 
-.selectRow{display:flex;gap:15px;align-items:center;flex-wrap:wrap}
+.selectRow{display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin:20px auto;  width: fit-content;}
 .select{border:1px solid #e5e7eb;border-radius:6px;padding:8px 10px;background:#fff}
 
 /* 모바일 정렬 바 */

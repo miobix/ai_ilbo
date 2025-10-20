@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import styles from "./page.module.css";
 import cstyles from "./chart.module.css";
 import Footer from "../components/Footer/Footer";
@@ -7,35 +6,59 @@ import Header from "../components/Header/Header";
 import React, { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const allGroups = ["homeDesktop", "homeMobile", "sectionDesktop", "sectionMobile", "viewDesktop", "viewMobile", "total"];
+const allGroups = ["homeDesktop", "homeMobile", "homeTotal", "total"];
+const usersGroups = ["homeDesktop", "homeMobile", "homeTotal", "total"];
 const groupLabels = {
   homeDesktop: "홈 웹",
   homeMobile: "홈 모바일",
-  sectionDesktop: "섹션 웹",
-  sectionMobile: "섹션 모바일",
-  viewDesktop: "기사 웹",
-  viewMobile: "기사 모바일",
   total: "총",
+  homeTotal: "홈 합계",
 };
 
-function prepareChartData(visitsData) {
+function prepareVisitsChartData(visitsData) {
   if (!visitsData || !visitsData.total) return [];
 
-  // Assume each array has 30 entries
-  const chartData = visitsData.total.map((tEntry, i) => {
-    const obj = { date: formatDateMMDD(tEntry.date) };
-    let sumOthers = 0;
+  const visitsChartData = visitsData.total.map((tEntry, i) => {
+    const date = formatDateMMDD(tEntry.date);
+    const obj = { date };
 
-    allGroups.forEach((grp) => {
-      const val = visitsData[grp][i]?.pageViews || 0;
-      obj[grp] = val;
-      if (grp !== "total") sumOthers += val;
-    });
+    const homeDesktop = visitsData.homeDesktop?.[i]?.pageViews || 0;
+    const homeMobile = visitsData.homeMobile?.[i]?.pageViews || 0;
+    const total = visitsData.total?.[i]?.pageViews || 0;
+
+    obj.homeTotal = homeDesktop + homeMobile;
+
+    obj.homeDesktop = homeDesktop;
+    obj.homeMobile = homeMobile;
+    obj.total = total;
 
     return obj;
   });
 
-  return chartData;
+  return visitsChartData;
+}
+
+function prepareActiveUsersChartData(visitsData) {
+  if (!visitsData || !visitsData.total) return [];
+
+  const visitsChartData = visitsData.total.map((tEntry, i) => {
+    const date = formatDateMMDD(tEntry.date);
+    const obj = { date };
+
+    const homeDesktop = visitsData.homeDesktop?.[i]?.activeUsers || 0;
+    const homeMobile = visitsData.homeMobile?.[i]?.activeUsers || 0;
+    const total = visitsData.total?.[i]?.activeUsers || 0;
+
+    obj.homeTotal = homeDesktop + homeMobile;
+
+    obj.homeDesktop = homeDesktop;
+    obj.homeMobile = homeMobile;
+    obj.total = total;
+
+    return obj;
+  });
+
+  return visitsChartData;
 }
 
 function formatDateMMDD(dateStr) {
@@ -47,19 +70,15 @@ export default function Visits() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [visibleLines, setVisibleLines] = useState({
-    total: true,
+    total: false,
     homeDesktop: true,
     homeMobile: true,
-    sectionDesktop: false,
-    sectionMobile: false,
-    viewDesktop: false,
-    viewMobile: false,
+    homeTotal: true,
   });
 
   useEffect(() => {
     const fetchArticlesData = async () => {
       try {
-        console.log("Fetching visits data...");
         setIsLoading(true);
         const res = await fetch("/api/fetchHomepageVisits");
         if (res.status === 204) {
@@ -78,7 +97,8 @@ export default function Visits() {
     fetchArticlesData();
   }, []);
 
-  const chartData = prepareChartData(visitsData);
+  const visitsChartData = prepareVisitsChartData(visitsData);
+  const activeUsersChartData = prepareActiveUsersChartData(visitsData);
 
   if (isLoading)
     return (
@@ -100,43 +120,9 @@ export default function Visits() {
         <div className={styles.Main_cont}>
           <div className={styles.Main_cont_inner}>
             <div className={styles.pageHeader}>
-              <h1 className={styles.pageTitle}>영남일보 홈페이지 조회수</h1>
+              <h1 className={styles.pageTitle}>영남일보 홈페이지 접속 통계</h1>
             </div>
-
-            <div className={cstyles.card}>
-              <div className={cstyles.cardHeader}>
-                <div className={cstyles.cardTitle}>30일 조회수 트렌드</div>
-              </div>
-              <div className={styles.cardContentGrow}>
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={chartData}>
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip
-                      labelFormatter={(label) => `날짜: ${label}`} // X-axis value
-                      formatter={(value, name) => [value, groupLabels[name] || name]} // value + friendly name
-                    />
-                    <Legend formatter={(value) => groupLabels[value] || value} />
-                    {allGroups
-                      
-                      .map((grp, idx) =>
-                        visibleLines[grp] ? (
-                          <Line
-                            key={grp}
-                            type="monotone"
-                            dataKey={grp}
-                            stroke={["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#17becf"][idx]}
-                            strokeWidth={2}
-                            dot={false}
-                            isAnimationActive={false}
-                          />
-                        ) : null
-                      )}
-                  </LineChart>
-                </ResponsiveContainer>
-
-                {/* checkboxes as tabsBar */}
-                {/* Checkboxes */}
+ {/* Checkboxes */}
                 <div className={cstyles.selectRow} style={{ marginTop: 12, flexWrap: "wrap" }}>
                   {allGroups.map((grp) => (
                     <label key={grp} className={cstyles.select}>
@@ -145,16 +131,89 @@ export default function Visits() {
                     </label>
                   ))}
                 </div>
+            <div className={cstyles.card}>
+              <div className={cstyles.cardHeader}>
+                <div className={cstyles.cardTitle}>60일 조회수 트렌드</div>
+              </div>
+              <div className={styles.cardContentGrow}>
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart data={visitsChartData}>
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip labelFormatter={(label) => `날짜: ${label}`} formatter={(value, name) => [value, groupLabels[name] || name]} />
+                    <Legend formatter={(value) => groupLabels[value] || value} />
+                    {allGroups.map((grp, idx) => {
+                      const isHomeTotal = grp === "homeTotal";
+                      return visibleLines[grp] ? (
+                        <Line
+                          key={grp}
+                          type="monotone"
+                          dataKey={grp}
+                          stroke={isHomeTotal ? "#000000" : ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"][idx]}
+                          strokeWidth={isHomeTotal ? 3.5 : 2}
+                          strokeOpacity={isHomeTotal ? 1 : 0.6}
+                          dot={false}
+                          isAnimationActive={false}
+                        />
+                      ) : null;
+                    })}
+                  </LineChart>
+                </ResponsiveContainer>
+
+                {/* checkboxes as tabsBar */}
+               
               </div>
             </div>
 
-            {/* table */}
+            <div className={cstyles.card}>
+              <div className={cstyles.cardHeader}>
+                <div className={cstyles.cardTitle}>60일 활성 사용자 트렌드</div>
+              </div>
+              <div className={styles.cardContentGrow}>
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart data={activeUsersChartData}>
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip labelFormatter={(label) => `날짜: ${label}`} formatter={(value, name) => [value, groupLabels[name] || name]} />
+                    <Legend formatter={(value) => groupLabels[value] || value} />
+                    {allGroups.map((grp, idx) => {
+                      const isHomeTotal = grp === "homeTotal";
+                      return visibleLines[grp] ? (
+                        <Line
+                          key={grp}
+                          type="monotone"
+                          dataKey={grp}
+                          stroke={isHomeTotal ? "#000000" : ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"][idx]}
+                          strokeWidth={isHomeTotal ? 3.5 : 2}
+                          strokeOpacity={isHomeTotal ? 1 : 0.6}
+                          dot={false}
+                          isAnimationActive={false}
+                        />
+                      ) : null;
+                    })}
+                  </LineChart>
+                </ResponsiveContainer>
+
+                {/* checkboxes as tabsBar */}
+                {/* Checkboxes */}
+                {/* <div className={cstyles.selectRow}>
+                  {allGroups.map((grp) => (
+                    <label key={grp} className={cstyles.select}>
+                      <input type="checkbox" checked={visibleLines[grp]} onChange={() => setVisibleLines((prev) => ({ ...prev, [grp]: !prev[grp] }))} style={{ marginRight: 6 }} />
+                      {groupLabels[grp]}
+                    </label>
+                  ))}
+                </div> */}
+              </div>
+            </div>
+
+            {/* page views table */}
             <div className={cstyles.tableWrap} style={{ marginTop: 24 }}>
               <table className={cstyles.table}>
                 <thead>
                   <tr className={cstyles.tr}>
                     <th className={cstyles.th}>Page Path</th>
-                    {chartData.map((d) => (
+                    {visitsChartData.map((d) => (
                       <th key={d.date} className={cstyles.th}>
                         {d.date}
                       </th>
@@ -163,14 +222,47 @@ export default function Visits() {
                 </thead>
                 <tbody>
                   {allGroups
-              
+
                     .filter((grp) => visibleLines[grp])
                     .map((grp) => (
                       <tr key={grp} className={cstyles.tr}>
                         <td className={cstyles.td} data-label="Page Path">
                           {groupLabels[grp]}
                         </td>
-                        {chartData.map((d) => (
+                        {visitsChartData.map((d) => (
+                          <td key={d.date} className={cstyles.td} data-label={`${groupLabels[grp]} • ${d.date}`}>
+                            {d[grp]}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* active users table */}
+            <div className={cstyles.tableWrap} style={{ marginTop: 24 }}>
+              <table className={cstyles.table}>
+                <thead>
+                  <tr className={cstyles.tr}>
+                    <th className={cstyles.th}>Active Users</th>
+                    {activeUsersChartData.map((d) => (
+                      <th key={d.date} className={cstyles.th}>
+                        {d.date}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {allGroups
+
+                    .filter((grp) => visibleLines[grp])
+                    .map((grp) => (
+                      <tr key={grp} className={cstyles.tr}>
+                        <td className={cstyles.td} data-label="Active Users">
+                          {groupLabels[grp]}
+                        </td>
+                        {activeUsersChartData.map((d) => (
                           <td key={d.date} className={cstyles.td} data-label={`${groupLabels[grp]} • ${d.date}`}>
                             {d[grp]}
                           </td>

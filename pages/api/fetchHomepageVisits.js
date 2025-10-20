@@ -4,30 +4,31 @@ export default async function handler(req,res){
   if(req.method!=="GET") return res.status(405).json({message:'Method not allowed'});
   const client=new MongoClient(process.env.NEXT_PUBLIC_MONGODB_URI);
   try{
+    const leadTimeMonths = 2
     await client.connect();
     const db=client.db("yeongnam-visits");
     const col=db.collection("homepage_visits");
-    const oneMonthAgo=new Date(); +
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth()-1);
-    const oneMonthAgoStr = oneMonthAgo.toISOString().slice(0, 10).replace(/-/g, '');
+    const monthsAgo=new Date();
+    monthsAgo.setMonth(monthsAgo.getMonth()-leadTimeMonths);
+    const monthsAgoStr = monthsAgo.toISOString().slice(0, 10).replace(/-/g, '');
 
-    const projection={ _id:0,pagePath:1,date:1,pageViews:1 };
+    const projection={ _id:0,pagePath:1,date:1,pageViews:1,activeUsers:1 };
 
-    const docs=await col.find({ date:{ $gte: oneMonthAgoStr }, pagePath:{ $exists:true } }).project(projection).sort({ date:1 }).toArray();
+    const docs=await col.find({ date:{ $gte: monthsAgoStr }, pagePath:{ $exists:true } }).project(projection).sort({ date:1 }).toArray();
 
 // Grouping logic
     const grouped = {
       total: [],
       homeDesktop: [],
       homeMobile: [],
-      sectionDesktop: [],
-      viewDesktop: [],
-      sectionMobile: [],
-      viewMobile: [],
+      // sectionDesktop: [],
+      // viewDesktop: [],
+      // sectionMobile: [],
+      // viewMobile: [],
     };
 
     for (const doc of docs) {
-      const { pagePath, date, pageViews } = doc;
+      const { pagePath, date, pageViews, activeUsers } = doc;
 
       if (pagePath === "total") {
         grouped.total.push(doc);
@@ -37,20 +38,22 @@ export default async function handler(req,res){
              pagePath: "/web",
              date: date,
              pageViews: 0,
+             activeUsers: 0
            };
          }
          // Sum the pageViews for the date
          grouped.homeDesktop[date].pageViews += pageViews;
+         grouped.homeDesktop[date].activeUsers += activeUsers; 
        } else if (pagePath === "/index.php") {
          grouped.homeMobile.push(doc);
-       } else if (pagePath === "/web/section.php") {
-         grouped.sectionDesktop.push(doc);
-       } else if (pagePath === "/web/view.php") {
-         grouped.viewDesktop.push(doc);
-       } else if (pagePath === "/section.php") {
-         grouped.sectionMobile.push(doc);
-       } else if (pagePath === "/view.php") {
-         grouped.viewMobile.push(doc);
+      //  } else if (pagePath === "/web/section.php") {
+      //    grouped.sectionDesktop.push(doc);
+      //  } else if (pagePath === "/web/view.php") {
+      //    grouped.viewDesktop.push(doc);
+      //  } else if (pagePath === "/section.php") {
+      //    grouped.sectionMobile.push(doc);
+      //  } else if (pagePath === "/view.php") {
+      //    grouped.viewMobile.push(doc);
        }
     }
 
