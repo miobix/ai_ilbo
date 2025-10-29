@@ -98,7 +98,7 @@ const LevelChart=({newsData})=>{
               formatter={(value, name, props) => {
                 const total = (props?.payload?.level1 || 0) + (props?.payload?.levelOthers || 0);
                 const isSelf = name === 'level1';
-                const label = isSelf ? '자체' : '비자체';
+                const label = isSelf ? '기획' : '비기획';
                 const suffix = isSelf && total > 0 ? ` (전체 대비 ${((props.payload.level1 / total) * 100).toFixed(1)}%)` : '';
                 return [`${fmtKorean(Number(value))} 건${suffix}` , label];
               }}

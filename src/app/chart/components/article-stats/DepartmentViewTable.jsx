@@ -11,7 +11,7 @@ const COLUMNS=[
   { label:'조회수', key:'totalViews' },
   { label:'기사수', key:'articleCount' },
   { label:'평균', key:'averageViews' },
-  { label:'자체비율', key:'selfRatio' },
+  { label:'기획비율', key:'selfRatio' },
 ];
 
 export default function DepartmentViewTable({ newsData }){

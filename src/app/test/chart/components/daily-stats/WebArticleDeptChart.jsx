@@ -91,9 +91,9 @@ export default function WebArticleDeptChart() {
                     <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:6, padding:'8px 10px', boxShadow:'0 2px 6px rgba(0,0,0,.08)', fontSize:12 }}>
                       <div style={{ fontWeight:700, marginBottom:4 }}>{label}</div>
                       <div>전체: {d.count}건</div>
-                      <div>자체: {d.self}건</div>
-                      <div>비자체: {d.nonSelf}건</div>
-                      <div style={{ marginTop:4, color:'#6b7280' }}>자체비율: {d.ratio}%</div>
+                      <div>기획: {d.self}건</div>
+                      <div>비기획: {d.nonSelf}건</div>
+                      <div style={{ marginTop:4, color:'#6b7280' }}>기획비율: {d.ratio}%</div>
                     </div>
                   );
                 }}
