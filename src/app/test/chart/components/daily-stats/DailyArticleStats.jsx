@@ -58,7 +58,7 @@ const DailyArticleStats = () => {
     <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div>
-          <div className={styles.cardTitle}>자체 기사 통계</div>
+          <div className={styles.cardTitle}>기획기사 통계</div>
           <div className={styles.cardDesc}><span style={{color:'#2563eb',fontWeight:600}}>등급1 : 자체</span>, <span style={{color:'#374151',fontWeight:600}}>나머지 등급 : 비자체</span></div>
         </div>
         <button className={styles.tabBtn} onClick={()=>window.location.reload()}>새로고침</button>
