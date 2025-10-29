@@ -16,10 +16,10 @@ const ALL_COLUMNS=[
 
 const SELF_COLUMNS=[
   {label:'기자', key:'reporter'},
-  {label:'자체기사 조회수', key:'totalViews'},
-  {label:'자체기사 수', key:'selfArticleCount'},
-  {label:'자체기사 평균 조회수', key:'selfAverageViews'},
-  {label:'자체 비율', key:'selfRatio'},
+  {label:'기획기사 조회수', key:'totalViews'},
+  {label:'기획기사 수', key:'selfArticleCount'},
+  {label:'기획기사 평균 조회수', key:'selfAverageViews'},
+  {label:'기획 비율', key:'selfRatio'},
 ];
 
 export default function PersonalViewTable({ newsData }){
@@ -31,7 +31,7 @@ export default function PersonalViewTable({ newsData }){
     from:new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     to:new Date()
   });
-  const [showSelfOnly, setShowSelfOnly] = useState(false); // 자체기사만 보기 여부
+  const [showSelfOnly, setShowSelfOnly] = useState(false); // 기획기사만 보기 여부
   const [currentPage,setCurrentPage]=useState(1);
   const itemsPerPage=50;
 
@@ -64,7 +64,7 @@ export default function PersonalViewTable({ newsData }){
       rec.originalTotalViews+=ref; 
       rec.originalArticleCount+=1;
       
-      // 자체기사만 보기 모드가 아니거나, 자체기사인 경우에만 현재 표시용 데이터에 누적
+      // 기획기사만 보기 모드가 아니거나, 기획기사인 경우에만 현재 표시용 데이터에 누적
       if(!showSelfOnly || isSelf) {
         rec.totalViews+=ref; 
         rec.articleCount+=1;
@@ -79,7 +79,7 @@ export default function PersonalViewTable({ newsData }){
     }
     
     return Array.from(m.values())
-      .filter(r => showSelfOnly ? r.level1 > 0 : true)  // 자체기사만 보기 모드에서는 자체기사가 있는 기자만
+      .filter(r => showSelfOnly ? r.level1 > 0 : true)  // 기획기사만 보기 모드에서는 기획기사가 있는 기자만
       .map(r=>({
         ...r,
         selfRatio: r.originalArticleCount? Math.round((r.level1/r.originalArticleCount)*100):0,  // 항상 원래 비율 사용
@@ -114,7 +114,7 @@ export default function PersonalViewTable({ newsData }){
     
     const csvContent = arrayToCSV(csvData, COLUMNS);
     const filename = generateFilenameWithDateRange(
-      showSelfOnly ? '기자별_자체기사_조회수' : '기자별_조회수',
+      showSelfOnly ? '기자별_기획기사_조회수' : '기자별_조회수',
       dateRange.from,
       dateRange.to
     );
@@ -160,7 +160,7 @@ export default function PersonalViewTable({ newsData }){
               className={`${styles.actionBtn} ${styles.actionBtnToggle} ${showSelfOnly ? styles.active : ''}`}
               onClick={() => setShowSelfOnly(!showSelfOnly)}
             >
-              {showSelfOnly ? '📰 전체보기' : '✏️ 자체기사만'}
+              {showSelfOnly ? '📰 전체보기' : '✏️ 기획기사만'}
             </button>
           </div>
         </div>
@@ -208,8 +208,8 @@ export default function PersonalViewTable({ newsData }){
         <td className={styles.td} data-label="조회수">{r.totalViews.toLocaleString()}</td>
         {showSelfOnly ? (
           <>
-            <td className={styles.td} data-label="자체기사 수">{r.selfArticleCount}</td>
-            <td className={styles.td} data-label="자체기사 평균 조회수">{r.selfAverageViews.toLocaleString()}</td>
+            <td className={styles.td} data-label="기획기사 수">{r.selfArticleCount}</td>
+            <td className={styles.td} data-label="기획기사 평균 조회수">{r.selfAverageViews.toLocaleString()}</td>
           </>
         ) : (
           <>

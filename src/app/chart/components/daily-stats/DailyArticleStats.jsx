@@ -63,8 +63,8 @@ const DailyArticleStats = ({ newsData }) => {
           <div className={styles.subCard}>
             <div className={styles.cardHeader}>
               <div>
-                <div className={styles.cardTitle}>📊 오늘의 자체기사 비율</div>
-                <div className={styles.cardDesc}>오늘 전체 출고 기사 중 자체기사 비율</div>
+                <div className={styles.cardTitle}>📊 오늘의 기획기사 비율</div>
+                <div className={styles.cardDesc}>오늘 전체 출고 기사 중 기획기사 비율</div>
               </div>
             </div>
             <div className={styles.cardContentGrow}>
@@ -82,7 +82,7 @@ const DailyArticleStats = ({ newsData }) => {
             <div className={styles.cardHeader}>
               <div>
                 <div className={styles.cardTitle}>📅 어제 기사</div>
-                <div className={styles.cardDesc}><span style={{color:'#000'}}>{getYesterdayDate()}</span> 출고 기사수와 자체기사 비율</div>
+                <div className={styles.cardDesc}><span style={{color:'#000'}}>{getYesterdayDate()}</span> 출고 기사수와 기획기사 비율</div>
               </div>
             </div>
             <div className={styles.cardContentGrow}>

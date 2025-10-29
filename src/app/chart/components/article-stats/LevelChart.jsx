@@ -55,7 +55,7 @@ const LevelChart=({newsData})=>{
     <div className={styles.card}>
       <div className={styles.cardHeader}>
         <div>
-          <div className={styles.cardTitle}>자체기사 현황 ({period==='weekly'? '주별':'월별'})</div>
+          <div className={styles.cardTitle}>기획기사 현황 ({period==='weekly'? '주별':'월별'})</div>
           <div className={styles.cardDesc}>{period==='weekly'? '매주 일요일 ~ 토요일 기준':'월별 기준'}</div>
         </div>
         <div className={styles.selectRow}>
