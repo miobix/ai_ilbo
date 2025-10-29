@@ -71,14 +71,14 @@ export default function WebArticleDeptChart({ items }) {
     for (const it of filtered || []) {
       const dept = it?.dept || "기타";
       const lvl = it?.level;
-      const isSelf = String(lvl) === "1" || Number(lvl) === 1; // 자체
+      const isSelf = String(lvl) === "1" || Number(lvl) === 1; // 기획
       if (!m.has(dept)) m.set(dept, { total: 0, self: 0, nonSelf: 0 });
       const v = m.get(dept);
       v.total += 1;
       if (isSelf) v.self += 1; else v.nonSelf += 1;
     }
     const rows = Array.from(m, ([name, v]) => {
-      const ratio = v.total ? Math.round((v.self / v.total) * 100) : 0; // 자체 비율 %
+      const ratio = v.total ? Math.round((v.self / v.total) * 100) : 0; // 기획 비율 %
       return { name, count: v.total, self: v.self, nonSelf: v.nonSelf, ratio };
     }).sort((a, b) => b.count - a.count);
     return rows;
@@ -125,9 +125,9 @@ export default function WebArticleDeptChart({ items }) {
                     <div style={{ background:'#fff', border:'1px solid #e5e7eb', borderRadius:6, padding:'8px 10px', boxShadow:'0 2px 6px rgba(0,0,0,.08)', fontSize:12 }}>
                       <div style={{ fontWeight:700, marginBottom:4 }}>{label}</div>
                       <div>전체: {d.count}건</div>
-                      <div>자체: {d.self}건</div>
-                      <div>비자체: {d.nonSelf}건</div>
-                      <div style={{ marginTop:4, color:'#6b7280' }}>자체비율: {d.ratio}%</div>
+                      <div>기획: {d.self}건</div>
+                      <div>비기획: {d.nonSelf}건</div>
+                      <div style={{ marginTop:4, color:'#6b7280' }}>기획비율: {d.ratio}%</div>
                     </div>
                   );
                 }}

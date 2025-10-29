@@ -27,8 +27,8 @@ const DailyArticleStats = ({ newsData }) => {
     let self=0, non=0; levels.forEach(l=>{if(l==='1') self+=levelStats[l]; else non+=levelStats[l];});
     return (
       <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
-        {self>0 && <span className={getLevelClass('1')}>자체: {self}개</span>}
-        {non>0 && <span className={getLevelClass('5')}>비자체: {non}개</span>}
+        {self>0 && <span className={getLevelClass('1')}>기획: {self}개</span>}
+        {non>0 && <span className={getLevelClass('5')}>비기획: {non}개</span>}
       </div>
     );
   };
@@ -39,7 +39,7 @@ const DailyArticleStats = ({ newsData }) => {
         <div>
           <div className={styles.cardTitle}>기획기사 통계</div>
           <div className={styles.cardDesc}>{getLastUpdateTime() && `최종 업데이트: ${getLastUpdateTime()}`}</div>
-          <div className={styles.cardDesc}><span style={{color:'#2563eb',fontWeight:600}}>등급1 : 자체</span>, <span style={{color:'#374151',fontWeight:600}}>나머지 등급 : 비자체</span></div>
+          <div className={styles.cardDesc}><span style={{color:'#2563eb',fontWeight:600}}>등급1 : 기획</span>, <span style={{color:'#374151',fontWeight:600}}>나머지 등급 : 비기획</span></div>
         </div>
         <button className={styles.tabBtn} onClick={()=>window.location.reload()}>새로고침</button>
       </div>
@@ -72,7 +72,7 @@ const DailyArticleStats = ({ newsData }) => {
               <div className={styles.statBox}>
                 <div className={styles.statTitle}>오늘 기사 비율 구성</div>
                 <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
-                  <span className={getLevelClass('1')}>자체: {stats.todaySelfArticles}개</span>
+                  <span className={getLevelClass('1')}>기획: {stats.todaySelfArticles}개</span>
                   <span className={styles.badge+" "+styles.badgeYellow}>전체: {stats.todayArticles}개</span>
                 </div>
               </div>

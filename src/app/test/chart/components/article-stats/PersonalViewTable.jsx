@@ -11,7 +11,7 @@ const ALL_COLUMNS=[
   {label:'조회수', key:'totalViews'},
   {label:'기사수', key:'articleCount'},
   {label:'평균', key:'averageViews'},
-  {label:'자체비율', key:'selfRatio'},
+  {label:'기획 비율', key:'selfRatio'},
 ];
 
 const SELF_COLUMNS=[
@@ -41,7 +41,7 @@ export default function PersonalViewTable({ newsData }){
     const fromTime=Math.min(dateRange.from.getTime(), dateRange.to.getTime());
     const toTime=Math.max(dateRange.from.getTime(), dateRange.to.getTime());
     
-    // 먼저 모든 데이터를 처리해서 원래 자체비율을 계산
+    // 먼저 모든 데이터를 처리해서 원래 기획비율을 계산
     for(const a of newsData){
       const t=new Date(a.newsdate).getTime();
       if(!(t>=fromTime && t<=toTime)) continue;
@@ -217,7 +217,7 @@ export default function PersonalViewTable({ newsData }){
             <td className={styles.td} data-label="평균">{r.averageViews.toLocaleString()}</td>
           </>
         )}
-        <td className={styles.td} data-label="자체비율"><span className={getSelfRatioClass(r.selfRatio)}>{r.selfRatio}%</span></td>
+        <td className={styles.td} data-label="기획 비율"><span className={getSelfRatioClass(r.selfRatio)}>{r.selfRatio}%</span></td>
               </tr>
             ))}
             {sorted.length===0 && (<tr><td className={styles.td} colSpan={COLUMNS.length}>데이터가 없습니다.</td></tr>)}
