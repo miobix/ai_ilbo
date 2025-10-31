@@ -20,11 +20,6 @@ export default function Visits() {
     homeTotal: true,
   });
   const [visibleSectionLines, setVisibleSectionLines] = useState({});
-  const [visiblePlatforms, setVisiblePlatforms] = useState({
-    desktop: true,
-    mobile: true,
-  });
-
   useEffect(() => {
     const fetchArticlesData = async () => {
       try {
@@ -56,47 +51,28 @@ export default function Visits() {
   const activeUsersChartData = prepareActiveUsersChartData(visitsData);
   const allNcids = getAllNcids(sectionVisitsData);
 
-  function combinePlatformData(desktopData, mobileData, platforms, topDesktop, topMobile) {
-    if (!platforms.desktop && !platforms.mobile) return [];
-    if (platforms.desktop && !platforms.mobile) return desktopData;
-    if (!platforms.desktop && platforms.mobile) return mobileData;
-
-    // Both platforms: combine data with top ncids only
-    const relevantNcids = new Set([...topDesktop, ...topMobile]);
-
-    return desktopData.map((dData, idx) => {
-      const combined = { date: dData.date };
-      const mData = mobileData[idx] || {};
-
-      relevantNcids.forEach((ncid) => {
-        if (topDesktop.includes(ncid)) {
-          combined[`${ncid}_desktop`] = dData[ncid] || 0;
-        }
-        if (topMobile.includes(ncid)) {
-          combined[`${ncid}_mobile`] = mData[ncid] || 0;
-        }
+  function prepareData(data, platform, topNcids) {
+    return data.map((d) => {
+      const prepared = { date: d.date };
+      topNcids.forEach((ncid) => {
+        prepared[ncid] = d[ncid] || 0;
       });
-
-      return combined;
+      return prepared;
     });
   }
 
-  const topDesktopNcids = getTopNcids(sectionVisitsData, "desktop", 5);
-  const topMobileNcids = getTopNcids(sectionVisitsData, "mobile", 5);
+  const topDesktopNcids = getTopNcids(sectionVisitsData, "desktop", 10);
+  const topMobileNcids = getTopNcids(sectionVisitsData, "mobile", 10);
 
-  const sectionPageViewsData = combinePlatformData(
+  const desktopPageViewsData = prepareData(
     prepareSectionChartData(sectionVisitsData, "desktop"),
-    prepareSectionChartData(sectionVisitsData, "mobile"),
-    visiblePlatforms,
-    topDesktopNcids,
-    topMobileNcids
+    "desktop",
+    topDesktopNcids
   );
 
-  const sectionActiveUsersData = combinePlatformData(
-    prepareSectionActiveUsersData(sectionVisitsData, "desktop"),
-    prepareSectionActiveUsersData(sectionVisitsData, "mobile"),
-    visiblePlatforms,
-    topDesktopNcids,
+  const mobilePageViewsData = prepareData(
+    prepareSectionChartData(sectionVisitsData, "mobile"),
+    "mobile",
     topMobileNcids
   );
 
@@ -275,52 +251,69 @@ export default function Visits() {
               </table>
             </div>
 
-            {/* Section Desktop Page Views */}
+            {/* Desktop Page Views */}
             <div className={cstyles.card} style={{ marginTop: 24 }}>
               <div className={cstyles.cardHeader}>
                 <div className={cstyles.cardTitle}>섹션별 웹 조회수</div>
               </div>
-              <div className={cstyles.selectRow} style={{ marginTop: 12, flexWrap: "wrap" }}>
-                <label className={cstyles.select}>
-                  <input type="checkbox" checked={visiblePlatforms.desktop} onChange={() => setVisiblePlatforms((prev) => ({ ...prev, desktop: !prev.desktop }))} style={{ marginRight: 6 }} />웹
-                </label>
-                <label className={cstyles.select}>
-                  <input type="checkbox" checked={visiblePlatforms.mobile} onChange={() => setVisiblePlatforms((prev) => ({ ...prev, mobile: !prev.mobile }))} style={{ marginRight: 6 }} />
-                  모바일
-                </label>
-              </div>
               <div className={styles.cardContentGrow}>
                 <ResponsiveContainer width="100%" height={400}>
-                  <BarChart data={sectionPageViewsData} isAnimationActive={false}>
+                  <BarChart data={desktopPageViewsData} isAnimationActive={false}>
                     <XAxis dataKey="date" />
                     <YAxis />
                     <Tooltip
                       formatter={(value, name) => {
-                        const [ncid, platform] = name.split("_");
-                        const label = `${ncidLabels[ncid] || ncid}${platform ? ` (${platform === "desktop" ? "웹" : "모바일"})` : ""}`;
+                        const label = ncidLabels[name] || name;
                         return [value, label];
                       }}
                     />
                     <Legend
                       formatter={(value) => {
-                        const [ncid, platform] = value.split("_");
-                        return `${ncidLabels[ncid] || ncid}${platform ? ` (${platform === "desktop" ? "웹" : "모바일"})` : ""}`;
+                        return ncidLabels[value] || value;
                       }}
                     />
-                    {visiblePlatforms.desktop && visiblePlatforms.mobile ? (
-                      // Both platforms: show desktop and mobile stacks
-                      <>
-                        {allNcids.map((ncid, idx) => (
-                          <Bar key={`${ncid}_desktop`} dataKey={`${ncid}_desktop`} stackId="desktop" fill={`hsl(${(idx * 360) / allNcids.length}, 70%, 50%)`} />
-                        ))}
-                        {allNcids.map((ncid, idx) => (
-                          <Bar key={`${ncid}_mobile`} dataKey={`${ncid}_mobile`} stackId="mobile" fill={`hsl(${(idx * 360) / allNcids.length}, 70%, 35%)`} />
-                        ))}
-                      </>
-                    ) : (
-                      // Single platform
-                      allNcids.map((ncid, idx) => <Bar key={ncid} dataKey={ncid} stackId="a" fill={`hsl(${(idx * 360) / allNcids.length}, 70%, 50%)`} />)
-                    )}
+                    {topDesktopNcids.map((ncid, idx) => (
+                      <Bar 
+                        key={ncid} 
+                        dataKey={ncid} 
+                        stackId="desktop" 
+                        fill={`hsl(${(idx * 360) / topDesktopNcids.length}, 70%, 50%)`} 
+                      />
+                    ))}
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Mobile Page Views */}
+            <div className={cstyles.card} style={{ marginTop: 24 }}>
+              <div className={cstyles.cardHeader}>
+                <div className={cstyles.cardTitle}>섹션별 모바일 조회수</div>
+              </div>
+              <div className={styles.cardContentGrow}>
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart data={mobilePageViewsData} isAnimationActive={false}>
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip
+                      formatter={(value, name) => {
+                        const label = ncidLabels[name] || name;
+                        return [value, label];
+                      }}
+                    />
+                    <Legend
+                      formatter={(value) => {
+                        return ncidLabels[value] || value;
+                      }}
+                    />
+                    {topMobileNcids.map((ncid, idx) => (
+                      <Bar 
+                        key={ncid} 
+                        dataKey={ncid} 
+                        stackId="mobile" 
+                        fill={`hsl(${(idx * 360) / topMobileNcids.length}, 70%, 35%)`} 
+                      />
+                    ))}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
