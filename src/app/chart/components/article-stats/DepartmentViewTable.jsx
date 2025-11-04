@@ -115,7 +115,7 @@ export default function DepartmentViewTable({ newsData }){
                 <td className={styles.td} data-label="조회수">{item.totalViews.toLocaleString()}</td>
                 <td className={styles.td} data-label="기사수">{item.articleCount}</td>
                 <td className={styles.td} data-label="평균">{item.averageViews}</td>
-                <td className={styles.td} data-label="자체비율"><span className={getSelfRatioClass(item.selfRatio)}>{item.selfRatio}%</span></td>
+                <td className={styles.td} data-label="기획비율"><span className={getSelfRatioClass(item.selfRatio)}>{item.selfRatio}%</span></td>
               </tr>
             ))}
             {paginated.length===0 && (

@@ -301,8 +301,14 @@ export default function WebArticleList() {
           >
             <h3 style={{marginRight: '25px'}}>{modalItem?.newstitle}</h3>
             
-                <div style={{ lineHeight: 1.5, whiteSpace: 'pre-wrap', marginTop: '20px',  maxHeight: 'calc(60vh - 120px)', // Account for title, padding, and button
-  overflowY: 'auto' }}>
+                <div style={{ 
+                  lineHeight: 1.5, 
+                  whiteSpace: 'pre-wrap', 
+                  marginTop: '20px',  
+                  maxHeight: 'calc(60vh - 120px)', 
+                  overflowY: 'auto',
+                  position: 'relative' // For tooltip positioning
+                }}>
         <HighlightedTextModal text={modalItem?.html_text} spellings={modalItem?.spellings} />
       </div>
 

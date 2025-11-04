@@ -7,54 +7,56 @@ function TooltipHighlight({ text, reason, suggestion }) {
 
   const handleShow = () => {
     if (!spanRef.current) return;
-    const rect = spanRef.current.getBoundingClientRect();
-    const modalContent = spanRef.current.closest("[data-modal-content]");
-    const modalRect = modalContent?.getBoundingClientRect();
-
-    let left = 0;
-    let top = "100%";
-
-    if (modalRect) {
-      const tooltipWidth = 250;
-      const tooltipHeight = 80;
-
-      // For multi-line spans, position based on the first line
-      const range = document.createRange();
-      const textNode = spanRef.current.firstChild;
-
-      if (textNode && textNode.nodeType === Node.TEXT_NODE) {
-        // Get the rect of just the first few characters to position on the first line
-        range.setStart(textNode, 0);
-        range.setEnd(textNode, Math.min(3, textNode.textContent.length));
-        const firstLineRect = range.getBoundingClientRect();
-
-        // Calculate space to right from the first line position
-        const spaceToRight = modalRect.right - firstLineRect.right;
-
-        if (spaceToRight < tooltipWidth) {
-          left = modalRect.right - firstLineRect.left - tooltipWidth - 10;
-        } else {
-          left = firstLineRect.width;
+    
+    const span = spanRef.current;
+    const spanRect = span.getBoundingClientRect();
+    
+    // Find the scrollable container
+    let modal = span.closest("[data-modal-content]");
+    if (!modal) {
+      let parent = span.parentElement;
+      while (parent && parent !== document.body) {
+        const style = window.getComputedStyle(parent);
+        if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
+          modal = parent;
+          break;
         }
-
-        // Check vertical position based on first line
-        if (firstLineRect.bottom + tooltipHeight > modalRect.bottom) {
-          top = -tooltipHeight - 4;
-        }
-      } else {
-        // Fallback to original logic
-        const spaceToRight = modalRect.right - rect.left;
-        if (spaceToRight < tooltipWidth) {
-          left = modalRect.right - rect.left - tooltipWidth - 10;
-        }
-
-        if (rect.bottom + tooltipHeight > modalRect.bottom) {
-          top = -tooltipHeight - 4;
-        }
+        parent = parent.parentElement;
       }
     }
+    if (!modal) modal = document.body;
+    
+    const modalRect = modal.getBoundingClientRect();
+    const tooltipWidth = 250;
+    const tooltipHeight = 100;
+    const margin = 10;
 
-    setPosition({ left, top });
+    // Use fixed positioning with viewport coordinates
+    let tooltipLeft = spanRect.left;
+    let tooltipTop = spanRect.bottom + 4;
+
+    // Check if tooltip fits on the right side
+    if (tooltipLeft + tooltipWidth + margin > modalRect.right) {
+      // Shift left to fit within modal
+      tooltipLeft = modalRect.right - tooltipWidth - margin;
+    }
+
+    // Make sure it doesn't go past left edge
+    if (tooltipLeft < modalRect.left + margin) {
+      tooltipLeft = modalRect.left + margin;
+    }
+
+    // Vertical positioning
+    if (tooltipTop + tooltipHeight + margin > modalRect.bottom) {
+      // Position above if no room below
+      tooltipTop = spanRect.top - tooltipHeight - 4;
+    }
+
+    setPosition({ 
+      left: Math.round(tooltipLeft), 
+      top: Math.round(tooltipTop),
+      isFixed: true 
+    });
     setShowTooltip(true);
   };
 
@@ -75,23 +77,29 @@ function TooltipHighlight({ text, reason, suggestion }) {
       {showTooltip && (
         <div
           style={{
-            position: "absolute",
-            top: position.top,
-            left: position.left,
-            backgroundColor: "#eee",
-            color: "#000",
-            padding: "6px 10px",
-            borderRadius: "4px",
+            position: "fixed",
+            top: `${position.top}px`,
+            left: `${position.left}px`,
+            backgroundColor: "#333",
+            color: "#fff",
+            padding: "8px 12px",
+            borderRadius: "6px",
             whiteSpace: "pre-line",
-            fontSize: "0.9rem",
-            zIndex: 10,
-            minWidth: "150px",
-            maxWidth: "250px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+            fontSize: "0.85rem",
+            zIndex: 9999,
+            width: "250px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+            border: "1px solid #555",
+            pointerEvents: "none",
+            lineHeight: "1.4",
           }}
         >
-          <div style={{ opacity: 0.7 }}>{reason}</div>
-          <div style={{ fontWeight: "bold" }}>{suggestion}</div>
+          <div style={{ opacity: 0.8, marginBottom: "4px", fontSize: "0.8rem" }}>
+            {reason}
+          </div>
+          <div style={{ fontWeight: "600", color: "#ffd700" }}>
+            {suggestion}
+          </div>
         </div>
       )}
     </span>

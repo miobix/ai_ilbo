@@ -31,14 +31,33 @@ export default function HighlightedTextModal({ text, spellings }) {
   // Convert &lt;br/&gt; patterns that might be double-encoded
   processed = processed.replace(/&lt;br\s*\/?&gt;/gi, "\n");
 
-  // Remove img tags completely
-  processed = processed.replace(/<img[^>]*>/g, "");
+  // Remove img tags completely (multiple patterns)
+  processed = processed.replace(/<img[^>]*>/gi, "")
+                      .replace(/<img[^>]*\/>/gi, "");
 
   // Remove bold tags but keep content
   processed = processed.replace(/<\/?b>/gi, "");
 
   // Remove any remaining HTML tags
   processed = processed.replace(/<[^>]*>/g, "");
+
+  // Clean up remaining HTML-like artifacts (class, alt, src attributes, etc.)
+  processed = processed.replace(/\s*class\s*=\s*["'][^"']*["']/gi, "")
+                      .replace(/\s*alt\s*=\s*["'][^"']*["']/gi, "")
+                      .replace(/\s*src\s*=\s*["'][^"']*["']/gi, "")
+                      .replace(/\s*width\s*=\s*["'][^"']*["']/gi, "")
+                      .replace(/\s*height\s*=\s*["'][^"']*["']/gi, "")
+                      .replace(/\s*\/>/g, "")
+                      .replace(/["']\s*\/>/g, "")
+                      .replace(/\s+class=/gi, "")
+                      .replace(/\s+alt=/gi, "")
+                      .replace(/img_\w+/gi, ""); // Remove class names like img_LSize
+
+  // Remove orphaned quotes (single or double quotes standing alone)
+  processed = processed.replace(/\s+["']\s+/g, " ")  // quotes with spaces on both sides
+                      .replace(/^["']\s+/gm, "")      // quotes at start of line
+                      .replace(/\s+["']$/gm, "")      // quotes at end of line
+                      .replace(/\s+["']{1,2}\s+/g, " "); // one or two quotes surrounded by spaces
 
   // Convert literal \n in the text to actual line breaks
   processed = processed.replace(/\\n/g, "\n");
@@ -88,11 +107,15 @@ export default function HighlightedTextModal({ text, spellings }) {
 
   return (
     <div
+      data-modal-content
       style={{
         minHeight: "200px",
         lineHeight: "1.6",
         whiteSpace: "pre-line",
         maxWidth: "1000px",
+        position: "relative",
+        overflow: "visible", // Allow tooltips to show
+        padding: "10px", // Add padding for better tooltip positioning
       }}
     >
       {elements}
