@@ -1,13 +1,17 @@
 export function prepareVisitsChartData(visitsData) {
   if (!visitsData || !visitsData.total) return [];
 
-  const visitsChartData = visitsData.total.map((tEntry, i) => {
+  const visitsChartData = visitsData.total.map((tEntry) => {
     const date = formatDateMMDD(tEntry.date);
     const obj = { date };
 
-    const homeDesktop = visitsData.homeDesktop?.[i]?.pageViews || 0;
-    const homeMobile = visitsData.homeMobile?.[i]?.pageViews || 0;
-    const total = visitsData.total?.[i]?.pageViews || 0;
+    // Match by date instead of index
+    const homeDesktopEntry = visitsData.homeDesktop?.find(d => d.date === tEntry.date);
+    const homeMobileEntry = visitsData.homeMobile?.find(d => d.date === tEntry.date);
+    
+    const homeDesktop = homeDesktopEntry?.pageViews || 0;
+    const homeMobile = homeMobileEntry?.pageViews || 0;
+    const total = tEntry.pageViews || 0;
 
     obj.homeTotal = homeDesktop + homeMobile;
 
@@ -24,13 +28,17 @@ export function prepareVisitsChartData(visitsData) {
 export function prepareActiveUsersChartData(visitsData) {
   if (!visitsData || !visitsData.total) return [];
 
-  const visitsChartData = visitsData.total.map((tEntry, i) => {
+  const visitsChartData = visitsData.total.map((tEntry) => {
     const date = formatDateMMDD(tEntry.date);
     const obj = { date };
 
-    const homeDesktop = visitsData.homeDesktop?.[i]?.activeUsers || 0;
-    const homeMobile = visitsData.homeMobile?.[i]?.activeUsers || 0;
-    const total = visitsData.total?.[i]?.activeUsers || 0;
+    // Match by date instead of index
+    const homeDesktopEntry = visitsData.homeDesktop?.find(d => d.date === tEntry.date);
+    const homeMobileEntry = visitsData.homeMobile?.find(d => d.date === tEntry.date);
+    
+    const homeDesktop = homeDesktopEntry?.activeUsers || 0;
+    const homeMobile = homeMobileEntry?.activeUsers || 0;
+    const total = tEntry.activeUsers || 0;
 
     obj.homeTotal = homeDesktop + homeMobile;
 
