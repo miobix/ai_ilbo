@@ -24,10 +24,10 @@ export default function Header() {
         </Link>
         <div className={styles.headerButtonsContainer}>
           <Link href="/chart"><button className={styles.headerButton}>{`기획기사`}</button></Link>
+          <Link href="/visits"><button className={styles.headerButton}>{`방문 통계`}</button></Link>
           <Link href="/check"><button className={styles.headerButton}>{`표절 검사기`}</button></Link>
           <Link href="/category/dgpressrelease"><button className={styles.headerButton}>{`대구/경북`}</button></Link>
           <Link href="/category/representatives"><button className={styles.headerButton}>{`의원실`}</button></Link>
-          <Link href="/category/pressrelease"><button className={styles.headerButton}>{`보도자료`}</button></Link>
           <Link href="/category/sns"><button className={styles.headerButton}>{`SNS`}</button></Link>
           <Link href="/youtube"><button className={styles.headerButton}>{`유튜브`}</button></Link>
 

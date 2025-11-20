@@ -5,12 +5,15 @@ import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
 import React, { useState, useEffect } from "react";
 import { LineChart, BarChart, Bar, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { prepareVisitsChartData, prepareActiveUsersChartData, prepareSectionChartData, prepareSectionActiveUsersData, getAllNcids, getTopNcids } from "./utils";
+import { prepareVisitsChartData, prepareActiveUsersChartData, prepareSectionChartData, prepareSectionActiveUsersData, getAllNcids, getTopNcids, prepareHourlyChartData } from "./utils";
 import { allGroups, usersGroups, groupLabels, ncidLabels } from "./constants";
 
 export default function Visits() {
   const [visitsData, setVisitsData] = useState({});
   const [sectionVisitsData, setSectionVisitsData] = useState({});
+  const [hourlyVisitsData, setHourlyVisitsData] = useState({});
+  const [hourlyPeriod, setHourlyPeriod] = useState(30); // Default 1 month
+  const [showAverage, setShowAverage] = useState(false); // Average toggle
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [visibleLines, setVisibleLines] = useState({
@@ -47,8 +50,28 @@ export default function Visits() {
     fetchArticlesData();
   }, []);
 
+  useEffect(() => {
+    const fetchHourlyData = async () => {
+      try {
+        const hourlyRes = await fetch(`/api/fetchHourlyVisits?days=${hourlyPeriod}`);
+        if (hourlyRes.ok) {
+          const hourlyData = await hourlyRes.json();
+          console.log("Hourly data received:", hourlyData);
+          setHourlyVisitsData(hourlyData);
+        } else {
+          console.error("Failed to fetch hourly data:", hourlyRes.status);
+        }
+      } catch (e) {
+        console.error("Error fetching hourly data:", e);
+      }
+    };
+    fetchHourlyData();
+  }, [hourlyPeriod]);
+
   const visitsChartData = prepareVisitsChartData(visitsData);
   const activeUsersChartData = prepareActiveUsersChartData(visitsData);
+  const hourlyChartData = prepareHourlyChartData(hourlyVisitsData, showAverage);
+  console.log("Hourly chart data:", hourlyChartData);
   const allNcids = getAllNcids(sectionVisitsData);
 
   function prepareData(data, platform, topNcids) {
@@ -171,7 +194,7 @@ export default function Visits() {
                     })}
                   </LineChart>
                 </ResponsiveContainer>
-
+                
                 {/* checkboxes as tabsBar */}
                 {/* Checkboxes */}
                 {/* <div className={cstyles.selectRow}>
@@ -182,6 +205,67 @@ export default function Visits() {
                     </label>
                   ))}
                 </div> */}
+              </div>
+            </div>
+            <div className={cstyles.card}>
+              <div className={cstyles.cardHeader}>
+                <div className={cstyles.cardTitle}>
+                  시간별 조회수 트렌드 (최근 {hourlyPeriod === 180 ? '6개월' : hourlyPeriod === 90 ? '3개월' : '1개월'} {showAverage ? '일평균' : '합산'})
+                </div>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={showAverage}
+                      onChange={(e) => setShowAverage(e.target.checked)}
+                    />
+                    하루 평균
+                  </label>
+                  <select 
+                    value={hourlyPeriod} 
+                    onChange={(e) => setHourlyPeriod(Number(e.target.value))}
+                    style={{
+                      padding: '8px 12px',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      fontSize: '14px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value={30}>1개월</option>
+                    <option value={90}>3개월</option>
+                    <option value={180}>6개월</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.cardContentGrow}>
+                {hourlyChartData.length === 0 ? (
+                  <div style={{ padding: '20px', textAlign: 'center' }}>시간별 데이터를 불러오는 중...</div>
+                ) : (
+                  <ResponsiveContainer width="100%" height={400}>
+                    <LineChart data={hourlyChartData}>
+                      <XAxis dataKey="hour" label={{ value: '시간', position: 'insideBottom', offset: -5 }} />
+                      <YAxis label={{ value: '조회수', angle: -90, position: 'insideLeft' }} />
+                      <Tooltip labelFormatter={(label) => `시간: ${label}`} formatter={(value, name) => [value, groupLabels[name] || name]} />
+                      <Legend formatter={(value) => groupLabels[value] || value} />
+                      {allGroups.map((grp, idx) => {
+                        const isHomeTotal = grp === "homeTotal";
+                        return visibleLines[grp] ? (
+                          <Line
+                            key={grp}
+                            type="monotone"
+                            dataKey={grp}
+                            stroke={isHomeTotal ? "#000000" : ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"][idx]}
+                            strokeWidth={isHomeTotal ? 3.5 : 2}
+                            strokeOpacity={isHomeTotal ? 1 : 0.6}
+                            dot={true}
+                            isAnimationActive={false}
+                          />
+                        ) : null;
+                      })}
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
               </div>
             </div>
 
