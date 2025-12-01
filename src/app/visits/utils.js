@@ -121,100 +121,77 @@ export function prepareHourlyChartData(hourlyData, showAverage = false) {
     return [];
   }
 
-  // Use homeDesktop as primary source if total is empty
-  if (hourlyData.homeDesktop && hourlyData.homeDesktop.length > 0) {
-    // Exclude the last 2 days from all available data
-    const desktopData = hourlyData.homeDesktop.slice(0, -2);
-    const mobileData = hourlyData.homeMobile?.slice(0, -2) || [];
-    
-    const daysCount = desktopData.length;
-    console.log(`Summing data from ${daysCount} days (excluding last 2 days)`);
-    
-    // Initialize 24-hour arrays for summing
-    const summedDesktop = new Array(24).fill(0);
-    const summedMobile = new Array(24).fill(0);
-    
-    // Sum all days' hourly data
-    desktopData.forEach(dayData => {
-      for (let hour = 0; hour < 24; hour++) {
-        summedDesktop[hour] += (dayData.pageViews?.[hour] || 0);
-      }
-    });
-    
-    mobileData.forEach(dayData => {
-      for (let hour = 0; hour < 24; hour++) {
-        summedMobile[hour] += (dayData.pageViews?.[hour] || 0);
-      }
-    });
-    
-    // Create chart data for 24 hours with UTC to KST conversion (UTC-9 hours)
-    const chartData = [];
-    for (let hour = 0; hour < 24; hour++) {
-      // Convert UTC to KST by shifting -9 hours (data at UTC 9 → KST 0)
-      const utcHour = (hour + 9) % 24;
-      const homeDesktop = showAverage ? Math.round(summedDesktop[utcHour] / daysCount) : summedDesktop[utcHour];
-      const homeMobile = showAverage ? Math.round(summedMobile[utcHour] / daysCount) : summedMobile[utcHour];
-
-      chartData.push({
-        hour: `${hour}시`,
-        homeDesktop,
-        homeMobile,
-        homeTotal: homeDesktop + homeMobile,
-        total: 0  // total 데이터가 없음
-      });
-    }
-    
-    console.log(`Chart data prepared (${showAverage ? 'averaged over' : 'summed'} ${daysCount} days, UTC to KST converted):`, chartData);
-    return chartData;
+  // Check if we have total data
+  const hasTotalData = hourlyData.total && hourlyData.total.length > 0;
+  const hasHomeData = hourlyData.homeDesktop && hourlyData.homeDesktop.length > 0;
+  
+  if (!hasTotalData && !hasHomeData) {
+    console.log("No data available at all");
+    return [];
   }
 
-  // Fallback to total data if available
-  if (hourlyData.total && hourlyData.total.length > 0) {
-    const totalData = hourlyData.total.slice(0, -2);
-    const homeDesktopData = hourlyData.homeDesktop?.slice(0, -2) || [];
-    const homeMobileData = hourlyData.homeMobile?.slice(0, -2) || [];
-    
-    const daysCount = totalData.length;
-    
-    const summedTotal = new Array(24).fill(0);
-    const summedDesktop = new Array(24).fill(0);
-    const summedMobile = new Array(24).fill(0);
-    
-    totalData.forEach(dayData => {
-      for (let hour = 0; hour < 24; hour++) {
-        summedTotal[hour] += (dayData.pageViews?.[hour] || 0);
-      }
-    });
-    
-    homeDesktopData.forEach(dayData => {
-      for (let hour = 0; hour < 24; hour++) {
-        summedDesktop[hour] += (dayData.pageViews?.[hour] || 0);
-      }
-    });
-    
-    homeMobileData.forEach(dayData => {
-      for (let hour = 0; hour < 24; hour++) {
-        summedMobile[hour] += (dayData.pageViews?.[hour] || 0);
-      }
-    });
-    
-    const chartData = [];
-    for (let hour = 0; hour < 24; hour++) {
-      // Convert UTC to KST by shifting -9 hours
-      const utcHour = (hour + 9) % 24;
-      
-      chartData.push({
-        hour: `${hour}시`,
-        homeDesktop: showAverage ? Math.round(summedDesktop[utcHour] / daysCount) : summedDesktop[utcHour],
-        homeMobile: showAverage ? Math.round(summedMobile[utcHour] / daysCount) : summedMobile[utcHour],
-        homeTotal: showAverage ? Math.round((summedDesktop[utcHour] + summedMobile[utcHour]) / daysCount) : summedDesktop[utcHour] + summedMobile[utcHour],
-        total: showAverage ? Math.round(summedTotal[utcHour] / daysCount) : summedTotal[utcHour]
-      });
-    }
-    
-    return chartData;
+  // Exclude the last 2 days from all available data
+  const totalData = hasTotalData ? hourlyData.total.slice(0, -2) : [];
+  const desktopData = hasHomeData ? hourlyData.homeDesktop.slice(0, -2) : [];
+  const mobileData = hourlyData.homeMobile ? hourlyData.homeMobile.slice(0, -2) : [];
+  
+  const daysCount = Math.max(totalData.length, desktopData.length);
+  
+  if (daysCount === 0) {
+    console.log("No data available after excluding last 2 days");
+    return [];
   }
+  
+  console.log(`Summing data from ${daysCount} days (excluding last 2 days)`);
+  
+  // Initialize 24-hour arrays for summing
+  const summedTotal = new Array(24).fill(0);
+  const summedDesktop = new Array(24).fill(0);
+  const summedMobile = new Array(24).fill(0);
+  
+  // Sum total data with PST to KST conversion
+  totalData.forEach(dayData => {
+    for (let hour = 0; hour < 24; hour++) {
+      // PST to KST conversion: PST + 17 hours = KST
+      const kstHour = (hour + 17) % 24;
+      summedTotal[kstHour] += (dayData.pageViews?.[hour] || 0);
+    }
+  });
+  
+  // Sum home desktop data with PST to KST conversion
+  desktopData.forEach(dayData => {
+    for (let hour = 0; hour < 24; hour++) {
+      // PST to KST conversion: PST + 17 hours = KST
+      const kstHour = (hour + 17) % 24;
+      summedDesktop[kstHour] += (dayData.pageViews?.[hour] || 0);
+    }
+  });
+  
+  // Sum home mobile data with PST to KST conversion
+  mobileData.forEach(dayData => {
+    for (let hour = 0; hour < 24; hour++) {
+      // PST to KST conversion: PST + 17 hours = KST
+      const kstHour = (hour + 17) % 24;
+      summedMobile[kstHour] += (dayData.pageViews?.[hour] || 0);
+    }
+  });
+  
+  // Create chart data for 24 hours (already in KST)
+  const chartData = [];
+  for (let hour = 0; hour < 24; hour++) {
+    const homeDesktop = showAverage ? Math.round(summedDesktop[hour] / daysCount) : summedDesktop[hour];
+    const homeMobile = showAverage ? Math.round(summedMobile[hour] / daysCount) : summedMobile[hour];
+    const total = showAverage ? Math.round(summedTotal[hour] / daysCount) : summedTotal[hour];
 
-  console.log("No data available at all");
-  return [];
+    chartData.push({
+      hour: `${hour}시`,
+      homeDesktop,
+      homeMobile,
+      homeTotal: homeDesktop + homeMobile,
+      total: total
+    });
+  }
+  
+  console.log(`Chart data prepared (${showAverage ? 'averaged over' : 'summed'} ${daysCount} days, converted to KST):`, chartData);
+  return chartData;
 }
