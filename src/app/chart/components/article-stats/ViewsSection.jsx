@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "../../chart.module.css";
 import LevelChart from "./LevelChart";
+import LevelPercentageChart from "./LevelPercentageChart";
 import ViewChart from "./ViewChart";
 import DepartmentViewTable from "./DepartmentViewTable";
 import PersonalViewTable from "./PersonalViewTable";
@@ -40,6 +41,7 @@ const ViewsSection = () => {
 
   return (
     <>
+      <LevelPercentageChart newsData={allArticles} />
       <LevelChart newsData={allArticles} />
       <ViewChart newsData={allArticles} />
       <div className={styles.tabsBar}>
