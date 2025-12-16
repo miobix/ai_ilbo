@@ -1,19 +1,68 @@
-.Header { height:175px; width:100%; }
-.Header_inner { position:relative; max-width:1320px; margin:0 auto; }
-.Header_inner .H_left { display:flex; justify-content:left; position:absolute; top:70px; left:0px; }
-.Header_inner .H_left li.ynlink { display: block; background: url(/yn_mini_logo.png) no-repeat center 0; text-indent: -99999px; width: 57px; height: 22px; margin-right: 10px; position:relative;}
-.Header_inner .H_left li.ynlink::after { content:""; display:block; width:1px; height:17px; background-color:#a5a5a5; position:absolute; top:4px; right:-17px; }
-.Header_inner .H_left li.todate { margin-left:27px; }
-.Header_inner .H_left li.todate .bold { font-family: Montserrat; font-weight: 800; display:inline-block; margin-right:10px; }
-.Header_inner .H_left li.todate .date { font-size:14px; }
-.Header_inner div.logo { position:absolute; left:50%; top:43px; margin-left:-141px; display:block; width:282px; height:80px; text-align:center; background:url("/yn_logo.png") no-repeat center 0; text-indent:-99999px; }
+.Header {
+  height: 175px;
+  width: 100%;
+}
+.Header_inner {
+  position: relative;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.Header_inner .H_left {
+  display: flex;
+  justify-content: left;
+  position: absolute;
+  top: 70px;
+  left: 0px;
+}
+.Header_inner .H_left li.ynlink {
+  display: block;
+  background: url(/yn_mini_logo.png) no-repeat center 0;
+  text-indent: -99999px;
+  width: 57px;
+  height: 22px;
+  margin-right: 10px;
+  position: relative;
+}
+.Header_inner .H_left li.ynlink::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 17px;
+  background-color: #a5a5a5;
+  position: absolute;
+  top: 4px;
+  right: -17px;
+}
+.Header_inner .H_left li.todate {
+  margin-left: 27px;
+}
+.Header_inner .H_left li.todate .bold {
+  font-family: Montserrat;
+  font-weight: 800;
+  display: inline-block;
+  margin-right: 10px;
+}
+.Header_inner .H_left li.todate .date {
+  font-size: 14px;
+}
+.Header_inner div.logo {
+  position: absolute;
+  left: 50%;
+  top: 43px;
+  margin-left: -141px;
+  display: block;
+  width: 282px;
+  height: 80px;
+  text-align: center;
+  background: url("/yn_logo.png") no-repeat center 0;
+  text-indent: -99999px;
+}
 
 /* New styles for buttons */
 .Header_inner .headerButtonsContainer {
-
   position: absolute;
-  top:100px; 
-  left:30%;
+  top: 100px;
+  left: 32%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -37,13 +86,24 @@
 }
 
 @media screen and (max-width: 1350px) {
-  .Header { height:160px; padding:0px 20px; }
-  .Header_inner .H_left { top:15px; }
-  .Header_inner div.logo { background-size:170px; width:176px; height:50px; margin-left:-88px; top:60px; }
+  .Header {
+    height: 160px;
+    padding: 0px 20px;
+  }
+  .Header_inner .H_left {
+    top: 15px;
+  }
+  .Header_inner div.logo {
+    background-size: 170px;
+    width: 176px;
+    height: 50px;
+    margin-left: -88px;
+    top: 60px;
+  }
   .Header_inner .headerButtonsContainer {
     position: absolute;
-    top:80px; 
-    left:20%;
+    top: 80px;
+    left: 20%;
     padding: 15px 0;
     margin: 30px auto;
   }
@@ -54,19 +114,33 @@
 }
 
 @media screen and (max-width: 860px) {
-  .Header { height:140px; }
-  .Header_inner .H_left li.todate .bold { font-size:14px; margin-right:6px; }
-  .Header_inner .H_left li.todate .date { font-size:13px; }
-  .Header_inner .H_left li.todate { margin-left:20px; }
-  .Header_inner div.logo { background-size:145px; width:146px; height:43px; margin-left:-73px; }
-.Header_inner .headerButtonsContainer {
-  position: absolute;
-  top:65px; 
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 15px 0;
-  margin: 30px 0px;
-}
+  .Header {
+    height: 140px;
+  }
+  .Header_inner .H_left li.todate .bold {
+    font-size: 14px;
+    margin-right: 6px;
+  }
+  .Header_inner .H_left li.todate .date {
+    font-size: 13px;
+  }
+  .Header_inner .H_left li.todate {
+    margin-left: 20px;
+  }
+  .Header_inner div.logo {
+    background-size: 145px;
+    width: 146px;
+    height: 43px;
+    margin-left: -73px;
+  }
+  .Header_inner .headerButtonsContainer {
+    position: absolute;
+    top: 65px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 0;
+    margin: 30px 0px;
+  }
   .Header_inner .headerButtonsContainer .headerButton {
     font-weight: 700;
     font-size: 11px;
