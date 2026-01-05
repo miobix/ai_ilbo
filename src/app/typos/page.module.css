@@ -42,6 +42,19 @@
 .statEmphGreen{font-size:28px;font-weight:800;margin-left:6px;color:#10b981}
 .statEmphRed{font-size:28px;font-weight:800;margin-left:6px;color:#ef4444}
 .statEmphOrange{font-size:28px;font-weight:800;margin-left:6px;color:#f59e0b}
+
+.articleTitleLink {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+.articleTitleLink:hover .articleTitle {
+  color: #0070f3;
+  text-decoration: underline;
+}
+
+
 /* utility */
 .nowrap{white-space:nowrap}
 @media (max-width: 768px){

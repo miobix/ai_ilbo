@@ -37,7 +37,6 @@ export default async function handler(req, res) {
       .sort({ newsdate: -1 })
       .toArray();
     // const normalized = docs.map((a) => ({ ...a, newsdate: new Date(new Date(a.newsdate).toDateString()).toISOString(), level: a.level || "5" }));
-
     const normalized = docs.flatMap((a) => {
       const reporters = splitReporters(a.byline_gijaname);
       return reporters.map((reporter) => ({

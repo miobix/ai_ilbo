@@ -39,6 +39,7 @@ export default function Typos() {
           .filter((article) => article.mistakes_count > 0); // Remove articles with 0 mistakes
 
         setArticles(filteredArticles);
+        console.log(filteredArticles);
         setTotalCount(filteredArticles.reduce((sum, article) => sum + article.mistakes_count, 0));
       } catch (error) {
         console.error("Error fetching typos:", error);
@@ -91,7 +92,7 @@ export default function Typos() {
                     <div className={styles.subCard}>
                       <div className={styles.cardHeader}>
                         <div>
-                          <div className={styles.cardTitle}>총 기사 수</div>
+                          <div className={styles.cardTitle}>기사 수</div>
                         </div>
                       </div>
                       <div className={styles.cardContentGrow}>
@@ -101,7 +102,7 @@ export default function Typos() {
                     <div className={styles.subCard}>
                       <div className={styles.cardHeader}>
                         <div>
-                          <div className={styles.cardTitle}>총 오탈자 수</div>
+                          <div className={styles.cardTitle}>오탈자 수</div>
                         </div>
                       </div>
                       <div className={styles.cardContentGrow}>
@@ -144,7 +145,13 @@ export default function Typos() {
                     {articles.map((article) => (
                       <div key={article.nid} className={styles.articleCard}>
                         <div className={styles.articleHeader}>
-                          <h3 className={styles.articleTitle}>{article.title}</h3>
+                          {article.newskey ? (
+                            <a href={`https://www.yeongnam.com/web/view.php?key=${article.newskey}`} target="_blank" rel="noopener noreferrer" className={styles.articleTitleLink}>
+                              <h3 className={styles.articleTitle}>{article.title}</h3>
+                            </a>
+                          ) : (
+                            <h3 className={styles.articleTitle}>{article.title}</h3>
+                          )}
                           <span className={styles.mistakeCount}>{article.mistakes_count}개</span>
                         </div>
                         <ul className={styles.mistakesList}>
