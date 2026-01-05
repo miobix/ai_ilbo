@@ -26,8 +26,20 @@ export default function Typos() {
         const response = await fetch(`/api/fetchSpellingsWithTitle?date=${dateStr}`);
         const data = await response.json();
 
-        setArticles(data.articles || []);
-        setTotalCount(data.totalCount || 0);
+        // Filter out spacing errors and recalculate counts
+        const filteredArticles = (data.articles || [])
+          .map((article) => {
+            const filteredSpellings = article.spellings.filter((spelling) => spelling.reason !== "띄어쓰기 오류");
+            return {
+              ...article,
+              spellings: filteredSpellings,
+              mistakes_count: filteredSpellings.length,
+            };
+          })
+          .filter((article) => article.mistakes_count > 0); // Remove articles with 0 mistakes
+
+        setArticles(filteredArticles);
+        setTotalCount(filteredArticles.reduce((sum, article) => sum + article.mistakes_count, 0));
       } catch (error) {
         console.error("Error fetching typos:", error);
         setArticles([]);
