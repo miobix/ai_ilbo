@@ -39,7 +39,6 @@ export default function Typos() {
           .filter((article) => article.mistakes_count > 0); // Remove articles with 0 mistakes
 
         setArticles(filteredArticles);
-        console.log(filteredArticles);
         setTotalCount(filteredArticles.reduce((sum, article) => sum + article.mistakes_count, 0));
       } catch (error) {
         console.error("Error fetching typos:", error);
@@ -56,7 +55,6 @@ export default function Typos() {
   const handleDateChange = (e) => {
     const newDate = new Date(e.target.value);
     setSelectedDate(newDate);
-    console.log(newDate);
   };
 
   const formatDate = (date) => {
