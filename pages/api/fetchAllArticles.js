@@ -30,14 +30,18 @@ export default async function handler(req, res) {
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
       dateFilter = { newsdate: { $gte: sixMonthsAgo } };
     }
-    const projection = { newsdate: 1, newskey: 1, code_name: 1, byline_gijaname: 1, buseid: 1, newstitle: 1, ref: 1, level: 1 };
+    const projection = { newsdate: 1, newskey: 1, code_name: 1, byline_gijaname: 1, buseid: 1, newstitle: 1, ref: 1, level: 1, external_daum: 1 };
     const docs = await col
       .find({ ref: { $exists: true, $ne: null, $ne: 0 }, ...dateFilter })
       .project(projection)
       .sort({ newsdate: -1 })
       .toArray();
+    const docsWithSummedRef = docs.map((doc) => ({
+      ...doc,
+      ref: (doc.ref || 0) + (doc.external_daum || 0),
+    }));
     // const normalized = docs.map((a) => ({ ...a, newsdate: new Date(new Date(a.newsdate).toDateString()).toISOString(), level: a.level || "5" }));
-    const normalized = docs.flatMap((a) => {
+    const normalized = docsWithSummedRef.flatMap((a) => {
       const reporters = splitReporters(a.byline_gijaname);
       return reporters.map((reporter) => ({
         ...a,
