@@ -143,18 +143,18 @@ export default function Typos() {
                     {articles.map((article) => (
                       <div key={article.nid} className={styles.articleCard}>
                         <div className={styles.articleHeader}>
-  <div style={{ flex: 1 }}>
-    {article.newskey ? (
-      <a href={`https://www.yeongnam.com/web/view.php?key=${article.newskey}`} target="_blank" rel="noopener noreferrer" className={styles.articleTitleLink}>
-        <h3 className={styles.articleTitle}>{article.title}</h3>
-      </a>
-    ) : (
-      <h3 className={styles.articleTitle}>{article.title}</h3>
-    )}
-    {article.author && <div className={styles.articleAuthor}>{article.author}</div>}
-  </div>
-  <span className={styles.mistakeCount}>{article.mistakes_count}개</span>
-</div>
+                          <div style={{ flex: 1 }}>
+                            {article.newskey ? (
+                              <a href={`https://www.yeongnam.com/web/view.php?key=${article.newskey}`} target="_blank" rel="noopener noreferrer" className={styles.articleTitleLink}>
+                                <h3 className={styles.articleTitle}>{article.title}</h3>
+                              </a>
+                            ) : (
+                              <h3 className={styles.articleTitle}>{article.title}</h3>
+                            )}
+                            {/*article.author && <div className={styles.articleAuthor}>{article.author}</div>*/}
+                          </div>
+                          <span className={styles.mistakeCount}>{article.mistakes_count}개</span>
+                        </div>
                         <ul className={styles.mistakesList}>
                           {article.spellings.map((spelling, index) => (
                             <li key={index} className={styles.mistakeItem}>
