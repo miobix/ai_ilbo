@@ -14,13 +14,11 @@ export default async function handler(req, res) {
     const wmsCol = db.collection("wms_data");
     const fullDataCol = db.collection("full_data");
 
-    // Parse the date and create start/end of day
     const startDate = new Date(date);
     startDate.setHours(0, 0, 0, 0);
     const endDate = new Date(date);
     endDate.setHours(23, 59, 59, 999);
 
-    // Find all spelling documents for the given date
     const spellingDocs = await spellingsCol.find({
       created_at: {
         $gte: startDate,
@@ -28,42 +26,37 @@ export default async function handler(req, res) {
       }
     }).toArray();
 
-    // Get all nids
     const nids = spellingDocs.map(doc => doc.nid);
-
-    // First, try to fetch from full_data using nid (which matches cmsfilename)
     const fullDataDocs = await fullDataCol.find(
       { nid: { $in: nids } },
-      { projection: { nid: 1, newstitle: 1, newskey: 1, _id: 0 } }
+      { projection: { nid: 1, newstitle: 1, newskey: 1, byline_gijaname: 1, _id: 0 } }
     ).toArray();
 
-    // Create a map for full_data
     const fullDataMap = {};
     fullDataDocs.forEach(item => {
       fullDataMap[item.nid] = {
         title: item.newstitle,
-        newskey: item.newskey
+        newskey: item.newskey,
+        author: item.byline_gijaname
       };
     });
 
-    // Find nids not found in full_data
     const nidsNotInFullData = nids.filter(nid => !fullDataMap[nid]);
-
-    // Fetch titles from wms_data for nids not in full_data
     let wmsData = [];
     if (nidsNotInFullData.length > 0) {
       wmsData = await wmsCol.find(
         { nid: { $in: nidsNotInFullData } },
-        { projection: { nid: 1, title: 1, _id: 0 } }
+        { projection: { nid: 1, title: 1, byline_gijaname: 1, _id: 0 } }
       ).toArray();
     }
 
-    // Create a map for wms_data (fallback)
+    // fallback
     const wmsDataMap = {};
     wmsData.forEach(item => {
       wmsDataMap[item.nid] = {
         title: item.title,
-        newskey: null // wms_data doesn't have newskey
+        author: item.byline_gijaname,
+        newskey: null
       };
     });
 
@@ -76,6 +69,7 @@ export default async function handler(req, res) {
         nid: doc.nid,
         title: dataSource.title,
         newskey: dataSource.newskey,
+        author: dataSource.author,
         spellings: doc.spellings || [],
         mistakes_count: doc.mistakes_count || 0
       };

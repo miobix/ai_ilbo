@@ -53,7 +53,12 @@
   color: #0070f3;
   text-decoration: underline;
 }
-
+.articleAuthor{
+  font-size:13px;
+  color:#6b7280;
+  margin-top:4px;
+  font-weight:400;
+}
 
 /* utility */
 .nowrap{white-space:nowrap}
