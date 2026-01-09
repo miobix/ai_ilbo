@@ -17,6 +17,7 @@ export default function Typos() {
   const [articles, setArticles] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [totalArticles, setTotalArticles] = useState(0);
 
   useEffect(() => {
     const fetchTypos = async () => {
@@ -25,7 +26,7 @@ export default function Typos() {
         const dateStr = formatDate(selectedDate);
         const response = await fetch(`/api/fetchSpellingsWithTitle?date=${dateStr}`);
         const data = await response.json();
-
+        setTotalArticles(data.articles.length);
         // Filter out spacing errors and recalculate counts
         const filteredArticles = (data.articles || [])
           .map((article) => {
@@ -85,40 +86,39 @@ export default function Typos() {
               </div>
               <div className={styles.cardContent}>
                 <div className={`${styles.grid} ${styles.grid3}`}>
-                  <div className={`${styles.grid} ${styles.grid3}`}>
-                    {" "}
-                    <div className={styles.subCard}>
-                      <div className={styles.cardHeader}>
-                        <div>
-                          <div className={styles.cardTitle}>기사 수</div>
-                        </div>
-                      </div>
-                      <div className={styles.cardContentGrow}>
-                        <div className={`${styles.statValue} ${styles.statEmphGreen}`}>{loading ? "..." : `${articles.length}개`}</div>
+                  {" "}
+                  <div className={styles.subCard}>
+                    <div className={styles.cardHeader}>
+                      <div>
+                        <div className={styles.cardTitle}>기사 수</div>
                       </div>
                     </div>
-                    <div className={styles.subCard}>
-                      <div className={styles.cardHeader}>
-                        <div>
-                          <div className={styles.cardTitle}>오탈자 수</div>
-                        </div>
-                      </div>
-                      <div className={styles.cardContentGrow}>
-                        <div className={`${styles.statValue} ${styles.statEmphRed}`}>{loading ? "..." : `${totalCount}개`}</div>
+                    <div className={styles.cardContentGrow}>
+                      <div className={`${styles.statValue} ${styles.statEmphGreen}`}>{loading ? "..." : `${totalArticles}개`}</div>
+                    </div>
+                  </div>
+                  <div className={styles.subCard}>
+                    <div className={styles.cardHeader}>
+                      <div>
+                        <div className={styles.cardTitle}>오탈자 수</div>
                       </div>
                     </div>
-                    <div className={styles.subCard}>
-                      <div className={styles.cardHeader}>
-                        <div>
-                          <div className={styles.cardTitle}>기사당 평균</div>
-                        </div>
+                    <div className={styles.cardContentGrow}>
+                      <div className={`${styles.statValue} ${styles.statEmphRed}`}>{loading ? "..." : `${totalCount}개`}</div>
+                    </div>
+                  </div>
+                  <div className={styles.subCard}>
+                    <div className={styles.cardHeader}>
+                      <div>
+                        <div className={styles.cardTitle}>기사당 평균</div>
                       </div>
-                      <div className={styles.cardContentGrow}>
-                        <div className={`${styles.statValue} ${styles.statEmphOrange}`}>{loading ? "..." : articles.length > 0 ? `${(totalCount / articles.length).toFixed(1)}개` : "0개"}</div>
-                      </div>
+                    </div>
+                    <div className={styles.cardContentGrow}>
+                      <div className={`${styles.statValue} ${styles.statEmphOrange}`}>{loading ? "..." : articles.length > 0 ? `${(totalCount / totalArticles).toFixed(1)}개` : "0개"}</div>
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
