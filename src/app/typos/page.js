@@ -38,7 +38,6 @@ export default function Typos() {
             };
           })
           .filter((article) => article.mistakes_count > 0); // Remove articles with 0 mistakes
-        console.log("Filtered Articles:", filteredArticles);
         setArticles(filteredArticles);
         setTotalCount(filteredArticles.reduce((sum, article) => sum + article.mistakes_count, 0));
       } catch (error) {

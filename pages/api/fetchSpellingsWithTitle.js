@@ -65,6 +65,19 @@ export default async function handler(req, res) {
       // Try full_data first, then wms_data, then fallback
       const dataSource = fullDataMap[doc.nid] || wmsDataMap[doc.nid] || { title: "제목 없음", newskey: null };
       
+      // pretreat &lt;9&gt; to <9>`
+      if (dataSource.title) {
+        dataSource.title = dataSource.title.replace(/&lt;(\d+)&gt;/g, "<$1>");
+      }
+
+      //doc.spellings should not have duplicated entries
+      const uniqueSpellingsMap = {};
+      (doc.spellings || []).forEach(spelling => {
+        const key = `${spelling.word}-${spelling.reason}-${spelling.position}`;
+        uniqueSpellingsMap[key] = spelling;
+      });
+      doc.spellings = Object.values(uniqueSpellingsMap);  
+
       return {
         nid: doc.nid,
         title: dataSource.title,
