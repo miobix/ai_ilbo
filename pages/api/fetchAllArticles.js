@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
       dateFilter = { newsdate: { $gte: sixMonthsAgo } };
     }
-    const projection = { newsdate: 1, newskey: 1, code_name: 1, byline_gijaname: 1, buseid: 1, newstitle: 1, ref: 1, level: 1, external_daum: 1 };
+    const projection = { newsdate: 1, newskey: 1, code_name: 1, byline_gijaname: 1, buseid: 1, newstitle: 1, ref: 1, level: 1, external_daum: 1, ref_daum: 1, ref_etc: 1, ref_naver: 1, ref_google: 1, ref_mobile: 1, ref_web:1 };
     const docs = await col
       .find({ ref: { $exists: true, $ne: null, $ne: 0 }, ...dateFilter })
       .project(projection)
@@ -42,7 +42,22 @@ export default async function handler(req, res) {
     }));
     // const normalized = docs.map((a) => ({ ...a, newsdate: new Date(new Date(a.newsdate).toDateString()).toISOString(), level: a.level || "5" }));
     const normalized = docsWithSummedRef.flatMap((a) => {
-      const reporters = splitReporters(a.byline_gijaname);
+      let byLine = a.byline_gijaname;
+      //from reporters like 글·사진=노진실기자 know@yeongnam.com, remove the '글·사진=' part. There might be multiple '=' signs
+      const equalSignIndex = byLine.indexOf("=");
+      if (equalSignIndex !== -1) {
+        byLine = byLine.substring(equalSignIndex + 1).trim();
+      }
+      //remove any trailing '기자' suffix but not '시민기자' suffix
+      byLine = byLine.replace(/(?<!시민)기자/g, "").trim();
+
+      // also remove the email part
+      const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/;
+
+      byLine = byLine.replace(emailRegex, '').trim();
+
+      const reporters = splitReporters(byLine);
+
       return reporters.map((reporter) => ({
         ...a,
         newsdate: new Date(new Date(a.newsdate).toDateString()).toISOString(),
