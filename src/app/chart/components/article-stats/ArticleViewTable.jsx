@@ -52,16 +52,38 @@ export default function ArticleViewTable({ newsData }) {
     }));
   }, [newsData]);
 
+const mergedRows = useMemo(() => {
+  if (!rows.length) return [];
+  
+  const grouped = {};
+  
+  rows.forEach(row => {
+    if (!grouped[row.newskey]) {
+      grouped[row.newskey] = { ...row, writers: [row.writers] };
+    } else {
+      // Add writer to existing entry if not already present
+      if (!grouped[row.newskey].writers.includes(row.writers)) {
+        grouped[row.newskey].writers.push(row.writers);
+      }
+    }
+  });
+  
+  // Convert writers array to comma-separated string
+  return Object.values(grouped).map(row => ({
+    ...row,
+    writers: row.writers.join(', ')
+  }));
+}, [rows]);
+
   const dateFiltered = useMemo(() => {
-    if (!dateRange?.from || !dateRange?.to) return rows;
+    if (!dateRange?.from || !dateRange?.to) return mergedRows;
     const fromTime = Math.min(dateRange.from.getTime(), dateRange.to.getTime());
     const toTime = Math.max(dateRange.from.getTime(), dateRange.to.getTime());
-    return rows.filter(r => {
+    return mergedRows.filter(r => {
       const t = new Date(r.newsdate).getTime();
       return t >= fromTime && t <= toTime;
     });
-  }, [rows, dateRange]);
-
+  }, [mergedRows, dateRange]);
   const filtered = useMemo(() => dateFiltered.filter(r => (r.newstitle || '').includes(query)), [dateFiltered, query]);
   const sorted = useMemo(() => sortData(filtered), [filtered, sortData]);
   const totalPages = Math.ceil(sorted.length / itemsPerPage) || 1;
