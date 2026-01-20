@@ -8,7 +8,13 @@ import { arrayToCSV, downloadCSV, generateFilenameWithDateRange } from "../../li
 
 const ALL_COLUMNS = [
   { label: "기자", key: "reporter" },
-  { label: "조회수", key: "totalViews" },
+  { label: '네이버', key: 'ref_naver' },
+  { label: '다음', key: 'ref_daum' },
+  { label: '기타', key: 'ref_etc' },
+  { label: '구글', key: 'ref_google' },
+  { label: '모바일', key: 'ref_mobile' },
+  { label: '웹', key: 'ref_web' },
+  { label: "총 조회수", key: "totalViews" },
   { label: "기사수", key: "articleCount" },
   { label: "평균", key: "averageViews" },
   { label: "기획비율", key: "selfRatio" },
@@ -16,7 +22,13 @@ const ALL_COLUMNS = [
 
 const SELF_COLUMNS = [
   { label: "기자", key: "reporter" },
-  { label: "기획기사 조회수", key: "totalViews" },
+  { label: '네이버', key: 'ref_naver' },
+  { label: '다음', key: 'ref_daum' },
+  { label: '기타', key: 'ref_etc' },
+  { label: '구글', key: 'ref_google' },
+  { label: '모바일', key: 'ref_mobile' },
+  { label: '웹', key: 'ref_web' },
+  { label: "총 기획기사 조회수", key: "totalViews" },
   { label: "기획기사 수", key: "selfArticleCount" },
   { label: "기획기사 평균 조회수", key: "selfAverageViews" },
   { label: "기획기사 비율", key: "selfRatio" },
@@ -56,8 +68,14 @@ export default function PersonalViewTable({ newsData }) {
         articleCount: 0,
         level1: 0,
         selfViews: 0,
-        originalTotalViews: 0, // 원래 총 조회수
-        originalArticleCount: 0, // 원래 총 기사수
+        originalTotalViews: 0,
+        originalArticleCount: 0,
+        ref_naver: 0,
+        ref_daum: 0,
+        ref_etc: 0,
+        ref_google: 0,
+        ref_mobile: 0,
+        ref_web: 0,
       };
 
       // 원래 데이터는 항상 누적
@@ -68,12 +86,21 @@ export default function PersonalViewTable({ newsData }) {
       if (!showSelfOnly || isSelf) {
         rec.totalViews += ref;
         rec.articleCount += 1;
+
+        rec.ref_naver += Number(a.ref_naver) || 0;
+        rec.ref_daum += (Number(a.ref_daum) || 0) + (Number(a.external_daum) || 0);
+        rec.ref_etc += Number(a.ref_etc) || 0;
+        rec.ref_google += Number(a.ref_google) || 0;
+        rec.ref_mobile += Number(a.ref_mobile) || 0;
+        rec.ref_web += Number(a.ref_web) || 0;
       }
 
       if (isSelf) {
         rec.level1 += 1;
         rec.selfViews += ref;
       }
+
+
 
       m.set(name, rec);
     }
@@ -225,7 +252,13 @@ export default function PersonalViewTable({ newsData }) {
                 <td className={styles.td} data-label="기자">
                   {r.reporter}
                 </td>
-                <td className={styles.td} data-label="조회수">
+                <td className={styles.td} data-label="네이버">{r.ref_naver?.toLocaleString() ?? 0}</td>
+                <td className={styles.td} data-label="다음">{r.ref_daum?.toLocaleString() ?? 0}</td>
+                <td className={styles.td} data-label="기타">{r.ref_etc?.toLocaleString() ?? 0}</td>
+                <td className={styles.td} data-label="구글">{r.ref_google?.toLocaleString() ?? 0}</td>
+                <td className={styles.td} data-label="모바일">{r.ref_mobile?.toLocaleString() ?? 0}</td>
+                <td className={styles.td} data-label="웹">{r.ref_web?.toLocaleString() ?? 0}</td>
+                <td className={styles.td} data-label="총 조회수">
                   {r.totalViews.toLocaleString()}
                 </td>
                 {showSelfOnly ? (

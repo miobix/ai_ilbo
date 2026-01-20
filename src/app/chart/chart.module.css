@@ -112,14 +112,13 @@
   cursor: pointer;}
 
 .tableWrap{overflow:auto;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
-.table{width:100%;border-collapse:collapse;min-width:720px}
+.table{width:100%;border-collapse:collapse;min-width:720px;table-layout:fixed}
 .th,.td{padding:10px;border-bottom:1px solid #f3f4f6;text-align:center;font-size:14px}
 .tr:hover{background:#fafafa}
 
 /* Sticky first column for better readability when horizontally scrolling */
 .table thead th:first-child,
 .table tbody td:first-child{position:sticky;left:0;background:#fff;z-index:0}
-
 
 .selectRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .select{border:1px solid #e5e7eb;border-radius:6px;padding:8px 10px;background:#fff}
