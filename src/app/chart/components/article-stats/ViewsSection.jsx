@@ -9,7 +9,7 @@ import PersonalViewTable from "./PersonalViewTable";
 import ArticleViewTable from "./ArticleViewTable";
 
 const ViewsSection = () => {
-  const [active, setActive] = useState("department");
+  const [active, setActive] = useState("reporter");
   const [allArticles, setAllArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,13 +45,13 @@ const ViewsSection = () => {
       <LevelChart newsData={allArticles} />
       <ViewChart newsData={allArticles} />
       <div className={styles.tabsBar}>
-        <button className={`${styles.tabBtn} ${active === 'department' ? styles.active : ''}`} onClick={() => setActive('department')}>부서별 조회수</button>
         <button className={`${styles.tabBtn} ${active === 'reporter' ? styles.active : ''}`} onClick={() => setActive('reporter')}>기자별 조회수</button>
+        <button className={`${styles.tabBtn} ${active === 'department' ? styles.active : ''}`} onClick={() => setActive('department')}>부서별 조회수</button>
         <button className={`${styles.tabBtn} ${active === 'article' ? styles.active : ''}`} onClick={() => setActive('article')}>기사별 조회수</button>
       </div>
       <div>
-        {active === 'department' && <DepartmentViewTable newsData={allArticles} />}
         {active === 'reporter' && <PersonalViewTable newsData={allArticles} />}
+        {active === 'department' && <DepartmentViewTable newsData={allArticles} />}
         {active === 'article' && <ArticleViewTable newsData={allArticles} />}
       </div>
     </>

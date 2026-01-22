@@ -35,15 +35,15 @@ const SELF_COLUMNS = [
 ];
 
 export default function PersonalViewTable({ newsData }) {
-  const { handleSort, sortData } = useTableSort("averageViews", "desc");
-  const [mobileSortKey, setMobileSortKey] = useState("averageViews");
+  const { handleSort, sortData } = useTableSort("totalViews", "desc");
+  const [mobileSortKey, setMobileSortKey] = useState("totalViews");
   const [mobileSortOrder, setMobileSortOrder] = useState("desc");
   const [query, setQuery] = useState("");
   const [dateRange, setDateRange] = useState({
     from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     to: new Date(),
   });
-  const [showSelfOnly, setShowSelfOnly] = useState(false); // 기획기사만 보기 여부
+  const [showSelfOnly, setShowSelfOnly] = useState(true); // 기획기사만 보기 여부
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
 
