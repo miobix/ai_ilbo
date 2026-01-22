@@ -28,10 +28,10 @@ const SELF_COLUMNS = [
   { label: '구글', key: 'ref_google' },
   { label: '모바일', key: 'ref_mobile' },
   { label: '웹', key: 'ref_web' },
-  { label: "총 기획기사 조회수", key: "totalViews" },
+  { label: "총 조회수(기획)", key: "totalViews" },
   { label: "기획기사 수", key: "selfArticleCount" },
-  { label: "기획기사 평균 조회수", key: "selfAverageViews" },
-  { label: "기획기사 비율", key: "selfRatio" },
+  { label: "평균 (기획)", key: "selfAverageViews" },
+  { label: "기획비율", key: "selfRatio" },
 ];
 
 export default function PersonalViewTable({ newsData }) {
