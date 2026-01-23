@@ -16,6 +16,7 @@ const ALL_COLUMNS = [
   { label: '웹', key: 'ref_web', isDetail: true },
   { label: "조회수", key: "totalViews" },
   { label: "기사수", key: "articleCount" },
+  { label: "다음 기사수", key: "daumArticleCount", isDetail: true }, // Add this line
   { label: "평균", key: "averageViews" },
   { label: "기획비율", key: "selfRatio" },
 ];
@@ -30,6 +31,7 @@ const SELF_COLUMNS = [
   { label: '웹', key: 'ref_web', isDetail: true },
   { label: "조회수(기획)", key: "totalViews" },
   { label: "기획기사 수", key: "selfArticleCount" },
+  { label: "다음 기사수", key: "daumArticleCount", isDetail: true }, // Add this line
   { label: "평균 (기획)", key: "selfAverageViews" },
   { label: "기획비율", key: "selfRatio" },
 ];
@@ -77,6 +79,7 @@ export default function PersonalViewTable({ newsData }) {
         ref_google: 0,
         ref_mobile: 0,
         ref_web: 0,
+        daumArticleCount: 0, // Add this line
       };
 
       // 원래 데이터는 항상 누적
@@ -96,6 +99,9 @@ export default function PersonalViewTable({ newsData }) {
         rec.ref_web += Number(a.ref_web) || 0;
       }
 
+      if ((Number(a.external_daum) || 0) > 0 || (Number(a.ref_daum) || 0) > 0) {
+        rec.daumArticleCount += 1;
+      }
       if (isSelf) {
         rec.level1 += 1;
         rec.selfViews += ref;
@@ -272,24 +278,34 @@ export default function PersonalViewTable({ newsData }) {
                   {r.totalViews.toLocaleString()}
                 </td>
                 {showSelfOnly ? (
-                  <>
-                    <td className={styles.td} data-label="기획기사 수">
-                      {r.selfArticleCount}
-                    </td>
-                    <td className={styles.td} data-label="기획기사 평균 조회수">
-                      {r.selfArticleCount >= 5 ? r.selfAverageViews.toLocaleString() : ""}
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td className={styles.td} data-label="기사수">
-                      {r.articleCount}
-                    </td>
-                    <td className={styles.td} data-label="평균">
-                      {r.articleCount >= 5 ? r.averageViews.toLocaleString() : ""}
-                    </td>
-                  </>
-                )}
+  <>
+    <td className={styles.td} data-label="기획기사 수">
+      {r.selfArticleCount}
+    </td>
+    {showDetails && (
+      <td className={styles.td} data-label="다음 기사수">
+        {r.daumArticleCount}
+      </td>
+    )}
+    <td className={styles.td} data-label="기획기사 평균 조회수">
+      {r.selfArticleCount >= 5 ? r.selfAverageViews.toLocaleString() : ""}
+    </td>
+  </>
+) : (
+  <>
+    <td className={styles.td} data-label="기사수">
+      {r.articleCount}
+    </td>
+    {showDetails && (
+      <td className={styles.td} data-label="다음 기사수">
+        {r.daumArticleCount}
+      </td>
+    )}
+    <td className={styles.td} data-label="평균">
+      {r.articleCount >= 5 ? r.averageViews.toLocaleString() : ""}
+    </td>
+  </>
+)}
                 <td className={styles.td} data-label="기획비율">
                   <span className={getSelfRatioClass(r.selfRatio)}>{r.selfRatio}%</span>
                 </td>
