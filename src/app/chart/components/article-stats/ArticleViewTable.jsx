@@ -41,9 +41,8 @@ export default function ArticleViewTable({ newsData }) {
       writers: a.byline_gijaname || '무기명',
       newsdate: new Date(a.newsdate).toISOString().split('T')[0],
       ref_naver: Number(a.ref_naver) || 0,
-      ref_daum: Number(a.ref_daum) || 0,
+      ref_daum: (Number(a.ref_daum) || 0) + (Number(a.external_daum) || 0),
       external_daum: Number(a.external_daum) || 0,
-
       ref_etc: Number(a.ref_etc) || 0,
       ref_google: Number(a.ref_google) || 0,
       ref_mobile: Number(a.ref_mobile) || 0,
