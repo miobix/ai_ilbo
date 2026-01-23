@@ -8,13 +8,13 @@ import { arrayToCSV, downloadCSV, generateFilenameWithDateRange } from "../../li
 
 const ALL_COLUMNS = [
   { label: "기자", key: "reporter" },
-  { label: '네이버', key: 'ref_naver' },
-  { label: '다음', key: 'ref_daum' },
-  { label: '기타', key: 'ref_etc' },
-  { label: '구글', key: 'ref_google' },
-  { label: '모바일', key: 'ref_mobile' },
-  { label: '웹', key: 'ref_web' },
-  { label: "총 조회수", key: "totalViews" },
+  { label: '네이버', key: 'ref_naver', isDetail: true },
+  { label: '다음', key: 'ref_daum', isDetail: true },
+  { label: '기타', key: 'ref_etc', isDetail: true },
+  { label: '구글', key: 'ref_google', isDetail: true },
+  { label: '모바일', key: 'ref_mobile', isDetail: true },
+  { label: '웹', key: 'ref_web', isDetail: true },
+  { label: "조회수", key: "totalViews" },
   { label: "기사수", key: "articleCount" },
   { label: "평균", key: "averageViews" },
   { label: "기획비율", key: "selfRatio" },
@@ -22,13 +22,13 @@ const ALL_COLUMNS = [
 
 const SELF_COLUMNS = [
   { label: "기자", key: "reporter" },
-  { label: '네이버', key: 'ref_naver' },
-  { label: '다음', key: 'ref_daum' },
-  { label: '기타', key: 'ref_etc' },
-  { label: '구글', key: 'ref_google' },
-  { label: '모바일', key: 'ref_mobile' },
-  { label: '웹', key: 'ref_web' },
-  { label: "총 조회수(기획)", key: "totalViews" },
+  { label: '네이버', key: 'ref_naver', isDetail: true },
+  { label: '다음', key: 'ref_daum', isDetail: true },
+  { label: '기타', key: 'ref_etc', isDetail: true },
+  { label: '구글', key: 'ref_google', isDetail: true },
+  { label: '모바일', key: 'ref_mobile', isDetail: true },
+  { label: '웹', key: 'ref_web', isDetail: true },
+  { label: "조회수(기획)", key: "totalViews" },
   { label: "기획기사 수", key: "selfArticleCount" },
   { label: "평균 (기획)", key: "selfAverageViews" },
   { label: "기획비율", key: "selfRatio" },
@@ -44,6 +44,7 @@ export default function PersonalViewTable({ newsData }) {
     to: new Date(),
   });
   const [showSelfOnly, setShowSelfOnly] = useState(true); // 기획기사만 보기 여부
+  const [showDetails, setShowDetails] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
 
@@ -130,6 +131,8 @@ export default function PersonalViewTable({ newsData }) {
   }, [query, dateRange, showSelfOnly]);
 
   const COLUMNS = showSelfOnly ? SELF_COLUMNS : ALL_COLUMNS;
+    const visibleColumns = COLUMNS.filter(col => !col.isDetail || showDetails);
+
 
   // CSV 다운로드 함수
   const handleDownloadCSV = () => {
@@ -166,6 +169,9 @@ export default function PersonalViewTable({ newsData }) {
             <button className={`${styles.actionBtn} ${styles.actionBtnToggle} ${showSelfOnly ? styles.active : ""}`} onClick={() => setShowSelfOnly(!showSelfOnly)}>
               {showSelfOnly ? "📰 전체보기" : "✏️ 기획기사만"}
             </button>
+               <button className={`${styles.actionBtn} ${styles.actionBtnToggle} ${showDetails ? styles.active : ""}`} onClick={() => setShowDetails(!showDetails)}>
+              {showDetails ? "📊 조회수 간단히" : "📊 조회수 상세보기"}
+            </button>
           </div>
         </div>
       </div>
@@ -184,7 +190,7 @@ export default function PersonalViewTable({ newsData }) {
               handleSort(e.target.value);
             }}
           >
-            {COLUMNS.map((c) => (
+            {visibleColumns.map((c) => (
               <option key={c.key} value={c.key}>
                 {c.label}
               </option>
@@ -237,7 +243,7 @@ export default function PersonalViewTable({ newsData }) {
         <table className={styles.table + " " + styles.personalViewTable}>
           <thead>
             <tr className={styles.tr}>
-              {COLUMNS.map((c) => (
+              {visibleColumns.map((c) => (
                 <th key={c.key} className={styles.th}>
                   <button className={styles.tabBtn} onClick={() => handleSort(c.key)}>
                     {c.label}
@@ -252,12 +258,16 @@ export default function PersonalViewTable({ newsData }) {
                 <td className={styles.td} data-label="기자">
                   {r.reporter}
                 </td>
-                <td className={styles.td} data-label="네이버">{r.ref_naver?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="다음">{r.ref_daum?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="기타">{r.ref_etc?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="구글">{r.ref_google?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="모바일">{r.ref_mobile?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="웹">{r.ref_web?.toLocaleString() ?? 0}</td>
+        {showDetails && (
+                  <>
+                    <td className={styles.td} data-label="네이버">{r.ref_naver?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="다음">{r.ref_daum?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="기타">{r.ref_etc?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="구글">{r.ref_google?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="모바일">{r.ref_mobile?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="웹">{r.ref_web?.toLocaleString() ?? 0}</td>
+                  </>
+                )}
                 <td className={styles.td} data-label="총 조회수">
                   {r.totalViews.toLocaleString()}
                 </td>
@@ -287,7 +297,7 @@ export default function PersonalViewTable({ newsData }) {
             ))}
             {sorted.length === 0 && (
               <tr>
-                <td className={styles.td} colSpan={COLUMNS.length}>
+                <td className={styles.td} colSpan={visibleColumns.length}>
                   데이터가 없습니다.
                 </td>
               </tr>

@@ -11,13 +11,13 @@ const COLUMNS = [
   { label: '제목', key: 'newstitle' },
   { label: '부서', key: 'code_name' },
   { label: '작성자', key: 'writers' },
-  { label: '네이버', key: 'ref_naver' },
-  { label: '다음', key: 'ref_daum' },
-  { label: '기타', key: 'ref_etc' },
-  { label: '구글', key: 'ref_google' },
-  { label: '모바일', key: 'ref_mobile' },
-  { label: '웹', key: 'ref_web' },
-  { label: '총 조회수', key: 'ref' },
+  { label: '네이버', key: 'ref_naver', isDetail: true },
+  { label: '다음', key: 'ref_daum', isDetail: true },
+  { label: '기타', key: 'ref_etc', isDetail: true },
+  { label: '구글', key: 'ref_google', isDetail: true },
+  { label: '모바일', key: 'ref_mobile', isDetail: true },
+  { label: '웹', key: 'ref_web', isDetail: true },
+  { label: '조회수', key: 'ref' },
   { label: '등급', key: 'level' },
 ];
 
@@ -32,6 +32,7 @@ export default function ArticleViewTable({ newsData }) {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
+  const [showDetails, setShowDetails] = useState(false);
 
   const rows = useMemo(() => {
     if (!newsData?.length) return [];
@@ -94,6 +95,7 @@ const mergedRows = useMemo(() => {
 
   // Reset to first page when filters change
   React.useEffect(() => { setCurrentPage(1); }, [query, dateRange]);
+  const visibleColumns = COLUMNS.filter(col => !col.isDetail || showDetails);
 
   // CSV 다운로드 함수
   const handleDownloadCSV = () => {
@@ -148,6 +150,11 @@ const mergedRows = useMemo(() => {
               value={query}
               onChange={e => setQuery(e.target.value)}
             />
+            </div>
+          <div className={styles.rightControls}>
+            <button className={`${styles.actionBtn} ${styles.actionBtnToggle} ${showDetails ? styles.active : ""}`} onClick={() => setShowDetails(!showDetails)}>
+              {showDetails ? "📊 간단히" : "📊 상세보기"}
+            </button>
           </div>
         </div>
       </div>
@@ -156,7 +163,7 @@ const mergedRows = useMemo(() => {
         <div className={styles.mobileSortGroup}>
           <label className={styles.mobileSortLabel} htmlFor="articleMobileSort">정렬</label>
           <select id="articleMobileSort" className={styles.mobileSortSelect} value={mobileSortKey} onChange={e => { setMobileSortKey(e.target.value); setMobileSortOrder('desc'); handleSort(e.target.value); }}>
-            {COLUMNS.map(c => (<option key={c.key} value={c.key}>{c.label}</option>))}
+            {visibleColumns.map(c => (<option key={c.key} value={c.key}>{c.label}</option>))}
           </select>
           <button type="button" className={styles.sortDirBtn} onClick={() => { handleSort(mobileSortKey); setMobileSortOrder(o => o === 'asc' ? 'desc' : 'asc'); }}>
             {mobileSortOrder === 'asc' ? '▲' : '▼'}
@@ -173,7 +180,7 @@ const mergedRows = useMemo(() => {
         <table className={styles.table + " " + styles.articleViewTable}>
           <thead>
             <tr className={styles.tr}>
-              {COLUMNS.map(c => (
+              {visibleColumns.map(c => (
                 <th key={c.key} className={styles.th}><button className={styles.tabBtn} onClick={() => handleSort(c.key)}>{c.label}</button></th>
               ))}
             </tr>
@@ -197,19 +204,23 @@ const mergedRows = useMemo(() => {
                   </a>
                 </td>
                 <td className={styles.td} data-label="부서">{r.code_name}</td>
-                <td className={styles.td} data-label="작성자">{r.writers}</td>
-                <td className={styles.td} data-label="네이버">{r.ref_naver?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="다음">{(r.ref_daum + r.external_daum)?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="기타">{r.ref_etc?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="구글">{r.ref_google?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="모바일">{r.ref_mobile?.toLocaleString() ?? 0}</td>
-                <td className={styles.td} data-label="웹">{r.ref_web?.toLocaleString() ?? 0}</td>
+               <td className={styles.td} data-label="작성자">{r.writers}</td>
+                {showDetails && (
+                  <>
+                    <td className={styles.td} data-label="네이버">{r.ref_naver?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="다음">{(r.ref_daum + r.external_daum)?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="기타">{r.ref_etc?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="구글">{r.ref_google?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="모바일">{r.ref_mobile?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="웹">{r.ref_web?.toLocaleString() ?? 0}</td>
+                  </>
+                )}
                 <td className={styles.td} data-label="총 조회수">{r.ref?.toLocaleString() ?? 0}</td>
                 <td className={styles.td} data-label="등급"><span className={getLevelClass(r.level)}>{formatLevel(r.level)}</span></td>
               </tr>
             ))}
             {sorted.length === 0 && (
-              <tr><td className={styles.td} colSpan={COLUMNS.length}>조건에 맞는 기사가 없습니다.</td></tr>
+              <tr><td className={styles.td} colSpan={visibleColumns.length}>조건에 맞는 기사가 없습니다.</td></tr>
             )}
           </tbody>
         </table>
