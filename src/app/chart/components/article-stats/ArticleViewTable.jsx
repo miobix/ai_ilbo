@@ -102,7 +102,7 @@ const mergedRows = useMemo(() => {
       ...row,
       newsdate: new Date(row.newsdate).toLocaleDateString('ko-KR'),
       ref_naver: row.ref_naver,
-      ref_daum: row.ref_daum + row.external_daum,
+      ref_daum: row.ref_daum,
       ref_etc: row.ref_etc,
       ref_google: row.ref_google,
       ref_mobile: row.ref_mobile,
@@ -207,7 +207,7 @@ const mergedRows = useMemo(() => {
                 {showDetails && (
                   <>
                     <td className={styles.td} data-label="네이버">{r.ref_naver?.toLocaleString() ?? 0}</td>
-                    <td className={styles.td} data-label="다음">{(r.ref_daum + r.external_daum)?.toLocaleString() ?? 0}</td>
+                    <td className={styles.td} data-label="다음">{(r.ref_daum?.toLocaleString() ?? 0)}</td>
                     <td className={styles.td} data-label="기타">{r.ref_etc?.toLocaleString() ?? 0}</td>
                     <td className={styles.td} data-label="구글">{r.ref_google?.toLocaleString() ?? 0}</td>
                     <td className={styles.td} data-label="모바일">{r.ref_mobile?.toLocaleString() ?? 0}</td>
