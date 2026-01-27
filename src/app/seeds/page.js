@@ -132,11 +132,11 @@ export default function Curation() {
                                                                 {idea.reason}
                                                             </div>
 
-                                                            {idea.related_articles && idea.related_articles.length > 0 && (
+                                                            {idea.related_sources && idea.related_sources.length > 0 && (
                                                                 <div className={styles.relatedArticles}>
                                                                     <strong>관련 기사:</strong>
                                                                     <div className={styles.relatedArticlesList}>
-                                                                        {idea.related_articles.map((article, artIdx) => (
+                                                                        {idea.related_sources.map((article, artIdx) => (
                                                                             <div key={artIdx} className={styles.relatedArticleItem}>
                                                                                 <span className={styles.relatedArticleNumber}>{artIdx + 1}.</span>
                                                                                 <a
