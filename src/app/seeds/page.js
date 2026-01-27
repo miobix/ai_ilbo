@@ -134,19 +134,25 @@ export default function Curation() {
 
                                                             {idea.related_sources && idea.related_sources.length > 0 && (
                                                                 <div className={styles.relatedArticles}>
-                                                                    <strong>관련 기사:</strong>
+                                                                    <strong>관련 출처:</strong>
                                                                     <div className={styles.relatedArticlesList}>
-                                                                        {idea.related_sources.map((article, artIdx) => (
+                                                                        {idea.related_sources.map((source, artIdx) => (
                                                                             <div key={artIdx} className={styles.relatedArticleItem}>
                                                                                 <span className={styles.relatedArticleNumber}>{artIdx + 1}.</span>
-                                                                                <a
-                                                                                    href={`https://www.yna.co.kr/view/${article.ContentID}`}
-                                                                                    target="_blank"
-                                                                                    rel="noopener noreferrer"
-                                                                                    className={styles.relatedArticleLink}
-                                                                                >
-                                                                                    {article.title || article.ContentID}
-                                                                                </a>
+                                                                                {source.ContentID.startsWith('AKR') ? (
+                                                                                    <a
+                                                                                        href={`https://www.yna.co.kr/view/${source.ContentID}`}
+                                                                                        target="_blank"
+                                                                                        rel="noopener noreferrer"
+                                                                                        className={styles.relatedArticleLink}
+                                                                                    >
+                                                                                        {source.title || source.ContentID}
+                                                                                    </a>
+                                                                                ) : (
+                                                                                    <span className={styles.relatedArticleText}>
+                                                                                        {source.ContentID}
+                                                                                    </span>
+                                                                                )}
                                                                             </div>
                                                                         ))}
                                                                     </div>
