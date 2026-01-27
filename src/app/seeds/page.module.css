@@ -37,7 +37,17 @@
   background: #f9fafb;
 }
 
+.curationLink {
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+  display: flex;
+}
 
+.curationLink:hover .articleTitleText {
+  color: #0070f3;
+  text-decoration: underline;
+}
 
 .card{border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin:8px auto;max-width:1200px}
 .subCard{border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin:0;height:100%;display:flex;flex-direction:column}
