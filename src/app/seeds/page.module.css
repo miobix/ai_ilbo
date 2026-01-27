@@ -1,0 +1,112 @@
+.selectionReason {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 8px;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 8px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border-left: 3px solid #2563eb;
+}
+
+.curationItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.articleNumber {
+  color: #2563eb;
+  font-weight: 700;
+  min-width: 20px;
+}
+
+.articleTitleText {
+  color: #111827;
+  font-weight: 500;
+  flex: 1;
+}
+
+.curationItem:hover {
+  background: #f9fafb;
+}
+
+
+
+.card{border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin:8px auto;max-width:1200px}
+.subCard{border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin:0;height:100%;display:flex;flex-direction:column}
+.cardHeader{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f3f4f6;padding:16px;gap:8px;flex-wrap:wrap}
+.cardTitle{font-size:16px;font-weight:700; margin-left: 20px;}
+.cardDesc{font-size:12px;color:#6b7280;margin-top:4px}
+.cardContent{padding:16px}
+.cardContentGrow{padding:16px;flex:1}
+
+.grid{display:grid;gap:16px}
+.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+.statBox{padding:12px;border-radius:8px;background:#f9fafb}
+.statTitle{font-size:12px;color:#6b7280}
+.statValue{font-size:20px;font-weight:700}
+.statEmph{font-size:28px;font-weight:800;margin-left:6px}
+
+.planningLabel{color:#2563eb;font-weight:600}
+.nonPlanningLabel{color:#374151;font-weight:600}
+
+.datepicker{padding:8px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;width:100%;max-width:200px}
+.datepicker:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.datepickerLabel{font-size:14px;font-weight:600;color:#374151;margin-right:16px}
+.datepickerSection{padding:16px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+
+.articlesList{display:flex;flex-direction:column;gap:16px}
+.articleCard{border:1px solid #e5e7eb;border-radius:8px;padding:16px;background:#fafafa}
+.articleHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
+.articleTitle{font-size:16px;font-weight:600;color:#111827;margin:0;flex:1}
+.mistakeCount{background:#ef4444;color:#fff;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;white-space:nowrap}
+.mistakesList{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.mistakeItem{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px;background:#fff;border-radius:6px;font-size:14px}
+.mistakeText{color:#ef4444;font-weight:600}
+.arrow{color:#6b7280;font-weight:600}
+.suggestionText{color:#10b981;font-weight:600}
+.reasonText{color:#6b7280;font-size:13px}
+.loadingText{text-align:center;padding:40px;color:#6b7280;font-size:14px}
+.emptyText{text-align:center;padding:40px;color:#6b7280;font-size:14px}
+
+.statEmphGreen{font-size:28px;font-weight:800;margin-left:6px;color:#10b981}
+.statEmphRed{font-size:28px;font-weight:800;margin-left:6px;color:#ef4444}
+.statEmphOrange{font-size:28px;font-weight:800;margin-left:6px;color:#f59e0b}
+
+.articleTitleLink {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+.articleTitleLink:hover .articleTitle {
+  color: #0070f3;
+  text-decoration: underline;
+}
+.articleAuthor{
+  font-size:13px;
+  color:#6b7280;
+  margin-top:4px;
+  font-weight:400;
+}
+
+/* utility */
+.nowrap{white-space:nowrap}
+@media (max-width: 768px){
+  .card{margin:8px}
+  .cardHeader{flex-direction:column;align-items:stretch}
+  .grid3{grid-template-columns:1fr}
+  .grid2{grid-template-columns:1fr}
+  .articleHeader{flex-direction:column;align-items:flex-start}
+  .mistakeItem{font-size:13px;gap:6px}
+  .reasonText{font-size:12px;width:100%;margin-top:2px}
+}
