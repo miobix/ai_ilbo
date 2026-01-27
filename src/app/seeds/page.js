@@ -106,24 +106,53 @@ export default function Curation() {
                                                         <h3 className={styles.articleTitle}>
                                                             처리 시각: {formatTime(session.time_processed)}
                                                         </h3>
-                                                        
+                                                        {session.overall_assessment && (
+                                                            <div className={styles.overallAssessment}>
+                                                                <strong>전체 평가:</strong> {session.overall_assessment}
+                                                            </div>
+                                                        )}
+                                                        {session.selection_reason && (
+                                                            <div className={styles.selectionReason}>
+                                                                {session.selection_reason}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <span className={styles.mistakeCount}>
                                                         {session.total_articles_analyzed}개 분석
                                                     </span>
                                                 </div>
                                                 <ul className={styles.mistakesList}>
-                                                    {session.ai_results?.map((article, index) => (
-                                                        <li key={index} className={styles.curationItem}>
-                                                            <span className={styles.articleNumber}>{index + 1}.</span>
-                                                            <a
-                                                                href={`https://www.yna.co.kr/view/${article.ContentID}`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className={styles.curationLink}
-                                                            >
-                                                                <span className={styles.articleTitleText}>{article.original_title}</span>
-                                                            </a>
+                                                    {session.ai_results?.map((idea, index) => (
+                                                        <li key={index} className={styles.storyIdeaItem}>
+                                                            <div className={styles.storyIdeaHeader}>
+                                                                <span className={styles.articleNumber}>{index + 1}.</span>
+                                                                <span className={styles.storyIdeaTitle}>{idea.title}</span>
+                                                            </div>
+                                                            <div className={styles.storyIdeaReason}>
+                                                                {idea.reason}
+                                                            </div>
+
+                                                            {idea.related_articles && idea.related_articles.length > 0 && (
+                                                                <div className={styles.relatedArticles}>
+                                                                    <strong>관련 기사:</strong>
+                                                                    <div className={styles.relatedArticlesList}>
+                                                                        {idea.related_articles.map((article, artIdx) => (
+                                                                            <div key={artIdx} className={styles.relatedArticleItem}>
+                                                                                <span className={styles.relatedArticleNumber}>{artIdx + 1}.</span>
+                                                                                <a
+                                                                                    href={`https://www.yna.co.kr/view/${article.ContentID}`}
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                    className={styles.relatedArticleLink}
+                                                                                >
+                                                                                    {article.title || article.ContentID}
+                                                                                </a>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
                                                         </li>
                                                     ))}
                                                 </ul>

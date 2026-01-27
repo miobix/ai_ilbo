@@ -12,16 +12,12 @@ export default async function handler(req, res) {
     const db = client.db("yeongnam-ai");
     const col = db.collection("yonhap");
 
-    // Parse date to start and end of day
-    const startDate = new Date(date);
-    startDate.setHours(0, 0, 0, 0);
-    
-    const endDate = new Date(date);
-    endDate.setHours(23, 59, 59, 999);
+    // Convert date format from YYYY-MM-DD to YYYYMMDD
+    const dateFolder = date.replace(/-/g, '');
 
     const docs = await col
       .find(
-        { datetime: { $gte: startDate, $lte: endDate } },
+        { date_folder: dateFolder },
         { 
           projection: { 
             _id: 0, 
@@ -29,6 +25,7 @@ export default async function handler(req, res) {
             date_folder: 1,
             time_processed: 1,
             ai_results: 1,
+            overall_assessment: 1,
             selection_reason: 1,
             total_articles_analyzed: 1
           } 
