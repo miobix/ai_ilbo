@@ -106,11 +106,7 @@ export default function Curation() {
                                                         <h3 className={styles.articleTitle}>
                                                             처리 시각: {formatTime(session.time_processed)}
                                                         </h3>
-                                                        {session.selection_reason && (
-                                                            <div className={styles.selectionReason}>
-                                                                {session.selection_reason}
-                                                            </div>
-                                                        )}
+                                                        
                                                     </div>
                                                     <span className={styles.mistakeCount}>
                                                         {session.total_articles_analyzed}개 분석
