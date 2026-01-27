@@ -66,8 +66,8 @@ export default function Curation() {
                         <div className={styles.card}>
                             <div className={styles.cardHeader}>
                                 <div>
-                                    <div className={styles.cardTitle}>{formatDate(selectedDate)} AI 뉴스 큐레이션</div>
-                                    <div className={styles.cardDesc}>연합뉴스 기사 선별 및 요약</div>
+                                    <div className={styles.cardTitle}>{formatDate(selectedDate)} AI 뉴스 모니토링</div>
+                                    <div className={styles.cardDesc}>기사 선별</div>
                                 </div>
                                 <div className={styles.datepickerSection}>
                                     <label className={styles.datepickerLabel}>날짜 선택:</label>
