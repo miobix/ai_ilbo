@@ -39,6 +39,7 @@ export default async function handler(req, res) {
     const docsWithSummedRef = docs.map((doc) => ({
       ...doc,
       ref: (doc.ref || 0) + (doc.external_daum || 0),
+      ref_daum: (doc.ref_daum || 0) + (doc.external_daum || 0),
     }));
     // const normalized = docs.map((a) => ({ ...a, newsdate: new Date(new Date(a.newsdate).toDateString()).toISOString(), level: a.level || "5" }));
     const normalized = docsWithSummedRef.flatMap((a) => {

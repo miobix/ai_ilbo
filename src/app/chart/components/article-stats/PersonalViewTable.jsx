@@ -79,7 +79,7 @@ export default function PersonalViewTable({ newsData }) {
         ref_google: 0,
         ref_mobile: 0,
         ref_web: 0,
-        daumArticleCount: 0, // Add this line
+        daumArticleCount: 0,
       };
 
       // 원래 데이터는 항상 누적
