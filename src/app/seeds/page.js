@@ -180,7 +180,9 @@ export default function Curation() {
                                                                     </div>
                                                                     <ul className={styles.mistakesList}>
                                                                         {session.ai_results?.map((idea, index) => (
-                                                                            <li key={index} className={styles.storyIdeaItem}>
+                                                                            <li key={index} className={styles.storyIdeaItem} style={{
+                                                                                borderLeft: `3px solid ${session.ai_source === 'openai' ? '#0066cc' : '#34a853'}`
+                                                                            }}>
                                                                                 <div className={styles.storyIdeaHeader}>
                                                                                     <span className={styles.articleNumber}>{index + 1}.</span>
                                                                                     <span className={styles.storyIdeaTitle}>{idea.title}</span>
