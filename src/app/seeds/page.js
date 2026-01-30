@@ -153,7 +153,7 @@ export default function Curation() {
                                                 return (
                                                     <div key={hour} className={styles.timeSlotGroup}>
                                                         <h2 className={styles.timeSlotHeader}>
-                                                            {hour}시 ({filteredSessions.map(s => formatTime(s.time_processed)).join(' / ')})
+                                                            {hour}시
                                                         </h2>
                                                         <div className={styles.sourceComparison}>
                                                             {filteredSessions.map((session, idx) => (
