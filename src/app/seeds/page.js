@@ -15,6 +15,7 @@ export default function Curation() {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [totalSessions, setTotalSessions] = useState(0);
+    const [selectedSources, setSelectedSources] = useState(['openai', 'gemini']);
 
     useEffect(() => {
         const fetchCuration = async () => {
@@ -50,9 +51,16 @@ export default function Curation() {
     };
 
     const formatTime = (timeStr) => {
-        // Convert HHMMSS to HH:MM:SS
         if (!timeStr || timeStr.length !== 6) return timeStr;
         return `${timeStr.slice(0, 2)}:${timeStr.slice(2, 4)}:${timeStr.slice(4, 6)}`;
+    };
+
+    const handleSourceToggle = (source) => {
+        setSelectedSources(prev =>
+            prev.includes(source)
+                ? prev.filter(s => s !== source)
+                : [...prev, source]
+        );
     };
 
     return (
@@ -70,13 +78,35 @@ export default function Curation() {
                                     <div className={styles.cardDesc}>기사 선별</div>
                                 </div>
                                 <div className={styles.datepickerSection}>
-                                    <label className={styles.datepickerLabel}>날짜 선택:</label>
-                                    <input
-                                        type="date"
-                                        value={formatDate(selectedDate)}
-                                        onChange={handleDateChange}
-                                        className={styles.datepicker}
-                                    />
+                                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                                        <div>
+                                            <label className={styles.datepickerLabel}>날짜 선택:</label>
+                                            <input
+                                                type="date"
+                                                value={formatDate(selectedDate)}
+                                                onChange={handleDateChange}
+                                                className={styles.datepicker}
+                                            />
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '12px' }}>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedSources.includes('openai')}
+                                                    onChange={() => handleSourceToggle('openai')}
+                                                />
+                                                OpenAI
+                                            </label>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedSources.includes('gemini')}
+                                                    onChange={() => handleSourceToggle('gemini')}
+                                                />
+                                                Gemini
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -99,71 +129,102 @@ export default function Curation() {
                                     <div className={styles.emptyText}>해당 날짜에 큐레이션 데이터가 없습니다.</div>
                                 ) : (
                                     <div className={styles.articlesList}>
-                                        {sessions.map((session, idx) => (
-                                            <div key={idx} className={styles.articleCard}>
-                                                <div className={styles.articleHeader}>
-                                                    <div style={{ flex: 1 }}>
-                                                        <h3 className={styles.articleTitle}>
-                                                            처리 시각: {formatTime(session.time_processed)}
-                                                        </h3>
-                                                        {session.overall_assessment && (
-                                                            <div className={styles.overallAssessment}>
-                                                                <strong>전체 평가:</strong> {session.overall_assessment}
-                                                            </div>
-                                                        )}
-                                                        {session.selection_reason && (
-                                                            <div className={styles.selectionReason}>
-                                                                {session.selection_reason}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <span className={styles.mistakeCount}>
-                                                        {session.total_articles_analyzed}개 분석
-                                                    </span>
-                                                </div>
-                                                <ul className={styles.mistakesList}>
-                                                    {session.ai_results?.map((idea, index) => (
-                                                        <li key={index} className={styles.storyIdeaItem}>
-                                                            <div className={styles.storyIdeaHeader}>
-                                                                <span className={styles.articleNumber}>{index + 1}.</span>
-                                                                <span className={styles.storyIdeaTitle}>{idea.title}</span>
-                                                            </div>
-                                                            <div className={styles.storyIdeaReason}>
-                                                                {idea.reason}
-                                                            </div>
+                                        {(() => {
+                                            // Group sessions by hour
+                                            const groupedByHour = sessions.reduce((acc, session) => {
+                                                const time = session.time_processed;
+                                                const hour = time.slice(0, 2); // Extract HH from HHMMSS
+                                                if (!acc[hour]) acc[hour] = [];
+                                                acc[hour].push(session);
+                                                return acc;
+                                            }, {});
 
-                                                            {idea.related_sources && idea.related_sources.length > 0 && (
-                                                                <div className={styles.relatedArticles}>
-                                                                    <strong>관련 출처:</strong>
-                                                                    <div className={styles.relatedArticlesList}>
-                                                                        {idea.related_sources.map((source, artIdx) => (
-                                                                            <div key={artIdx} className={styles.relatedArticleItem}>
-                                                                                <span className={styles.relatedArticleNumber}>{artIdx + 1}.</span>
-                                                                                {source.ContentID.startsWith('AKR') ? (
-                                                                                    <a
-                                                                                        href={`https://www.yna.co.kr/view/${source.ContentID}`}
-                                                                                        target="_blank"
-                                                                                        rel="noopener noreferrer"
-                                                                                        className={styles.relatedArticleLink}
-                                                                                    >
-                                                                                        {source.title || source.ContentID}
-                                                                                    </a>
-                                                                                ) : (
-                                                                                    <span className={styles.relatedArticleText}>
-                                                                                        {source.ContentID}
-                                                                                    </span>
-                                                                                )}
-                                                                            </div>
-                                                                        ))}
+                                            // Sort hours in descending order
+                                            const sortedHours = Object.keys(groupedByHour).sort().reverse();
+
+                                            return sortedHours.map((hour) => {
+                                                const hourSessions = groupedByHour[hour];
+                                                const filteredSessions = hourSessions
+                                                    .filter(s => selectedSources.includes(s.ai_source))
+                                                    .sort((a, b) => a.ai_source === 'openai' ? -1 : 1);
+
+                                                if (filteredSessions.length === 0) return null;
+
+                                                return (
+                                                    <div key={hour} className={styles.timeSlotGroup}>
+                                                        <h2 className={styles.timeSlotHeader}>
+                                                            {hour}시 ({filteredSessions.map(s => formatTime(s.time_processed)).join(' / ')})
+                                                        </h2>
+                                                        <div className={styles.sourceComparison}>
+                                                            {filteredSessions.map((session, idx) => (
+                                                                <div key={idx} className={styles.articleCard}>
+                                                                    <div className={styles.articleHeader}>
+                                                                        <div style={{ flex: 1 }}>
+                                                                            <h3 className={styles.articleTitle}>
+                                                                                {session.ai_source === 'openai' ? 'OpenAI' : 'Gemini'} - {formatTime(session.time_processed)}
+                                                                            </h3>
+                                                                            {session.overall_assessment && (
+                                                                                <div className={styles.overallAssessment}>
+                                                                                    <strong>전체 평가:</strong> {session.overall_assessment}
+                                                                                </div>
+                                                                            )}
+                                                                            {session.selection_reason && (
+                                                                                <div className={styles.selectionReason}>
+                                                                                    {session.selection_reason}
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                        <span className={styles.mistakeCount}>
+                                                                            {session.total_articles_analyzed}개 분석
+                                                                        </span>
                                                                     </div>
-                                                                </div>
-                                                            )}
+                                                                    <ul className={styles.mistakesList}>
+                                                                        {session.ai_results?.map((idea, index) => (
+                                                                            <li key={index} className={styles.storyIdeaItem}>
+                                                                                <div className={styles.storyIdeaHeader}>
+                                                                                    <span className={styles.articleNumber}>{index + 1}.</span>
+                                                                                    <span className={styles.storyIdeaTitle}>{idea.title}</span>
+                                                                                </div>
+                                                                                <div className={styles.storyIdeaReason}>
+                                                                                    {idea.reason}
+                                                                                </div>
 
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        ))}
+                                                                                {idea.related_sources && idea.related_sources.length > 0 && (
+                                                                                    <div className={styles.relatedArticles}>
+                                                                                        <strong>관련 출처:</strong>
+                                                                                        <div className={styles.relatedArticlesList}>
+                                                                                            {idea.related_sources.map((source, artIdx) => (
+                                                                                                <div key={artIdx} className={styles.relatedArticleItem}>
+                                                                                                    <span className={styles.relatedArticleNumber}>{artIdx + 1}.</span>
+                                                                                                    {source.ContentID.startsWith('AKR') ? (
+                                                                                                        <a
+                                                                                                            href={`https://www.yna.co.kr/view/${source.ContentID}`}
+                                                                                                            target="_blank"
+                                                                                                            rel="noopener noreferrer"
+                                                                                                            className={styles.relatedArticleLink}
+                                                                                                        >
+                                                                                                            {source.title || source.ContentID}
+                                                                                                        </a>
+                                                                                                    ) : (
+                                                                                                        <span className={styles.relatedArticleText}>
+                                                                                                            {source.ContentID}
+                                                                                                        </span>
+                                                                                                    )}
+                                                                                                </div>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                )}
+                                                                            </li>
+                                                                        ))}
+                                                                    </ul>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            });
+                                        })()}
                                     </div>
                                 )}
                             </div>

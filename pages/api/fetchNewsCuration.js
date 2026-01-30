@@ -27,7 +27,8 @@ export default async function handler(req, res) {
             ai_results: 1,
             overall_assessment: 1,
             selection_reason: 1,
-            total_articles_analyzed: 1
+            total_articles_analyzed: 1,
+            ai_source: 1,
           } 
         }
       )
