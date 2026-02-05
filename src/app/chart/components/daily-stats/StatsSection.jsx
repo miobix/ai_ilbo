@@ -33,8 +33,8 @@ const StatsSection = () => {
 
   return (
     <>
-      <DailyArticleStats newsData={articlesData} />
-      <WebArticleDeptChart webArticleData={articlesData} />
+      {/* <DailyArticleStats newsData={articlesData} />
+      <WebArticleDeptChart webArticleData={articlesData} /> */}
       <WebArticleList webArticleData={articlesData} />
     </>
   );
