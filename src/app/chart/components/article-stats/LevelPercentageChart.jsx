@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import styles from "../../chart.module.css";
 import { Line, LineChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Label } from "recharts";
 import { getWeekKey, getMonthKey } from "../../lib/dateUtils";
+import { deduplicateNewsByKey } from "../../lib/dataUtils";
 
 const chartColors={ percentage:'#dc2626'};
 
@@ -16,8 +17,10 @@ const CustomLabel = (props) => {
 };
 
 function transformWeekly(news){
+  // 같은 기사(newskey 중복)를 하나로 취급하여 기사별 카운트 정확도 향상
+  const uniqueNews = deduplicateNewsByKey(news);
   const m=new Map();
-  for(const a of news||[]){
+  for(const a of uniqueNews||[]){
     const wk=getWeekKey(a.newsdate).split('T')[0];
     if(!m.has(wk)) m.set(wk,{date:wk,level1:0,levelOthers:0});
     const it=m.get(wk);
@@ -26,8 +29,10 @@ function transformWeekly(news){
   return Array.from(m.values()).sort((a,b)=>new Date(a.date)-new Date(b.date));
 }
 function transformMonthly(news){
+  // 같은 기사(newskey 중복)를 하나로 취급하여 기사별 카운트 정확도 향상
+  const uniqueNews = deduplicateNewsByKey(news);
   const m=new Map();
-  for(const a of news||[]){
+  for(const a of uniqueNews||[]){
     const mk=getMonthKey(a.newsdate).split('T')[0];
     if(!m.has(mk)) m.set(mk,{date:mk,level1:0,levelOthers:0});
     const it=m.get(mk);

@@ -52,28 +52,30 @@ export default function ArticleViewTable({ newsData }) {
     }));
   }, [newsData]);
 
-const mergedRows = useMemo(() => {
-  if (!rows.length) return [];
-  
-  const grouped = {};
-  
-  rows.forEach(row => {
-    if (!grouped[row.newskey]) {
-      grouped[row.newskey] = { ...row, writers: [row.writers] };
-    } else {
-      // Add writer to existing entry if not already present
-      if (!grouped[row.newskey].writers.includes(row.writers)) {
-        grouped[row.newskey].writers.push(row.writers);
+  const mergedRows = useMemo(() => {
+    if (!rows.length) return [];
+
+    const grouped = {};
+
+    // newskey 기준으로 중복 제거: 같은 기사는 1개 행으로 표시
+    // 같은 기사를 여러 작성자로 등록한 경우 writers에 모두 표시
+    rows.forEach(row => {
+      if (!grouped[row.newskey]) {
+        grouped[row.newskey] = { ...row, writers: [row.writers] };
+      } else {
+        // Add writer to existing entry if not already present
+        if (!grouped[row.newskey].writers.includes(row.writers)) {
+          grouped[row.newskey].writers.push(row.writers);
+        }
       }
-    }
-  });
-  
-  // Convert writers array to comma-separated string
-  return Object.values(grouped).map(row => ({
-    ...row,
-    writers: row.writers.join(', ')
-  }));
-}, [rows]);
+    });
+
+    // Convert writers array to comma-separated string
+    return Object.values(grouped).map(row => ({
+      ...row,
+      writers: row.writers.join(', ')
+    }));
+  }, [rows]);
 
   const dateFiltered = useMemo(() => {
     if (!dateRange?.from || !dateRange?.to) return mergedRows;
@@ -149,7 +151,7 @@ const mergedRows = useMemo(() => {
               value={query}
               onChange={e => setQuery(e.target.value)}
             />
-            </div>
+          </div>
           <div className={styles.rightControls}>
             <button className={`${styles.actionBtn} ${styles.actionBtnToggle} ${showDetails ? styles.active : ""}`} onClick={() => setShowDetails(!showDetails)}>
               {showDetails ? "📊 간단히" : "📊 상세보기"}
@@ -203,7 +205,7 @@ const mergedRows = useMemo(() => {
                   </a>
                 </td>
                 <td className={styles.td} data-label="부서">{r.code_name}</td>
-               <td className={styles.td} data-label="작성자">{r.writers}</td>
+                <td className={styles.td} data-label="작성자">{r.writers}</td>
                 {showDetails && (
                   <>
                     <td className={styles.td} data-label="네이버">{r.ref_naver?.toLocaleString() ?? 0}</td>
