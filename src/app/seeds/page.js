@@ -248,12 +248,24 @@ export default function Curation() {
                                                                                                                 let prefix = '';
                                                                                                                 if (cid.startsWith('PR_')) prefix = '보도자료';
                                                                                                                 else if (cid.startsWith('SNS_')) prefix = source.sns_profile || 'SNS';
-                                                                                                                else if (cid.startsWith('CAFE_')) prefix = source.source || '커뮤니티';
+                                                                                                                else if (cid.startsWith('CAFE_')) prefix = source.source || '카페';
                                                                                                                 else if (cid.startsWith('OPINION_')) prefix = '의견';
+                                                                                                                const label = source.title || cid;
                                                                                                                 return (
                                                                                                                     <>
                                                                                                                         {prefix && <span className={styles.sourcePrefix}>({prefix})</span>}
-                                                                                                                        {source.title || cid}
+                                                                                                                        {source.url ? (
+                                                                                                                            <a
+                                                                                                                                href={source.url}
+                                                                                                                                target="_blank"
+                                                                                                                                rel="noopener noreferrer"
+                                                                                                                                className={styles.relatedArticleLink}
+                                                                                                                            >
+                                                                                                                                {label}
+                                                                                                                            </a>
+                                                                                                                        ) : (
+                                                                                                                            label
+                                                                                                                        )}
                                                                                                                     </>
                                                                                                                 );
                                                                                                             })()}
