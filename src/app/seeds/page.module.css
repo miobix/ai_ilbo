@@ -160,6 +160,43 @@
     gap: 20px;
 }
 
+.sourceBubbles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.sourceBubble {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1.5px solid;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    background: #fff;
+    white-space: nowrap;
+}
+
+.bubbleLabel {
+    font-weight: 600;
+}
+
+.bubbleCount {
+    color: #333;
+}
+
+.bubbleTokens {
+    color: #888;
+    font-size: 0.7rem;
+}
+.sourcePrefix {
+    color: #888;
+    font-size: 0.78rem;
+    margin-right: 4px;
+    font-style: italic;
+}
 @media (max-width: 900px) {
     .sourceComparison {
         grid-template-columns: 1fr;

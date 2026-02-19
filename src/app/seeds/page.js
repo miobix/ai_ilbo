@@ -174,9 +174,43 @@ export default function Curation() {
                                                                                 </div>
                                                                             )}
                                                                         </div>
-                                                                        <span className={styles.mistakeCount}>
-                                                                            {session.total_articles_analyzed}개 분석
-                                                                        </span>
+                                                                        <div className={styles.sourceBubbles}>
+                                                                            {session.sources && (() => {
+                                                                                const s = session.sources;
+                                                                                const bubbles = [];
+                                                                                if (s.news?.count > 0)
+                                                                                    bubbles.push({ label: '뉴스', count: s.news.count, tokens: s.news.estimated_tokens, color: '#1a73e8' });
+                                                                                if (s.press_release?.count > 0)
+                                                                                    bubbles.push({ label: '보도자료', count: s.press_release.count, tokens: s.press_release.estimated_tokens, color: '#e37400' });
+                                                                                if (s.sns?.count > 0)
+                                                                                    bubbles.push({ label: 'SNS', count: s.sns.count, tokens: s.sns.estimated_tokens, color: '#9334e6' });
+                                                                                if (s.cafe_community) {
+                                                                                    Object.entries(s.cafe_community).forEach(([name, data]) => {
+                                                                                        bubbles.push({ label: name, count: data.count, tokens: data.estimated_tokens, color: '#1e8e3e' });
+                                                                                    });
+                                                                                }
+                                                                                return bubbles.map((b, i) => (
+                                                                                    <div key={i} className={styles.sourceBubble} style={{ borderColor: b.color }}>
+                                                                                        <span className={styles.bubbleLabel} style={{ color: b.color }}>{b.label}</span>
+                                                                                        <span className={styles.bubbleCount}>{b.count}건</span>
+                                                                                        <span className={styles.bubbleTokens}>{(b.tokens / 1000).toFixed(1)}k tok</span>
+                                                                                    </div>
+                                                                                ));
+                                                                            })()}
+                                                                            <div className={styles.sourceBubble} style={{ borderColor: '#666' }}>
+                                                                                <span className={styles.bubbleLabel} style={{ color: '#666' }}>전체</span>
+                                                                                <span className={styles.bubbleCount}>{session.total_articles_analyzed}건</span>
+                                                                                {session.sources && (
+                                                                                    <span className={styles.bubbleTokens}>
+                                                                                        {(Object.values(session.sources).reduce((sum, s) => {
+                                                                                            if (typeof s === 'object' && 'estimated_tokens' in s) return sum + (s.estimated_tokens || 0);
+                                                                                            if (typeof s === 'object') return sum + Object.values(s).reduce((s2, v) => s2 + (v?.estimated_tokens || 0), 0);
+                                                                                            return sum;
+                                                                                        }, 0) / 1000).toFixed(1)}k tok
+                                                                                    </span>
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                     <ul className={styles.mistakesList}>
                                                                         {session.ai_results?.map((idea, index) => (
@@ -209,7 +243,20 @@ export default function Curation() {
                                                                                                         </a>
                                                                                                     ) : (
                                                                                                         <span className={styles.relatedArticleText}>
-                                                                                                            {source.ContentID}
+                                                                                                            {(() => {
+                                                                                                                const cid = source.ContentID || '';
+                                                                                                                let prefix = '';
+                                                                                                                if (cid.startsWith('PR_')) prefix = '보도자료';
+                                                                                                                else if (cid.startsWith('SNS_')) prefix = source.sns_profile || 'SNS';
+                                                                                                                else if (cid.startsWith('CAFE_')) prefix = source.source || '커뮤니티';
+                                                                                                                else if (cid.startsWith('OPINION_')) prefix = '의견';
+                                                                                                                return (
+                                                                                                                    <>
+                                                                                                                        {prefix && <span className={styles.sourcePrefix}>({prefix})</span>}
+                                                                                                                        {source.title || cid}
+                                                                                                                    </>
+                                                                                                                );
+                                                                                                            })()}
                                                                                                         </span>
                                                                                                     )}
                                                                                                 </div>
