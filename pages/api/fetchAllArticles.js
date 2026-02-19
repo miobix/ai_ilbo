@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     }
     const projection = { newsdate: 1, newskey: 1, code_name: 1, byline_gijaname: 1, buseid: 1, newstitle: 1, ref: 1, level: 1, external_daum: 1, ref_daum: 1, ref_etc: 1, ref_naver: 1, ref_google: 1, ref_mobile: 1, ref_web:1 };
     const docs = await col
-      .find({ ref: { $exists: true, $ne: null, $ne: 0 }, ...dateFilter })
+      .find({ ref: { $exists: true, $ne: null, $ne: 0 }, delete: 0, ...dateFilter })
       .project(projection)
       .sort({ newsdate: -1 })
       .toArray();
