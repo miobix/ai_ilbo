@@ -231,45 +231,45 @@ export default function Curation() {
                                                                                         <div className={styles.relatedArticlesList}>
                                                                                             {idea.related_sources.map((source, artIdx) => (
                                                                                                 <div key={artIdx} className={styles.relatedArticleItem}>
-                                                                                                    <span className={styles.relatedArticleNumber}>{artIdx + 1}.</span>
-                                                                                                    {source.ContentID.startsWith('AKR') ? (
-                                                                                                        <a
-                                                                                                            href={`https://www.yna.co.kr/view/${source.ContentID}`}
-                                                                                                            target="_blank"
-                                                                                                            rel="noopener noreferrer"
-                                                                                                            className={styles.relatedArticleLink}
-                                                                                                        >
-                                                                                                            {source.title || source.ContentID}
-                                                                                                        </a>
-                                                                                                    ) : (
-                                                                                                        <span className={styles.relatedArticleText}>
-                                                                                                            {(() => {
-                                                                                                                const cid = source.ContentID || '';
-                                                                                                                let prefix = '';
-                                                                                                                if (cid.startsWith('PR_')) prefix = '보도자료';
-                                                                                                                else if (cid.startsWith('SNS_')) prefix = source.sns_profile || 'SNS';
-                                                                                                                else if (cid.startsWith('CAFE_')) prefix = source.source || '카페';
-                                                                                                                else if (cid.startsWith('OPINION_')) prefix = '의견';
-                                                                                                                const label = source.title || cid;
-                                                                                                                return (
-                                                                                                                    <>
-                                                                                                                        {prefix && <span className={styles.sourcePrefix}>({prefix})</span>}
-                                                                                                                        {source.url ? (
-                                                                                                                            <a
-                                                                                                                                href={source.url}
-                                                                                                                                target="_blank"
-                                                                                                                                rel="noopener noreferrer"
-                                                                                                                                className={styles.relatedArticleLink}
-                                                                                                                            >
-                                                                                                                                {label}
-                                                                                                                            </a>
-                                                                                                                        ) : (
-                                                                                                                            label
-                                                                                                                        )}
-                                                                                                                    </>
-                                                                                                                );
-                                                                                                            })()}
-                                                                                                        </span>
+                                                                                                    <div className={styles.relatedArticleRow}>
+                                                                                                        <span className={styles.relatedArticleNumber}>{artIdx + 1}.</span>
+                                                                                                        {source.ContentID.startsWith('AKR') ? (
+                                                                                                            <a
+                                                                                                                href={`https://www.yna.co.kr/view/${source.ContentID}`}
+                                                                                                                target="_blank"
+                                                                                                                rel="noopener noreferrer"
+                                                                                                                className={styles.relatedArticleLink}
+                                                                                                            >
+                                                                                                                {source.title || source.ContentID}
+                                                                                                            </a>
+                                                                                                        ) : (
+                                                                                                            <span className={styles.relatedArticleText}>
+                                                                                                                {(() => {
+                                                                                                                    const cid = source.ContentID || '';
+                                                                                                                    let prefix = '';
+                                                                                                                    if (cid.startsWith('PR_')) prefix = '보도자료';
+                                                                                                                    else if (cid.startsWith('SNS_')) prefix = source.sns_profile || 'SNS';
+                                                                                                                    else if (cid.startsWith('CAFE_')) prefix = source.source || '카페';
+                                                                                                                    else if (cid.startsWith('OPINION_')) prefix = '의견';
+                                                                                                                    const label = source.title || cid;
+                                                                                                                    return (
+                                                                                                                        <>
+                                                                                                                            {prefix && <span className={styles.sourcePrefix}>({prefix})</span>}
+                                                                                                                            {source.url ? (
+                                                                                                                                <a href={source.url} target="_blank" rel="noopener noreferrer" className={styles.relatedArticleLink}>
+                                                                                                                                    {label}
+                                                                                                                                </a>
+                                                                                                                            ) : label}
+                                                                                                                        </>
+                                                                                                                    );
+                                                                                                                })()}
+                                                                                                            </span>
+                                                                                                        )}
+                                                                                                    </div>
+                                                                                                    {source.quote && (
+                                                                                                        <div className={styles.sourceQuote}>
+                                                                                                            "{source.quote}"
+                                                                                                        </div>
                                                                                                     )}
                                                                                                 </div>
                                                                                             ))}
