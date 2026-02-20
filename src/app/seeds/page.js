@@ -268,7 +268,7 @@ export default function Curation() {
                                                                                                     </div>
                                                                                                     {source.quote && (
                                                                                                         <div className={styles.sourceQuote}>
-                                                                                                            "{source.quote}"
+                                                                                                            &ldquo;{source.quote}&rdquo;
                                                                                                         </div>
                                                                                                     )}
                                                                                                 </div>
