@@ -24,7 +24,6 @@ const ViewsSection = () => {
       const res = await fetch(`/api/fetchAllArticles?${params}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      console.log("Fetched articles:", data); 
       setAllArticles(data || []);
     } catch (e) {
       setError(e.message);
