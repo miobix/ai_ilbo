@@ -1,4 +1,5 @@
 export const allowed_reporters = [
+"논설실",
 "손인락",
 "이은경",
 "박준상",
