@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { allowed_reporters } from "@/app/utils/repotersList";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") return res.status(405).json({ message: "Method not allowed" });
@@ -63,7 +64,7 @@ export default async function handler(req, res) {
         ...a,
         newsdate: new Date(new Date(a.newsdate).toDateString()).toISOString(),
         level: a.level || "5",
-        byline_gijaname: reporter,
+        byline_gijaname: allowed_reporters.includes(reporter) ? reporter : "외부기고",
       }));
     });
 
