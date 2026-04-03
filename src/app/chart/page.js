@@ -7,6 +7,7 @@ import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
 import StatsSection from "./components/daily-stats/StatsSection";
 import ViewsSection from "./components/article-stats/ViewsSection";
+import EnterpriseViewsSection from "./components/enterprise-views/EnterpriseViewsSection";
 
 export default function Chart() {
   const [activeMain, setActiveMain] = useState("stats");
@@ -29,10 +30,17 @@ export default function Chart() {
             >
               기사 통계
             </button>
+            <button
+              className={`${chartStyles.tabBtn} ${activeMain === "enterprise" ? chartStyles.active : ""}`}
+              onClick={() => setActiveMain("enterprise")}
+            >
+              심층기사 조회수
+            </button>
           </div>
           <div className={chartStyles.contentWrap}>
             {activeMain === "stats" && <StatsSection />}
             {activeMain === "views" && <ViewsSection />}
+            {activeMain === "enterprise" && <EnterpriseViewsSection />}
           </div>
         </div>
       </div>

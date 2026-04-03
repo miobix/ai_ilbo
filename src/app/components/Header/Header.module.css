@@ -58,6 +58,29 @@
   text-indent: -99999px;
 }
 
+/* 오른쪽 상단 로그아웃 버튼 */
+.Header_inner .logoutTopRight {
+  position: absolute;
+  top: 8px;
+  right: 0;
+}
+
+.Header_inner .logoutTopRight .logoutButton {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b91c1c;
+  background: none;
+  border: 1px solid #fca5a5;
+  border-radius: 4px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.Header_inner .logoutTopRight .logoutButton:hover {
+  background: #fef2f2;
+}
+
 /* New styles for buttons */
 .Header_inner .headerButtonsContainer {
   position: absolute;

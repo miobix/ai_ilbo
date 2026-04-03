@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import IdleLogout from "@/app/components/IdleLogout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,7 +12,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="kr">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <IdleLogout />
+        {children}
+      </body>
     </html>
   );
 }

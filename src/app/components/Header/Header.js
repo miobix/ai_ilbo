@@ -1,10 +1,22 @@
-import Image from "next/image";
+"use client";
+
 import styles from "./Header.module.css";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as utils from "../../utils/common.js";
 
 export default function Header() {
+  const router = useRouter();
   const currentDate = utils.formatTodayDate();
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      router.replace("/login");
+      router.refresh();
+    }
+  };
 
   return (
     <div className={styles.Header}>
@@ -21,6 +33,12 @@ export default function Header() {
         <Link href="/">
           <div className={styles.logo}>영남일보AI</div>
         </Link>
+        {/* 오른쪽 상단 로그아웃 버튼 */}
+        <div className={styles.logoutTopRight}>
+          <button type="button" className={styles.logoutButton} onClick={handleLogout}>
+            로그아웃
+          </button>
+        </div>
         <div className={styles.headerButtonsContainer}>
           <Link href="/chart">
             <button className={styles.headerButton}>{`기획기사`}</button>
