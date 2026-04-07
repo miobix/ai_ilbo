@@ -2,12 +2,22 @@ const SESSION_TTL_SECONDS = 60 * 60;
 const SECRET = "yeongnam-ai-hardcoded-secret";
 
 function toBase64(bytes) {
+  if (typeof Buffer !== "undefined") {
+    // Node.js environment
+    return Buffer.from(bytes).toString("base64");
+  }
+  // Browser environment
   let binary = "";
   for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 }
 
 function fromBase64(base64) {
+  if (typeof Buffer !== "undefined") {
+    // Node.js environment
+    return new Uint8Array(Buffer.from(base64, "base64"));
+  }
+  // Browser environment
   const binary = atob(base64);
   const out = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) out[i] = binary.charCodeAt(i);
