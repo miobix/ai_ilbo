@@ -34,9 +34,10 @@ async function getHmacKey() {
   );
 }
 
-export async function createSessionToken(username) {
+export async function createSessionToken(user) {
   const payload = {
-    sub: username,
+    sub: user.username,
+    role: user.role,
     exp: Date.now() + SESSION_TTL_SECONDS * 1000,
   };
 

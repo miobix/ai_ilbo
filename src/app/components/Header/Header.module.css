@@ -81,6 +81,25 @@
   background: #fef2f2;
 }
 
+/* Manage User Button - Verde-agua theme */
+.Header_inner .logoutTopRight .manageUserButton {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: #16a085;
+  border: 1px solid #16a085;
+  border-radius: 4px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.15s, border 0.15s;
+  margin-right: 8px;
+}
+
+.Header_inner .logoutTopRight .manageUserButton:hover {
+  background: #138570;
+  border-color: #138570;
+}
+
 /* New styles for buttons */
 .Header_inner .headerButtonsContainer {
   position: absolute;
