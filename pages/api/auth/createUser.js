@@ -1,6 +1,6 @@
 import { verifySessionToken } from "@/lib/authSession";
 import { MongoClient } from "mongodb";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 function parseCookie(cookieHeader = "") {
   const out = {};

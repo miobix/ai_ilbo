@@ -1,6 +1,6 @@
 import { createSessionToken, SESSION_TTL_SECONDS } from "@/lib/authSession";
 import { MongoClient } from "mongodb";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 function cookieString(name, value, maxAgeSeconds) {
   const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
@@ -29,8 +29,8 @@ export default async function handler(req, res) {
     res.setHeader("Set-Cookie", cookieString("yn_session", token, SESSION_TTL_SECONDS));
     return res.status(200).json({ ok: true, user: { id: user.username, role: user.role, real_name: user.real_name } });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "서버 오류" });
+    console.error("Login error:", error.message, error.stack);
+    return res.status(500).json({ message: "서버 오류", error: error.message });
   } finally {
     await client.close();
   }
