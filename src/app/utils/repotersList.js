@@ -117,4 +117,5 @@ export const allowed_reporters = [
 "김인희",
 "김진향",
 "진수빈",
+"이수현",
 ]
