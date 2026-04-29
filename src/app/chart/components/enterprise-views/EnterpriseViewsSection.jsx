@@ -205,11 +205,230 @@ function SummaryTile({ label, value, sub, color }) {
   );
 }
 
+// ─── 연관기사 컴팩트 카드 ───
+function RelatedCompactCard({ data, label }) {
+  if (!data) {
+    return (
+      <div
+        style={{
+          borderRadius: 12,
+          border: "1px dashed #d1d5db",
+          background: "#f9fafb",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#d1d5db",
+          fontSize: 13,
+          minHeight: 80,
+        }}
+      >
+        {label} 없음
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        borderRadius: 12,
+        border: "1px solid #e5e7eb",
+        background: "#fff",
+        padding: "12px 14px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+        overflow: "hidden",
+      }}
+    >
+      <span
+        style={{
+          fontSize: 11,
+          fontWeight: 700,
+          color: "#6b7280",
+          background: "#f3f4f6",
+          borderRadius: 4,
+          padding: "2px 7px",
+          alignSelf: "flex-start",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {label}
+      </span>
+      <a
+        href={data.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={data.title}
+        style={{
+          fontSize: 13,
+          fontWeight: 600,
+          color: "#111827",
+          textDecoration: "none",
+          lineHeight: 1.5,
+          display: "-webkit-box",
+          WebkitLineClamp: 4,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          flex: 1,
+        }}
+      >
+        {data.title}
+      </a>
+      <div style={{ fontSize: 12, color: "#6b7280", marginTop: "auto", paddingTop: 4, borderTop: "1px solid #f3f4f6" }}>
+        누적 <b style={{ color: "#111827" }}>{(data.ref ?? 0).toLocaleString()}</b>
+      </div>
+    </div>
+  );
+}
+
+// ─── newskey 앞 8자리에서 날짜 추출 (20260125 → 2026-01-25) ───
+function dateFromNewskey(newskey) {
+  const raw = String(newskey).slice(0, 8);
+  return `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
+}
+
+// ─── 심층기사 1행 ───
+function RelatedRow({ article, index }) {
+  const pubDate = dateFromNewskey(article.newskey);
+
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr 1fr 1fr",
+        gap: 10,
+        padding: "12px 0",
+        borderBottom: "1px solid #f3f4f6",
+        alignItems: "stretch",
+      }}
+    >
+      {/* 심층기사 – ArticleCard + 발행일 배지 */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              background: "#1d4ed8",
+              color: "#fff",
+              borderRadius: 5,
+              padding: "3px 9px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {index}. {pubDate}
+          </span>
+          {article.spike && (
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 800,
+                background: "#dc2626",
+                color: "#fff",
+                borderRadius: 5,
+                padding: "3px 8px",
+              }}
+            >
+              급증
+            </span>
+          )}
+        </div>
+        <ArticleCard article={article} />
+      </div>
+
+      {/* 연관기사 3건 */}
+      {[0, 1, 2].map((i) => (
+        <RelatedCompactCard
+          key={i}
+          data={article.related?.[i] ?? null}
+          label={`연관${i + 1}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ─── 심층기사 연관기사 섹션 ───
+function EnterpriseRelatedSection({ articles }) {
+  const [sortKey, setSortKey] = useState("date");
+
+  const sorted = useMemo(() => {
+    const arr = [...articles];
+    if (sortKey === "date")
+      arr.sort((a, b) =>
+        String(a.newskey).slice(0, 8).localeCompare(String(b.newskey).slice(0, 8))
+      );
+    else if (sortKey === "today") arr.sort((a, b) => b.todayInc - a.todayInc);
+    else if (sortKey === "total") arr.sort((a, b) => b.totalRef - a.totalRef);
+    else if (sortKey === "spike")
+      arr.sort((a, b) => Number(b.spike) - Number(a.spike) || b.todayInc - a.todayInc);
+    return arr;
+  }, [articles, sortKey]);
+
+  return (
+    <div className={styles.card}>
+      <div className={styles.cardHeader}>
+        <div>
+          <div className={styles.cardTitle}>심층기사 연관기사 분석</div>
+          <div className={styles.cardDesc}>
+            심층 1건 + 연관 3건 · 유입 경로 확인용
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 12, color: "#6b7280", whiteSpace: "nowrap" }}>총 {sorted.length}건</span>
+          <span style={{ fontSize: 12, color: "#6b7280" }}>정렬</span>
+          <select
+            className={styles.select}
+            value={sortKey}
+            onChange={(e) => setSortKey(e.target.value)}
+          >
+            <option value="date">발행일 순</option>
+            <option value="today">오늘 조회수 순</option>
+            <option value="total">누적 조회수 순</option>
+            <option value="spike">급증 우선</option>
+          </select>
+        </div>
+      </div>
+      <div className={styles.cardContent}>
+        {/* 컬럼 헤더 */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "2fr 1fr 1fr 1fr",
+            gap: 6,
+            padding: "4px 0 8px",
+            borderBottom: "2px solid #e5e7eb",
+            marginBottom: 2,
+          }}
+        >
+          {["심층기사", "연관 1", "연관 2", "연관 3"].map((h) => (
+            <div
+              key={h}
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#6b7280",
+                textAlign: "center",
+              }}
+            >
+              {h}
+            </div>
+          ))}
+        </div>
+
+        {sorted.map((a, i) => (
+          <RelatedRow key={a.newskey} article={a} index={i + 1} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function EnterpriseViewsSection() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortKey, setSortKey] = useState("today");
+
 
   useEffect(() => {
     const load = async () => {
@@ -237,7 +456,18 @@ export default function EnterpriseViewsSection() {
         const latest = daily[daily.length - 1];
         const todayInc = latest?.daily ?? 0;
         const spike = isSpike(todayInc, avg);
-        return { ...a, daily, avg, todayInc, spike, totalRef: latest?.total ?? 0 };
+        // 최신 history 엔트리의 related_refs 추출
+        const sortedHistory = [...(a.history || [])].sort((x, y) =>
+          x.date.localeCompare(y.date)
+        );
+        const latestHistory = sortedHistory[sortedHistory.length - 1];
+        const related = (latestHistory?.related_refs ?? []).map((r) => ({
+          newskey: r.newskey,
+          title: r.title,
+          ref: r.ref,
+          url: `https://www.yeongnam.com/web/view.php?key=${r.newskey}`,
+        }));
+        return { ...a, daily, avg, todayInc, spike, totalRef: latest?.total ?? 0, related };
       }),
     [articles]
   );
@@ -255,17 +485,6 @@ export default function EnterpriseViewsSection() {
     const topTotal = [...enriched].sort((a, b) => b.totalRef - a.totalRef)[0];
     return { totalToday, spikeCount, topToday, topTotal };
   }, [enriched]);
-
-  const sorted = useMemo(() => {
-    const arr = [...enriched];
-    if (sortKey === "today") arr.sort((a, b) => b.todayInc - a.todayInc);
-    else if (sortKey === "total") arr.sort((a, b) => b.totalRef - a.totalRef);
-    else if (sortKey === "spike")
-      arr.sort(
-        (a, b) => Number(b.spike) - Number(a.spike) || b.todayInc - a.todayInc
-      );
-    return arr;
-  }, [enriched, sortKey]);
 
   if (loading)
     return (
@@ -343,41 +562,8 @@ export default function EnterpriseViewsSection() {
         </div>
       )}
 
-      <div className={styles.card}>
-        <div className={styles.cardHeader}>
-          <div>
-            <div className={styles.cardTitle}>기사별 일별 조회수</div>
-            <div className={styles.cardDesc}>
-              막대 = 당일 조회수 · 회색점선 = 평균 · 빨강 = 평균 2배 초과 급증 의심
-            </div>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 12, color: "#6b7280" }}>정렬</span>
-            <select
-              className={styles.select}
-              value={sortKey}
-              onChange={(e) => setSortKey(e.target.value)}
-            >
-              <option value="today">오늘 조회수 순</option>
-              <option value="total">누적 조회수 순</option>
-              <option value="spike">급증 우선</option>
-            </select>
-          </div>
-        </div>
-        <div className={styles.cardContent}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-              gap: 12,
-            }}
-          >
-            {sorted.map((a) => (
-              <ArticleCard key={a.newskey} article={a} />
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* ─── 심층기사 연관기사 분석 ─── */}
+      <EnterpriseRelatedSection articles={enriched} />
     </>
   );
 }
