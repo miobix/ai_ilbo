@@ -227,55 +227,102 @@ function RelatedCompactCard({ data, label }) {
     );
   }
 
+  // null(첫째 날) 제외 후 최근 14일
+  const rows = (data.dailyData ?? [])
+    .filter((d) => d.daily != null)
+    .slice(-14);
+
   return (
     <div
       style={{
         borderRadius: 12,
         border: "1px solid #e5e7eb",
         background: "#fff",
-        padding: "12px 14px",
+        padding: "10px 12px 8px",
         display: "flex",
         flexDirection: "column",
         gap: 6,
         overflow: "hidden",
       }}
     >
-      <span
-        style={{
-          fontSize: 11,
-          fontWeight: 700,
-          color: "#6b7280",
-          background: "#f3f4f6",
-          borderRadius: 4,
-          padding: "2px 7px",
-          alignSelf: "flex-start",
-          whiteSpace: "nowrap",
-        }}
-      >
-        {label}
-      </span>
+      {/* 레이블 + 누적 */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            color: "#6b7280",
+            background: "#f3f4f6",
+            borderRadius: 4,
+            padding: "2px 7px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {label}
+        </span>
+        <span style={{ fontSize: 11, color: "#6b7280" }}>
+          누적 <b style={{ color: "#111827" }}>{(data.ref ?? 0).toLocaleString()}</b>
+        </span>
+      </div>
+
+      {/* 제목 */}
       <a
         href={data.url}
         target="_blank"
         rel="noopener noreferrer"
         title={data.title}
         style={{
-          fontSize: 13,
+          fontSize: 12,
           fontWeight: 600,
           color: "#111827",
           textDecoration: "none",
           lineHeight: 1.5,
           display: "-webkit-box",
-          WebkitLineClamp: 4,
+          WebkitLineClamp: 2,
           WebkitBoxOrient: "vertical",
           overflow: "hidden",
-          flex: 1,
         }}
       >
         {data.title}
       </a>
-      <div style={{ fontSize: 12, color: "#6b7280", marginTop: "auto", paddingTop: 4, borderTop: "1px solid #f3f4f6" }}>
-        누적 <b style={{ color: "#111827" }}>{(data.ref ?? 0).toLocaleString()}</b>
+
+      {/* 날짜별 일일 증가량 – 2열 × 7행, 세로 순서 */}
+      <div
+        style={{
+          borderTop: "1px solid #f3f4f6",
+          paddingTop: 6,
+          display: "grid",
+          gridTemplateRows: "repeat(7, auto)",
+          gridAutoFlow: "column",
+          gap: "2px 8px",
+        }}
+      >
+        {rows.map((d, i) => {
+          const isLast = i === rows.length - 1;
+          const isHigh = !isLast && d.daily > 10;
+          return (
+            <div
+              key={d.date}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                background: isLast ? "#eff6ff" : "transparent",
+                borderRadius: 4,
+                padding: "1px 4px",
+              }}
+            >
+              <span style={{ fontSize: 10, color: isLast ? "#2563eb" : isHigh ? "#000000" : "#9ca3af", fontWeight: isLast || isHigh ? 700 : 400, whiteSpace: "nowrap" }}>
+                {d.date.slice(0, 5)}
+              </span>
+              <span style={{ fontSize: 10, fontWeight: isLast || isHigh ? 700 : 400, color: isLast ? "#2563eb" : isHigh ? "#000000" : "#6b7280", whiteSpace: "nowrap" }}>
+                +{d.daily.toLocaleString()}
+              </span>
+            </div>
+          );
+        })}
+        {rows.length === 0 && (
+          <span style={{ fontSize: 11, color: "#d1d5db", gridColumn: "1 / -1" }}>데이터 없음</span>
+        )}
       </div>
     </div>
   );
@@ -287,8 +334,94 @@ function dateFromNewskey(newskey) {
   return `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
 }
 
+// ─── 심층기사 리스트형 카드 (연관기사와 동일한 형식) ───
+function ArticleListCard({ article, index, pubDate }) {
+  const rows = (article.daily ?? [])
+    .filter((d) => d.daily != null)
+    .slice(-28);
+
+  return (
+    <div
+      style={{
+        borderRadius: 12,
+        border: article.spike ? "2px solid #dc2626" : "1px solid #e5e7eb",
+        background: article.spike ? "#fff8f8" : "#fff",
+        padding: "10px 12px 8px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 6,
+        overflow: "hidden",
+      }}
+    >
+      {/* 배지 + 누적 */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <span style={{ fontSize: 11, fontWeight: 700, background: "#1d4ed8", color: "#fff", borderRadius: 4, padding: "2px 7px", whiteSpace: "nowrap" }}>
+            {index}. {pubDate}
+          </span>
+          {article.spike && (
+            <span style={{ fontSize: 10, fontWeight: 800, background: "#dc2626", color: "#fff", borderRadius: 4, padding: "2px 6px" }}>급증</span>
+          )}
+        </div>
+        <span style={{ fontSize: 11, color: "#6b7280" }}>
+          누적 <b style={{ color: "#111827" }}>{(article.totalRef ?? 0).toLocaleString()}</b>
+        </span>
+      </div>
+      {/* 제목 */}
+      <a
+        href={article.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={article.title}
+        style={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: "#1d4ed8",
+          textDecoration: "none",
+          lineHeight: 1.5,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+        }}
+      >
+        {article.title}
+      </a>
+      {/* 날짜별 일일 증가량 – 4열 × 7행, 세로 순서 */}
+      <div style={{ borderTop: "1px solid #f3f4f6", paddingTop: 6, display: "grid", gridTemplateRows: "repeat(7, auto)", gridAutoFlow: "column", gap: "2px 6px" }}>
+        {rows.map((d, i) => {
+          const isLast = i === rows.length - 1;
+          const isHigh = !isLast && (d.daily ?? 0) > 10;
+          return (
+            <div
+              key={d.date}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                background: isLast ? "#eff6ff" : "transparent",
+                borderRadius: 4,
+                padding: "1px 4px",
+              }}
+            >
+              <span style={{ fontSize: 10, color: isLast ? "#2563eb" : isHigh ? "#000000" : "#9ca3af", fontWeight: isLast || isHigh ? 700 : 400, whiteSpace: "nowrap" }}>
+                {d.date.slice(0, 5)}
+              </span>
+              <span style={{ fontSize: 10, fontWeight: isLast || isHigh ? 700 : 400, color: isLast ? "#2563eb" : isHigh ? "#000000" : "#6b7280", whiteSpace: "nowrap" }}>
+                +{(d.daily ?? 0).toLocaleString()}
+              </span>
+            </div>
+          );
+        })}
+        {rows.length === 0 && (
+          <span style={{ fontSize: 11, color: "#d1d5db", gridColumn: "1 / -1" }}>데이터 없음</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── 심층기사 1행 ───
-function RelatedRow({ article, index }) {
+function RelatedRow({ article, index, mainView }) {
   const pubDate = dateFromNewskey(article.newskey);
 
   return (
@@ -302,38 +435,44 @@ function RelatedRow({ article, index }) {
         alignItems: "stretch",
       }}
     >
-      {/* 심층기사 – ArticleCard + 발행일 배지 */}
+      {/* 심층기사 */}
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span
-            style={{
-              fontSize: 12,
-              fontWeight: 700,
-              background: "#1d4ed8",
-              color: "#fff",
-              borderRadius: 5,
-              padding: "3px 9px",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {index}. {pubDate}
-          </span>
-          {article.spike && (
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: 800,
-                background: "#dc2626",
-                color: "#fff",
-                borderRadius: 5,
-                padding: "3px 8px",
-              }}
-            >
-              급증
-            </span>
-          )}
-        </div>
-        <ArticleCard article={article} />
+        {mainView === "list" ? (
+          <ArticleListCard article={article} index={index} pubDate={pubDate} />
+        ) : (
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  background: "#1d4ed8",
+                  color: "#fff",
+                  borderRadius: 5,
+                  padding: "3px 9px",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {index}. {pubDate}
+              </span>
+              {article.spike && (
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 800,
+                    background: "#dc2626",
+                    color: "#fff",
+                    borderRadius: 5,
+                    padding: "3px 8px",
+                  }}
+                >
+                  급증
+                </span>
+              )}
+            </div>
+            <ArticleCard article={article} />
+          </>
+        )}
       </div>
 
       {/* 연관기사 3건 */}
@@ -351,6 +490,7 @@ function RelatedRow({ article, index }) {
 // ─── 심층기사 연관기사 섹션 ───
 function EnterpriseRelatedSection({ articles }) {
   const [sortKey, setSortKey] = useState("date");
+  const [mainView, setMainView] = useState("chart");
 
   const sorted = useMemo(() => {
     const arr = [...articles];
@@ -376,6 +516,15 @@ function EnterpriseRelatedSection({ articles }) {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ fontSize: 12, color: "#6b7280", whiteSpace: "nowrap" }}>총 {sorted.length}건</span>
+          <span style={{ fontSize: 12, color: "#6b7280" }}>심층기사</span>
+          <select
+            className={styles.select}
+            value={mainView}
+            onChange={(e) => setMainView(e.target.value)}
+          >
+            <option value="chart">그래프</option>
+            <option value="list">날짜별 목록</option>
+          </select>
           <span style={{ fontSize: 12, color: "#6b7280" }}>정렬</span>
           <select
             className={styles.select}
@@ -417,7 +566,7 @@ function EnterpriseRelatedSection({ articles }) {
         </div>
 
         {sorted.map((a, i) => (
-          <RelatedRow key={a.newskey} article={a} index={i + 1} />
+          <RelatedRow key={a.newskey} article={a} index={i + 1} mainView={mainView} />
         ))}
       </div>
     </div>
@@ -460,13 +609,39 @@ export default function EnterpriseViewsSection() {
         const sortedHistory = [...(a.history || [])].sort((x, y) =>
           x.date.localeCompare(y.date)
         );
+        // 연관기사별 누적 ref 히스토리 구축
+        const relatedHistoryMap = {};
+        sortedHistory.forEach((h) => {
+          (h.related_refs ?? []).forEach((r) => {
+            if (!relatedHistoryMap[r.newskey]) relatedHistoryMap[r.newskey] = [];
+            relatedHistoryMap[r.newskey].push({ date: h.date, ref: r.ref });
+          });
+        });
         const latestHistory = sortedHistory[sortedHistory.length - 1];
-        const related = (latestHistory?.related_refs ?? []).map((r) => ({
-          newskey: r.newskey,
-          title: r.title,
-          ref: r.ref,
-          url: `https://www.yeongnam.com/web/view.php?key=${r.newskey}`,
-        }));
+        const related = (latestHistory?.related_refs ?? []).map((r) => {
+          const hist = (relatedHistoryMap[r.newskey] ?? []).sort((a, b) =>
+            a.date.localeCompare(b.date)
+          );
+          const dailyData = hist.map((entry, i) => {
+            const prev = hist[i - 1];
+            return {
+              date: entry.date.slice(5),
+              daily: prev ? Math.max(0, entry.ref - prev.ref) : null,
+            };
+          });
+          const todayInc =
+            hist.length >= 2
+              ? Math.max(0, hist[hist.length - 1].ref - hist[hist.length - 2].ref)
+              : null;
+          return {
+            newskey: r.newskey,
+            title: r.title,
+            ref: r.ref,
+            todayInc,
+            dailyData,
+            url: `https://www.yeongnam.com/web/view.php?key=${r.newskey}`,
+          };
+        });
         return { ...a, daily, avg, todayInc, spike, totalRef: latest?.total ?? 0, related };
       }),
     [articles]

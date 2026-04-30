@@ -21,6 +21,7 @@ export default async function handler(req, res) {
       history: (doc.history || []).map((h) => ({
         date: h.date,
         ref: h.ref,
+        related_refs: h.related_refs ?? [],
         updated_at: h.updated_at,
       })),
       last_updated: doc.last_updated,
